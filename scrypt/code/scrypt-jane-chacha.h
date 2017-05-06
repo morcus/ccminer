@@ -5,8 +5,11 @@ typedef uint32_t scrypt_mix_word_t;
 #define SCRYPT_WORDTO8_LE U32TO8_LE
 #define SCRYPT_WORD_ENDIAN_SWAP U32_SWAP
 
+<<<<<<< HEAD
 #define SCRYPT_P 1
 #define SCRYPT_R 1
+=======
+>>>>>>> 8c320ca... added xevan
 #define SCRYPT_BLOCK_BYTES 64
 #define SCRYPT_BLOCK_WORDS (SCRYPT_BLOCK_BYTES / sizeof(scrypt_mix_word_t))
 

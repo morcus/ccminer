@@ -5,7 +5,11 @@
 extern "C" {
 #endif
 
+<<<<<<< HEAD
 #include <ccminer-config.h>
+=======
+#include "cpuminer-config.h"
+>>>>>>> 8c320ca... added xevan
 
 #include <stdbool.h>
 #include <inttypes.h>
@@ -14,7 +18,17 @@ extern "C" {
 #include <jansson.h>
 #include <curl/curl.h>
 
+<<<<<<< HEAD
 #ifdef _MSC_VER
+=======
+#ifdef WIN32
+#define snprintf(...) _snprintf(__VA_ARGS__)
+#define strdup(x) _strdup(x)
+#define strncasecmp(x,y,z) _strnicmp(x,y,z)
+#define strcasecmp(x,y) _stricmp(x,y)
+#include <BaseTsd.h>
+typedef SSIZE_T ssize_t;
+>>>>>>> 8c320ca... added xevan
 #undef HAVE_ALLOCA_H
 #undef HAVE_SYSLOG_H
 #endif
@@ -39,11 +53,21 @@ extern "C" {
 #  include <malloc.h>
 #  define alloca _alloca
 # elif !defined HAVE_ALLOCA
+<<<<<<< HEAD
+=======
+#  ifdef  __cplusplus
+extern "C"
+#  endif
+>>>>>>> 8c320ca... added xevan
 void *alloca (size_t);
 # endif
 #endif
 
 #include "compat.h"
+<<<<<<< HEAD
+=======
+#include "log.h"
+>>>>>>> 8c320ca... added xevan
 
 #ifdef __INTELLISENSE__
 /* should be in stdint.h but... */
@@ -61,6 +85,7 @@ typedef char *  va_list;
 #endif
 
 #if defined(__CUDA_ARCH__) && __CUDA_ARCH__ > 0
+<<<<<<< HEAD
 # undef _ALIGN
 # define _ALIGN(x) __align__(x)
 #endif
@@ -84,6 +109,16 @@ enum {
 
 typedef unsigned char uchar;
 
+=======
+# define _ALIGN(x) __align__(x)
+#elif _MSC_VER
+# define _ALIGN(x) __declspec(align(x))
+#else
+# define _ALIGN(x) __attribute__ ((aligned(x)))
+#endif
+
+typedef unsigned char uchar;
+>>>>>>> 8c320ca... added xevan
 #undef unlikely
 #undef likely
 #if defined(__GNUC__) && (__GNUC__ > 2) && defined(__OPTIMIZE__)
@@ -112,6 +147,7 @@ typedef unsigned char uchar;
 
 static inline bool is_windows(void) {
 #ifdef WIN32
+<<<<<<< HEAD
         return 1;
 #else
         return 0;
@@ -125,6 +161,11 @@ static inline bool is_x64(void) {
 	return 1;
 #else
 	return 0;
+=======
+        return true;
+#else
+        return false;
+>>>>>>> 8c320ca... added xevan
 #endif
 }
 
@@ -254,6 +295,7 @@ void aligned_free(void *ptr);
 
 #if JANSSON_MAJOR_VERSION >= 2
 #define JSON_LOADS(str, err_ptr) json_loads((str), 0, (err_ptr))
+<<<<<<< HEAD
 #define JSON_LOADF(str, err_ptr) json_load_file((str), 0, (err_ptr))
 #else
 #define JSON_LOADS(str, err_ptr) json_loads((str), (err_ptr))
@@ -262,12 +304,19 @@ void aligned_free(void *ptr);
 
 json_t * json_load_url(char* cfg_url, json_error_t *err);
 
+=======
+#else
+#define JSON_LOADS(str, err_ptr) json_loads((str), (err_ptr))
+#endif
+
+>>>>>>> 8c320ca... added xevan
 #define USER_AGENT PACKAGE_NAME "/" PACKAGE_VERSION
 
 void sha256_init(uint32_t *state);
 void sha256_transform(uint32_t *state, const uint32_t *block, int swap);
 void sha256d(unsigned char *hash, const unsigned char *data, int len);
 
+<<<<<<< HEAD
 #define HAVE_SHA256_4WAY 0
 #define HAVE_SHA256_8WAY 0
 
@@ -388,10 +437,164 @@ extern void free_zr5(int thr_id);
 //extern void free_sha256d(int thr_id);
 extern void free_scrypt(int thr_id);
 extern void free_scrypt_jane(int thr_id);
+=======
+#if defined(__ARM_NEON__) || defined(__i386__) || defined(__x86_64__)
+#define HAVE_SHA256_4WAY 0
+int sha256_use_4way();
+void sha256_init_4way(uint32_t *state);
+void sha256_transform_4way(uint32_t *state, const uint32_t *block, int swap);
+#endif
+
+#if defined(__x86_64__) && defined(USE_AVX2)
+#define HAVE_SHA256_8WAY 0
+int sha256_use_8way();
+void sha256_init_8way(uint32_t *state);
+void sha256_transform_8way(uint32_t *state, const uint32_t *block, int swap);
+#endif
+
+extern int scanhash_sha256d(int thr_id, uint32_t *pdata,
+	const uint32_t *ptarget, uint32_t max_nonce, unsigned long *hashes_done);
+
+extern int scanhash_deep(int thr_id, uint32_t *pdata,
+	const uint32_t *ptarget, uint32_t max_nonce,
+	unsigned long *hashes_done);
+
+extern int scanhash_doom(int thr_id, uint32_t *pdata,
+	const uint32_t *ptarget, uint32_t max_nonce,
+	unsigned long *hashes_done);
+
+extern int scanhash_fugue256(int thr_id, uint32_t *pdata,
+	const uint32_t *ptarget, uint32_t max_nonce,
+	unsigned long *hashes_done);
+
+extern int scanhash_groestlcoin(int thr_id, uint32_t *pdata,
+	const uint32_t *ptarget, uint32_t max_nonce,
+	unsigned long *hashes_done);
+
+extern int scanhash_heavy(int thr_id, uint32_t *pdata,
+	const uint32_t *ptarget, uint32_t max_nonce,
+	unsigned long *hashes_done, uint32_t maxvote, int blocklen);
+
+extern int scanhash_skeincoin(int thr_id, uint32_t *pdata,
+	const uint32_t *ptarget, uint32_t max_nonce,
+	uint32_t *hashes_done);
+
+extern int scanhash_c11(int thr_id, uint32_t *pdata,
+	const uint32_t *ptarget, uint32_t max_nonce,
+	unsigned long *hashes_done);
+
+extern int scanhash_keccak256(int thr_id, uint32_t *pdata,
+	const uint32_t *ptarget, uint32_t max_nonce,
+	unsigned long *hashes_done);
+
+extern int scanhash_myriad(int thr_id, uint32_t *pdata,
+	const uint32_t *ptarget, uint32_t max_nonce,
+	unsigned long *hashes_done);
+
+extern int scanhash_jackpot(int thr_id, uint32_t *pdata,
+	const uint32_t *ptarget, uint32_t max_nonce,
+	unsigned long *hashes_done);
+
+extern int scanhash_quark(int thr_id, uint32_t *pdata,
+	uint32_t *ptarget, uint32_t max_nonce,
+	unsigned long *hashes_done);
+
+extern int scanhash_bastion(int thr_id, uint32_t *pdata, uint32_t *ptarget, uint32_t max_nonce, unsigned long *hashes_done);
+
+extern int scanhash_blake256(int thr_id, uint32_t *pdata,
+	const uint32_t *ptarget, uint32_t max_nonce,
+	unsigned long *hashes_done, int8_t blakerounds);
+
+extern int scanhash_fresh(int thr_id, uint32_t *pdata,
+	const uint32_t *ptarget, uint32_t max_nonce,
+	unsigned long *hashes_done);
+
+extern int scanhash_lyra2(int thr_id, uint32_t *pdata,
+	const uint32_t *ptarget, uint32_t max_nonce,
+	unsigned long *hashes_done);
+
+extern int scanhash_lyra2v2(int thr_id, uint32_t *pdata,
+	const uint32_t *ptarget, uint32_t max_nonce,
+	unsigned long *hashes_done);
+
+extern int scanhash_nist5(int thr_id, uint32_t *pdata,
+	const uint32_t *ptarget, uint32_t max_nonce,
+	unsigned long *hashes_done);
+
+extern int scanhash_pentablake(int thr_id, uint32_t *pdata,
+	const uint32_t *ptarget, uint32_t max_nonce,
+	unsigned long *hashes_done);
+
+extern int scanhash_qubit(int thr_id, uint32_t *pdata,
+	const uint32_t *ptarget, uint32_t max_nonce,
+	unsigned long *hashes_done);
+
+extern int scanhash_scrypt(int thr_id, uint32_t *pdata,
+	const uint32_t *ptarget, unsigned char *scratchbuf, uint32_t max_nonce,
+	unsigned long *hashes_done, struct timeval *tv_start, struct timeval *tv_end);
+
+extern int scanhash_scrypt_jane(int thr_id, uint32_t *pdata,
+	const uint32_t *ptarget, unsigned char *scratchbuf, uint32_t max_nonce,
+	unsigned long *hashes_done, struct timeval *tv_start, struct timeval *tv_end);
+
+extern int scanhash_s3(int thr_id, uint32_t *pdata,
+	const uint32_t *ptarget, uint32_t max_nonce,
+	unsigned long *hashes_done);
+
+extern int scanhash_whc(int thr_id, uint32_t *pdata,
+	uint32_t *ptarget, uint32_t max_nonce,
+	unsigned long *hashes_done);
+
+extern int scanhash_whirlpoolx(int thr_id, uint32_t *pdata,
+	uint32_t *ptarget, uint32_t max_nonce,
+	uint32_t *hashes_done);
+
+
+extern int scanhash_x11(int thr_id, uint32_t *pdata,
+	const uint32_t *ptarget, uint32_t max_nonce,
+	unsigned long *hashes_done);
+
+extern int scanhash_x13(int thr_id, uint32_t *pdata,
+	const uint32_t *ptarget, uint32_t max_nonce,
+	unsigned long *hashes_done);
+
+extern int scanhash_x14(int thr_id, uint32_t *pdata,
+	const uint32_t *ptarget, uint32_t max_nonce,
+	unsigned long *hashes_done);
+
+extern int scanhash_x15(int thr_id, uint32_t *pdata,
+	const uint32_t *ptarget, uint32_t max_nonce,
+	unsigned long *hashes_done);
+
+extern int scanhash_x17(int thr_id, uint32_t *pdata,
+	const uint32_t *ptarget, uint32_t max_nonce,
+	unsigned long *hashes_done);
+
+extern int scanhash_xevan(int thr_id, uint32_t *pdata,
+	const uint32_t *ptarget, uint32_t max_nonce,
+	unsigned long *hashes_done);
+
+extern int scanhash_bitcoin(int thr_id, uint32_t *pdata,
+	const uint32_t *ptarget, uint32_t max_nonce,
+	unsigned long *hashes_done);
+
+extern int scanhash_neoscrypt(int stratum, int thr_id, uint32_t *pdata,
+	const uint32_t *ptarget, uint32_t max_nonce,
+	unsigned long *hashes_done);
+
+extern int scanhash_yescrypt(int thr_id, uint32_t *pdata,
+	const uint32_t *ptarget, uint32_t max_nonce,
+	unsigned long *hashes_done);
+
+extern int scanhash_bitcredit(int thr_id, uint32_t *pdata,
+	const uint32_t *ptarget, const uint32_t *midstate, uint32_t max_nonce,
+	unsigned long *hashes_done);
+>>>>>>> 8c320ca... added xevan
 
 /* api related */
 void *api_thread(void *userdata);
 void api_set_throughput(int thr_id, uint32_t throughput);
+<<<<<<< HEAD
 void gpu_increment_reject(int thr_id);
 
 struct monitor_info {
@@ -406,25 +609,43 @@ struct monitor_info {
 	volatile bool sampling_flag;
 	uint32_t tm_displayed;
 };
+=======
+>>>>>>> 8c320ca... added xevan
 
 struct cgpu_info {
 	uint8_t gpu_id;
 	uint8_t thr_id;
+<<<<<<< HEAD
 	uint16_t hw_errors;
 	unsigned accepted;
 	uint32_t rejected;
 	double khashes;
 	int has_monitoring;
+=======
+	int accepted;
+	int rejected;
+	int hw_errors;
+	double khashes;
+	uint8_t intensity_int;
+	uint8_t has_monitoring;
+>>>>>>> 8c320ca... added xevan
 	float gpu_temp;
 	uint16_t gpu_fan;
 	uint16_t gpu_fan_rpm;
 	uint16_t gpu_arch;
+<<<<<<< HEAD
 	uint32_t gpu_clock;
 	uint32_t gpu_memclock;
 	uint64_t gpu_mem;
 	uint64_t gpu_memfree;
 	uint32_t gpu_power;
 	uint32_t gpu_plimit;
+=======
+	int gpu_clock;
+	int gpu_memclock;
+	size_t gpu_mem;
+	uint32_t gpu_usage;
+>>>>>>> 8c320ca... added xevan
 	double gpu_vddc;
 	int16_t gpu_pstate;
 	int16_t gpu_bus;
@@ -436,10 +657,15 @@ struct cgpu_info {
 
 	char gpu_sn[64];
 	char gpu_desc[64];
+<<<<<<< HEAD
 	double intensity;
 	uint32_t throughput;
 
 	struct monitor_info monitor;
+=======
+	float intensity;
+	uint32_t throughput;
+>>>>>>> 8c320ca... added xevan
 };
 
 struct thr_api {
@@ -453,14 +679,20 @@ struct stats_data {
 	uint32_t tm_stat;
 	uint32_t hashcount;
 	uint32_t height;
+<<<<<<< HEAD
 
 	double difficulty;
 	double hashrate;
 
+=======
+	double difficulty;
+	double hashrate;
+>>>>>>> 8c320ca... added xevan
 	uint8_t thr_id;
 	uint8_t gpu_id;
 	uint8_t hashfound;
 	uint8_t ignored;
+<<<<<<< HEAD
 
 	uint8_t npool;
 	uint8_t pool_type;
@@ -476,6 +708,13 @@ struct hashlog_data {
 	uint32_t height;
 	double sharediff;
 
+=======
+};
+
+struct hashlog_data {
+	uint32_t tm_sent;
+	uint32_t height;
+>>>>>>> 8c320ca... added xevan
 	uint32_t njobid;
 	uint32_t nonce;
 	uint32_t scanned_from;
@@ -483,7 +722,10 @@ struct hashlog_data {
 	uint32_t last_from;
 	uint32_t tm_add;
 	uint32_t tm_upd;
+<<<<<<< HEAD
 	uint32_t tm_sent;
+=======
+>>>>>>> 8c320ca... added xevan
 };
 
 /* end of api */
@@ -496,6 +738,7 @@ struct thr_info {
 };
 
 struct work_restart {
+<<<<<<< HEAD
 	/* volatile to modify accross threads (vstudio thing) */
 	volatile uint32_t restart;
 	char padding[128 - sizeof(uint32_t)];
@@ -512,39 +755,63 @@ struct option {
 };
 #endif
 extern int options_count();
+=======
+	volatile unsigned long	restart;
+	char			padding[128 - sizeof(unsigned long)];
+};
+>>>>>>> 8c320ca... added xevan
 
 extern bool opt_benchmark;
 extern bool opt_debug;
 extern bool opt_quiet;
 extern bool opt_protocol;
+<<<<<<< HEAD
 extern bool opt_showdiff;
 extern bool opt_tracegpu;
 extern int opt_n_threads;
 extern int active_gpus;
 extern int gpu_threads;
+=======
+extern bool opt_tracegpu;
+extern int opt_n_threads;
+extern int opt_n_gputhreads;
+extern bool opt_cpumining;
+extern int num_cpus;
+extern int active_gpus;
+>>>>>>> 8c320ca... added xevan
 extern int opt_timeout;
 extern bool want_longpoll;
 extern bool have_longpoll;
 extern bool want_stratum;
 extern bool have_stratum;
+<<<<<<< HEAD
 extern bool opt_stratum_stats;
+=======
+>>>>>>> 8c320ca... added xevan
 extern char *opt_cert;
 extern char *opt_proxy;
 extern long opt_proxy_type;
 extern bool use_syslog;
 extern bool use_colors;
+<<<<<<< HEAD
 extern int use_pok;
 extern pthread_mutex_t applog_lock;
+=======
+>>>>>>> 8c320ca... added xevan
 extern struct thr_info *thr_info;
 extern int longpoll_thr_id;
 extern int stratum_thr_id;
 extern int api_thr_id;
+<<<<<<< HEAD
 extern volatile bool abort_flag;
+=======
+>>>>>>> 8c320ca... added xevan
 extern struct work_restart *work_restart;
 extern bool opt_trust_pool;
 extern uint16_t opt_vote;
 
 extern uint64_t global_hashrate;
+<<<<<<< HEAD
 extern uint64_t net_hashrate;
 extern double net_diff;
 extern double stratum_diff;
@@ -641,6 +908,31 @@ void bench_free();
 bool bench_algo_switch_next(int thr_id);
 void bench_set_throughput(int thr_id, uint32_t throughput);
 void bench_display_results();
+=======
+extern double   global_diff;
+
+extern bool scan_abort_flag;
+
+#define MAX_GPUS 32
+extern char* device_name[MAX_GPUS];
+extern int device_map[MAX_GPUS];
+extern long  device_sm[MAX_GPUS];
+extern uint32_t gpus_intensity[MAX_GPUS];
+
+extern void format_hashrate(double hashrate, char *output);
+extern void applog(int prio, const char *fmt, ...);
+extern json_t *json_rpc_call(CURL *curl, const char *url, const char *userpass,
+	const char *rpc_req, bool, bool, int *);
+extern void cbin2hex(char *out, const char *in, size_t len);
+extern char *bin2hex(const unsigned char *in, size_t len);
+extern bool hex2bin(unsigned char *p, const char *hexstr, size_t len);
+extern int timeval_subtract(struct timeval *result, struct timeval *x,
+	struct timeval *y);
+extern bool fulltest(const uint32_t *hash, const uint32_t *target);
+extern void diff_to_target(uint32_t *target, double diff);
+extern void get_currentalgo(char* buf, int sz);
+extern uint32_t device_intensity(int thr_id, const char *func, uint32_t defcount);
+>>>>>>> 8c320ca... added xevan
 
 struct stratum_job {
 	char *job_id;
@@ -653,11 +945,17 @@ struct stratum_job {
 	unsigned char version[4];
 	unsigned char nbits[4];
 	unsigned char ntime[4];
+<<<<<<< HEAD
 	unsigned char claim[32]; // lbry
 	bool clean;
 	unsigned char nreward[2];
 	uint32_t height;
 	uint32_t shares_count;
+=======
+	bool clean;
+	unsigned char nreward[2];
+	uint32_t height;
+>>>>>>> 8c320ca... added xevan
 	double diff;
 };
 
@@ -670,15 +968,22 @@ struct stratum_ctx {
 	curl_socket_t sock;
 	size_t sockbuf_size;
 	char *sockbuf;
+<<<<<<< HEAD
 
 	double next_diff;
 	double sharediff;
+=======
+	pthread_mutex_t sock_lock;
+
+	double next_diff;
+>>>>>>> 8c320ca... added xevan
 
 	char *session_id;
 	size_t xnonce1_size;
 	unsigned char *xnonce1;
 	size_t xnonce2_size;
 	struct stratum_job job;
+<<<<<<< HEAD
 
 	struct timeval tv_submit;
 	uint32_t answer_msec;
@@ -703,6 +1008,23 @@ struct work {
 	uint32_t target[8];
 	uint32_t maxvote;
 
+=======
+	pthread_mutex_t work_lock;
+
+	struct timeval tv_submit;
+	uint32_t answer_msec;
+	uint32_t disconnects;
+	time_t tm_connected;
+
+	int srvtime_diff;
+};
+
+struct work {
+	uint32_t data[64]; //42 needed for bitcredit
+	uint32_t target[8];
+	uint32_t maxvote;
+	uint32_t midstate[8];
+>>>>>>> 8c320ca... added xevan
 	char job_id[128];
 	size_t xnonce2_len;
 	uchar xnonce2[32];
@@ -712,6 +1034,7 @@ struct work {
 		uint64_t u64[1];
 	} noncerange;
 
+<<<<<<< HEAD
 	uint8_t pooln;
 	uint8_t valid_nonces;
 	uint8_t submit_nonce_id;
@@ -722,10 +1045,14 @@ struct work {
 	double shareratio[MAX_NONCES];
 	double targetdiff;
 
+=======
+	double difficulty;
+>>>>>>> 8c320ca... added xevan
 	uint32_t height;
 
 	uint32_t scanned_from;
 	uint32_t scanned_to;
+<<<<<<< HEAD
 
 	/* pok getwork txs */
 	uint32_t tx_count;
@@ -802,12 +1129,17 @@ json_t * json_rpc_call_pool(CURL *curl, struct pool_infos*,
 json_t * json_rpc_longpoll(CURL *curl, char *lp_url, struct pool_infos*,
 	const char *req, int *err);
 
+=======
+};
+
+>>>>>>> 8c320ca... added xevan
 bool stratum_socket_full(struct stratum_ctx *sctx, int timeout);
 bool stratum_send_line(struct stratum_ctx *sctx, char *s);
 char *stratum_recv_line(struct stratum_ctx *sctx);
 bool stratum_connect(struct stratum_ctx *sctx, const char *url);
 void stratum_disconnect(struct stratum_ctx *sctx);
 bool stratum_subscribe(struct stratum_ctx *sctx);
+<<<<<<< HEAD
 bool stratum_authorize(struct stratum_ctx *sctx, const char *user, const char *pass);
 bool stratum_handle_method(struct stratum_ctx *sctx, const char *s);
 void stratum_free_job(struct stratum_ctx *sctx);
@@ -826,6 +1158,13 @@ double equi_network_diff(struct work *work);
 void hashlog_remember_submit(struct work* work, uint32_t nonce);
 void hashlog_remember_scan_range(struct work* work);
 double hashlog_get_sharediff(char* jobid, int idnonce, double defvalue);
+=======
+bool stratum_authorize(struct stratum_ctx *sctx, const char *user, const char *pass,bool extranonce);
+bool stratum_handle_method(struct stratum_ctx *sctx, const char *s);
+
+void hashlog_remember_submit(struct work* work, uint32_t nonce);
+void hashlog_remember_scan_range(struct work* work);
+>>>>>>> 8c320ca... added xevan
 uint32_t hashlog_already_submittted(char* jobid, uint32_t nounce);
 uint32_t hashlog_get_last_sent(char* jobid);
 uint64_t hashlog_get_scan_range(char* jobid);
@@ -838,7 +1177,10 @@ void hashlog_getmeminfo(uint64_t *mem, uint32_t *records);
 
 void stats_remember_speed(int thr_id, uint32_t hashcount, double hashrate, uint8_t found, uint32_t height);
 double stats_get_speed(int thr_id, double def_speed);
+<<<<<<< HEAD
 double stats_get_gpu_speed(int gpu_id);
+=======
+>>>>>>> 8c320ca... added xevan
 int  stats_get_history(int thr_id, struct stats_data *data, int max_records);
 void stats_purge_old(void);
 void stats_purge_all(void);
@@ -853,6 +1195,7 @@ extern void *tq_pop(struct thread_q *tq, const struct timespec *abstime);
 extern void tq_freeze(struct thread_q *tq);
 extern void tq_thaw(struct thread_q *tq);
 
+<<<<<<< HEAD
 #define EXIT_CODE_OK            0
 #define EXIT_CODE_USAGE         1
 #define EXIT_CODE_POOL_TIMEOUT  2
@@ -865,10 +1208,14 @@ extern void tq_thaw(struct thread_q *tq);
 void parse_arg(int key, char *arg);
 void proper_exit(int reason);
 void restart_threads(void);
+=======
+void proper_exit(int reason);
+>>>>>>> 8c320ca... added xevan
 
 size_t time2str(char* buf, time_t timer);
 char* atime2str(time_t timer);
 
+<<<<<<< HEAD
 void applog_hex(void *data, int len);
 void applog_hash(void *hash);
 void applog_hash64(void *hash);
@@ -900,11 +1247,26 @@ void lyra2v2_hash(void *state, const void *input);
 void lyra2Z_hash(void *state, const void *input);
 void myriadhash(void *state, const void *input);
 void neoscrypt(uchar *output, const uchar *input, uint32_t profile);
+=======
+void print_hash_tests(void);
+void blake256hash(void *output, const void *input, int8_t rounds);
+void deephash(void *state, const void *input);
+void doomhash(void *state, const void *input);
+void fresh_hash(void *state, const void *input);
+void fugue256_hash(unsigned char* output, const unsigned char* input, int len);
+void heavycoin_hash(unsigned char* output, const unsigned char* input, int len);
+void keccak256_hash(void *state, const void *input);
+uint32_t jackpothash(void *state, const void *input);
+void groestlhash(void *state, const void *input);
+void lyra2_hash(void *state, const void *input);
+void myriadhash(void *state, const void *input);
+>>>>>>> 8c320ca... added xevan
 void nist5hash(void *state, const void *input);
 void pentablakehash(void *output, const void *input);
 void quarkhash(void *state, const void *input);
 void qubithash(void *state, const void *input);
 void scrypthash(void* output, const void* input);
+<<<<<<< HEAD
 void scryptjane_hash(void* output, const void* input);
 void sha256d_hash(void *output, const void *input);
 void sha256t_hash(void *output, const void *input);
@@ -920,14 +1282,23 @@ void veltorhash(void *output, const void *input);
 void wcoinhash(void *state, const void *input);
 void whirlxHash(void *state, const void *input);
 void x11evo_hash(void *output, const void *input);
+=======
+void skeincoinhash(void *output, const void *input);
+void s3hash(void *output, const void *input);
+void wcoinhash(void *state, const void *input);
+>>>>>>> 8c320ca... added xevan
 void x11hash(void *output, const void *input);
 void x13hash(void *output, const void *input);
 void x14hash(void *output, const void *input);
 void x15hash(void *output, const void *input);
 void x17hash(void *output, const void *input);
+<<<<<<< HEAD
 void wildkeccak_hash(void *output, const void *input, uint64_t* scratchpad, uint64_t ssize);
 void zr5hash(void *output, const void *input);
 void zr5hash_pok(void *output, uint32_t *pdata);
+=======
+void xevan_hash(void *output, const void *input);
+>>>>>>> 8c320ca... added xevan
 
 #ifdef __cplusplus
 }

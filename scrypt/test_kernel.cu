@@ -14,7 +14,11 @@
 
 #include <map>
 
+<<<<<<< HEAD
 #include <cuda_runtime.h>
+=======
+#include "cuda_runtime.h"
+>>>>>>> 8c320ca... added xevan
 #include "miner.h"
 
 #include "salsa_kernel.h"
@@ -710,8 +714,12 @@ bool TestKernel::run_kernel(dim3 grid, dim3 threads, int WARPS_PER_BLOCK, int th
 	size_t shared = ((threads.x + 31) / 32) * (32+1) * sizeof(uint32_t);
 
 	// make some constants available to kernel, update only initially and when changing
+<<<<<<< HEAD
 	static uint32_t prev_N[MAX_GPUS] = { 0 };
 
+=======
+	static int prev_N[MAX_DEVICES] = {0};
+>>>>>>> 8c320ca... added xevan
 	if (N != prev_N[thr_id]) {
 		uint32_t h_N = N;
 		uint32_t h_N_1 = N-1;

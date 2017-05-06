@@ -37,10 +37,13 @@
 #if !defined( PTHREAD_H )
 #define PTHREAD_H
 
+<<<<<<< HEAD
 #if !defined(HAVE_STRUCT_TIMESPEC) && _MSC_VER >= 1900
 #define HAVE_STRUCT_TIMESPEC
 #endif
 
+=======
+>>>>>>> 8c320ca... added xevan
 /*
  * See the README file for an explanation of the pthreads-win32 version
  * numbering scheme and how the DLL is named etc.

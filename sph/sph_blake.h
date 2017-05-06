@@ -231,11 +231,14 @@ void sph_blake256_close(void *cc, void *dst);
 void sph_blake256_addbits_and_close(
 	void *cc, unsigned ub, unsigned n, void *dst);
 
+<<<<<<< HEAD
 /**
  * Allow blakecoin and blake variants
  */
 void sph_blake256_set_rounds(int rounds);
 
+=======
+>>>>>>> 8c320ca... added xevan
 #if SPH_64
 
 /**

@@ -199,6 +199,10 @@ static const sph_u32 K[64] = {
 		sph_u32 W08, W09, W10, W11, W12, W13, W14, W15; \
 		int i; \
  \
+<<<<<<< HEAD
+=======
+/* for (i=0;i<8;i++) {printf("in[%d]=%08x in[%d]=%08x \n",2*i,in(2*i),2*i+1,in(2*i+1));} */ \
+>>>>>>> 8c320ca... added xevan
  		A = (r)[0]; \
 		B = (r)[1]; \
 		C = (r)[2]; \
@@ -599,6 +603,10 @@ static const sph_u32 K[64] = {
 		(r)[5] = SPH_T32((r)[5] + F); \
 		(r)[6] = SPH_T32((r)[6] + G); \
 		(r)[7] = SPH_T32((r)[7] + H); \
+<<<<<<< HEAD
+=======
+/* for (i=0;i<4;i++) {printf("r[%d]=%08x r[%d]=%08x\n",2*i,(r)[2*i],2*i+1,(r)[2*i+1]);}  */ \
+>>>>>>> 8c320ca... added xevan
 	} while (0)
 
 #endif

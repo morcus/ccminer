@@ -1,3 +1,4 @@
+<<<<<<< HEAD
  /************************************************************************************************************************************\
 |*                                                                                                                                    *|
 |*     Copyright © 2012 NVIDIA Corporation.  All rights reserved.                                                                     *|
@@ -31,6 +32,8 @@
 |*  the above Disclaimer (as applicable) and U.S. Government End Users Notice.                                                        *|
 |*                                                                                                                                    *|
  \************************************************************************************************************************************/
+=======
+>>>>>>> 8c320ca... added xevan
 #pragma once
 #include"nvapi_lite_salstart.h"
 #pragma pack(push,8)
@@ -53,7 +56,10 @@ extern "C" {
 #endif
 #endif
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 8c320ca... added xevan
 /* 64-bit types for compilers that support them, plus some obsolete variants */
 #if defined(__GNUC__) || defined(__arm) || defined(__IAR_SYSTEMS_ICC__) || defined(__ghs__) || defined(_WIN64)
 typedef unsigned long long NvU64; /* 0 to 18446744073709551615  */
@@ -70,6 +76,7 @@ typedef signed long        NvS32; /* -2147483648 to 2147483647  */
 typedef signed int         NvS32; /* -2147483648 to 2147483647 */
 #endif
 
+<<<<<<< HEAD
 #ifndef __unix
 // mac os 32-bit still needs this
 #if ( (defined(macintosh) && defined(__LP64__) && (__NVAPI_RESERVED0__)) || \
@@ -83,17 +90,30 @@ typedef unsigned int       NvU32; /* 0 to 4294967295                         */
 #endif
 
 typedef unsigned long    temp_NvU32; /* 0 to 4294967295                         */
+=======
+// mac os 32-bit still needs this
+#if ( (defined(macintosh) && defined(__LP64__) && (__NVAPI_RESERVED0__)) || \
+      (!defined(macintosh) && defined(__NVAPI_RESERVED0__)) )
+typedef uint32_t       NvU32; /* 0 to 4294967295                         */
+#else
+typedef unsigned long      NvU32; /* 0 to 4294967295                         */
+#endif
+
+>>>>>>> 8c320ca... added xevan
 typedef signed   short   NvS16;
 typedef unsigned short   NvU16;
 typedef unsigned char    NvU8;
 typedef signed   char    NvS8;
 
+<<<<<<< HEAD
 /* Boolean type */
 typedef NvU8 NvBool;
 #define NV_TRUE           ((NvBool)(0 == 0))
 #define NV_FALSE          ((NvBool)(0 != 0))
 
 
+=======
+>>>>>>> 8c320ca... added xevan
 typedef struct _NV_RECT
 {
     NvU32    left;
@@ -176,7 +196,11 @@ typedef struct
 #endif //#ifndef NvGUID_Defined
 
 
+<<<<<<< HEAD
 #define NVAPI_MAX_PHYSICAL_GPUS             64
+=======
+#define NVAPI_MAX_PHYSICAL_GPUS             32
+>>>>>>> 8c320ca... added xevan
 #define NVAPI_MAX_PHYSICAL_BRIDGES          100
 #define NVAPI_PHYSICAL_GPUS                 32
 #define NVAPI_MAX_LOGICAL_GPUS              64
@@ -344,6 +368,7 @@ typedef enum _NvAPI_Status
     NVAPI_TIMEOUT                               = -191,    //!< Requested operation timed out
     NVAPI_GPU_WORKSTATION_FEATURE_INCOMPLETE    = -192,    //!< The requested workstation feature set has incomplete driver internal allocation resources
     NVAPI_STEREO_INIT_ACTIVATION_NOT_DONE       = -193,    //!< Call failed because InitActivation was not called.
+<<<<<<< HEAD
     NVAPI_SYNC_NOT_ACTIVE                       = -194,    //!< The requested action cannot be performed without Sync being enabled.
     NVAPI_SYNC_MASTER_NOT_FOUND                 = -195,    //!< The requested action cannot be performed without Sync Master being enabled.
     NVAPI_INVALID_SYNC_TOPOLOGY                 = -196,    //!< Invalid displays passed in the NV_GSYNC_DISPLAY pointer.
@@ -358,6 +383,13 @@ typedef enum _NvAPI_Status
     NVAPI_HDCP_ENCRYPTION_FAILED                = -205,    //!< HDCP Encryption Failed for the device. Would be applicable when the device is HDCP Capable.
     NVAPI_PCLK_LIMITATION_FAILED                = -206,    //!< Provided mode is over sink device pclk limitation.
     NVAPI_NO_CONNECTOR_FOUND                    = -207,    //!< No connector on GPU found.
+=======
+	NVAPI_SYNC_NOT_ACTIVE                       = -194,    //!< The requested action cannot be performed without Sync being enabled.
+	NVAPI_SYNC_MASTER_NOT_FOUND                 = -195,    //!< The requested action cannot be performed without Sync Master being enabled.
+	NVAPI_INVALID_SYNC_TOPOLOGY                 = -196,    //!< Invalid displays passed in the NV_GSYNC_DISPLAY pointer.
+    NVAPI_ECID_SIGN_ALGO_UNSUPPORTED            = -197,    //!< The specified signing algorithm is not supported. Either an incorrect value was entered or the current installed driver/hardware does not support the input value.
+	NVAPI_ECID_KEY_VERIFICATION_FAILED          = -198,    //!< The encrypted public key verification has failed.
+>>>>>>> 8c320ca... added xevan
 } NvAPI_Status;
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -406,6 +438,7 @@ typedef struct
 
 } NV_DISPLAY_DRIVER_MEMORY_INFO_V2;
 
+<<<<<<< HEAD
 //! \ingroup driverapi
 //! Used in NvAPI_GPU_GetMemoryInfo().
 typedef struct
@@ -423,6 +456,11 @@ typedef struct
 
 //! \ingroup driverapi
 typedef NV_DISPLAY_DRIVER_MEMORY_INFO_V3 NV_DISPLAY_DRIVER_MEMORY_INFO;
+=======
+
+//! \ingroup driverapi
+typedef NV_DISPLAY_DRIVER_MEMORY_INFO_V2 NV_DISPLAY_DRIVER_MEMORY_INFO;
+>>>>>>> 8c320ca... added xevan
 
 //! \ingroup driverapi
 //! Macro for constructing the version field of NV_DISPLAY_DRIVER_MEMORY_INFO_V1
@@ -433,11 +471,15 @@ typedef NV_DISPLAY_DRIVER_MEMORY_INFO_V3 NV_DISPLAY_DRIVER_MEMORY_INFO;
 #define NV_DISPLAY_DRIVER_MEMORY_INFO_VER_2  MAKE_NVAPI_VERSION(NV_DISPLAY_DRIVER_MEMORY_INFO_V2,2)
 
 //! \ingroup driverapi
+<<<<<<< HEAD
 //! Macro for constructing the version field of NV_DISPLAY_DRIVER_MEMORY_INFO_V3
 #define NV_DISPLAY_DRIVER_MEMORY_INFO_VER_3  MAKE_NVAPI_VERSION(NV_DISPLAY_DRIVER_MEMORY_INFO_V3,3)
 
 //! \ingroup driverapi
 #define NV_DISPLAY_DRIVER_MEMORY_INFO_VER    NV_DISPLAY_DRIVER_MEMORY_INFO_VER_3
+=======
+#define NV_DISPLAY_DRIVER_MEMORY_INFO_VER    NV_DISPLAY_DRIVER_MEMORY_INFO_VER_2
+>>>>>>> 8c320ca... added xevan
 
 
 

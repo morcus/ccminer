@@ -17,6 +17,7 @@
 
 #include "miner.h"
 
+<<<<<<< HEAD
 void *monitor_thread(void *userdata);
 
 typedef void * nvmlDevice_t;
@@ -35,6 +36,22 @@ typedef struct {
 	unsigned int res1;
 	unsigned int res2;
 	unsigned int res3;
+=======
+typedef void * nvmlDevice_t;
+
+/* our own version of the PCI info struct */
+typedef struct {
+	char bus_id_str[16];             /* string form of bus info */
+	uint32_t domain;
+	uint32_t bus;
+	uint32_t device;
+	uint32_t pci_device_id;      /* combined device and vendor id */
+	uint32_t pci_subsystem_id;
+	uint32_t res0;               /* NVML internal use only */
+	uint32_t res1;
+	uint32_t res2;
+	uint32_t res3;
+>>>>>>> 8c320ca... added xevan
 } nvmlPciInfo_t;
 
 enum nvmlEnableState_t {
@@ -45,7 +62,11 @@ enum nvmlEnableState_t {
 
 enum nvmlRestrictedAPI_t {
 	NVML_RESTRICTED_API_SET_APPLICATION_CLOCKS = 0,
+<<<<<<< HEAD
 	NVML_RESTRICTED_API_SET_AUTO_BOOSTED_CLOCKS = 1, // not for GTX cards
+=======
+	NVML_RESTRICTED_API_SET_AUTO_BOOSTED_CLOCKS = 1,
+>>>>>>> 8c320ca... added xevan
 	NVML_RESTRICTED_API_COUNT = 2
 };
 
@@ -61,6 +82,7 @@ enum nvmlReturn_t {
 	NVML_ERROR_INSUFFICIENT_POWER = 8,
 	NVML_ERROR_DRIVER_NOT_LOADED = 9,
 	NVML_ERROR_TIMEOUT = 10,
+<<<<<<< HEAD
 	NVML_ERROR_IRQ_ISSUE = 11,
 	NVML_ERROR_LIBRARY_NOT_FOUND = 12,
 	NVML_ERROR_FUNCTION_NOT_FOUND = 13,
@@ -70,12 +92,15 @@ enum nvmlReturn_t {
 	NVML_ERROR_OPERATING_SYSTEM = 17,
 	NVML_ERROR_LIB_RM_VERSION_MISMATCH = 18,
 	NVML_ERROR_IN_USE = 19,
+=======
+>>>>>>> 8c320ca... added xevan
 	NVML_ERROR_UNKNOWN = 999
 };
 
 enum nvmlClockType_t {
 	NVML_CLOCK_GRAPHICS = 0,
 	NVML_CLOCK_SM = 1,
+<<<<<<< HEAD
 	NVML_CLOCK_MEM = 2,
 	NVML_CLOCK_VIDEO = 3,
 	NVML_CLOCK_COUNT
@@ -108,6 +133,11 @@ typedef int nvmlNvLinkCapability_t;
 typedef int nvmlNvLinkErrorCounter_t;
 typedef int nvmlNvLinkUtilizationControl_t;
 
+=======
+	NVML_CLOCK_MEM = 2
+};
+
+>>>>>>> 8c320ca... added xevan
 #define NVML_DEVICE_SERIAL_BUFFER_SIZE 30
 #define NVML_DEVICE_UUID_BUFFER_SIZE 80
 #define NVML_DEVICE_VBIOS_VERSION_BUFFER_SIZE 32
@@ -120,11 +150,18 @@ typedef struct {
 	void *nvml_dll;
 	int nvml_gpucount;
 	int cuda_gpucount;
+<<<<<<< HEAD
 	unsigned int *nvml_pci_domain_id;
 	unsigned int *nvml_pci_bus_id;
 	unsigned int *nvml_pci_device_id;
 	unsigned int *nvml_pci_vendor_id;
 	unsigned int *nvml_pci_subsys_id;
+=======
+	uint32_t *nvml_pci_domain_id;
+	uint32_t *nvml_pci_bus_id;
+	uint32_t *nvml_pci_device_id;
+	uint32_t *nvml_pci_subsys_id;
+>>>>>>> 8c320ca... added xevan
 	int *nvml_cuda_device_id;          /* map NVML dev to CUDA dev */
 	int *cuda_nvml_device_id;          /* map CUDA dev to NVML dev */
 	nvmlDevice_t *devs;
@@ -134,6 +171,7 @@ typedef struct {
 	nvmlReturn_t (*nvmlDeviceGetHandleByIndex)(int, nvmlDevice_t *);
 	nvmlReturn_t (*nvmlDeviceGetAPIRestriction)(nvmlDevice_t, nvmlRestrictedAPI_t, nvmlEnableState_t *);
 	nvmlReturn_t (*nvmlDeviceSetAPIRestriction)(nvmlDevice_t, nvmlRestrictedAPI_t, nvmlEnableState_t);
+<<<<<<< HEAD
 	nvmlReturn_t (*nvmlDeviceGetDefaultApplicationsClock)(nvmlDevice_t, nvmlClockType_t, unsigned int *);
 	nvmlReturn_t (*nvmlDeviceGetApplicationsClock)(nvmlDevice_t, nvmlClockType_t, unsigned int *);
 	nvmlReturn_t (*nvmlDeviceSetApplicationsClocks)(nvmlDevice_t, unsigned int, unsigned int);
@@ -264,3 +302,94 @@ int nvs_devid(int8_t devNum);
 
 extern bool need_nvsettings;
 
+=======
+	nvmlReturn_t (*nvmlDeviceGetDefaultApplicationsClock)(nvmlDevice_t, nvmlClockType_t, uint32_t *);
+	nvmlReturn_t (*nvmlDeviceGetApplicationsClock)(nvmlDevice_t, nvmlClockType_t, uint32_t *);
+	nvmlReturn_t (*nvmlDeviceSetApplicationsClocks)(nvmlDevice_t, uint32_t, uint32_t);
+	nvmlReturn_t (*nvmlDeviceGetClockInfo)(nvmlDevice_t, nvmlClockType_t, uint32_t *);
+	nvmlReturn_t (*nvmlDeviceGetPciInfo)(nvmlDevice_t, nvmlPciInfo_t *);
+	nvmlReturn_t (*nvmlDeviceGetName)(nvmlDevice_t, char *, int);
+	nvmlReturn_t (*nvmlDeviceGetTemperature)(nvmlDevice_t, int, uint32_t *);
+	nvmlReturn_t (*nvmlDeviceGetFanSpeed)(nvmlDevice_t, uint32_t *);
+	nvmlReturn_t (*nvmlDeviceGetPerformanceState)(nvmlDevice_t, int *); /* enum */
+	nvmlReturn_t (*nvmlDeviceGetPowerUsage)(nvmlDevice_t, uint32_t *);
+	nvmlReturn_t (*nvmlDeviceGetSerial)(nvmlDevice_t, char *serial, uint32_t len);
+	nvmlReturn_t (*nvmlDeviceGetUUID)(nvmlDevice_t, char *uuid, uint32_t len);
+	nvmlReturn_t (*nvmlDeviceGetVbiosVersion)(nvmlDevice_t, char *version, uint32_t len);
+	nvmlReturn_t (*nvmlSystemGetDriverVersion)(char *version, uint32_t len);
+	char* (*nvmlErrorString)(nvmlReturn_t);
+	nvmlReturn_t (*nvmlShutdown)(void);
+} nvml_handle;
+
+
+nvml_handle * nvml_create();
+int nvml_destroy(nvml_handle *nvmlh);
+
+/*
+ * Query the number of GPUs seen by NVML
+ */
+int nvml_get_gpucount(nvml_handle *nvmlh, int *gpucount);
+
+/*
+ * Query the number of GPUs seen by CUDA
+ */
+int cuda_get_gpucount(nvml_handle *nvmlh, int *gpucount);
+
+
+/*
+ * query the name of the GPU model from the CUDA device ID
+ *
+ */
+int nvml_get_gpu_name(nvml_handle *nvmlh,
+                           int gpuindex,
+                           char *namebuf,
+                           int bufsize);
+
+/*
+ * Query the current GPU temperature (Celsius), from the CUDA device ID
+ */
+int nvml_get_tempC(nvml_handle *nvmlh,
+                        int gpuindex, uint32_t *tempC);
+
+/*
+ * Query the current GPU fan speed (percent) from the CUDA device ID
+ */
+int nvml_get_fanpcnt(nvml_handle *nvmlh,
+                          int gpuindex, uint32_t *fanpcnt);
+                          
+/*
+ * Query the current graphics and memory clocks from the CUDA device ID
+ */
+int nvml_get_current_clocks(nvml_handle *nvmlh, int cudaindex, uint32_t *graphics_clock, uint32_t *mem_clock);
+
+/*
+ * Query the current GPU power usage in millwatts from the CUDA device ID
+ *
+ * This feature is only available on recent GPU generations and may be
+ * limited in some cases only to Tesla series GPUs.
+ * If the query is run on an unsupported GPU, this routine will return -1.
+ */
+int nvml_get_power_usage(nvml_handle *nvmlh,
+                              int gpuindex,
+                              uint32_t *milliwatts);
+
+/* api functions */
+
+uint32_t gpu_fanpercent(struct cgpu_info *gpu);
+uint32_t gpu_fanrpm(struct cgpu_info *gpu);
+float gpu_temp(struct cgpu_info *gpu);
+uint32_t gpu_power(struct cgpu_info *gpu);
+uint32_t gpu_usage(struct cgpu_info *gpu);
+int gpu_pstate(struct cgpu_info *gpu);
+int gpu_busid(struct cgpu_info *gpu);
+
+/* pid/vid, sn and bios rev */
+int gpu_info(struct cgpu_info *gpu);
+
+/* nvapi functions */
+#ifdef WIN32
+int nvapi_init();
+#endif
+
+#endif /* USE_WRAPNVML */
+>>>>>>> 8c320ca... added xevan

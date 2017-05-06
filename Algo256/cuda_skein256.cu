@@ -14,7 +14,11 @@ void Round512v35(uint2 &p0, uint2 &p1, uint2 &p2, uint2 &p3, uint2 &p4, uint2 &p
 
 __forceinline__ __device__
 void Round_8_512v35(const uint2 *const __restrict__ ks, const uint2 *const __restrict__ ts,
+<<<<<<< HEAD
 	uint2 &p0, uint2 &p1, uint2 &p2, uint2 &p3, uint2 &p4, uint2 &p5, uint2 &p6, uint2 &p7, int R)
+=======
+	uint2 &p0, uint2 &p1, uint2 &p2, uint2 &p3, uint2 &p4, uint2 &p5, uint2 &p6, uint2 &p7, const int R)
+>>>>>>> 8c320ca... added xevan
 {
 	Round512v35(p0, p1, p2, p3, p4, p5, p6, p7, 46, 36, 19, 37);
 	Round512v35(p2, p1, p4, p7, p6, p5, p0, p3, 33, 27, 14, 42);
@@ -74,6 +78,7 @@ void Round_8_512v35_final(const uint2 *const __restrict__ ks, const uint2 *const
 	p3 += ks[3];
 }
 
+<<<<<<< HEAD
 __global__ __launch_bounds__(256,3)
 void skein256_gpu_hash_32(uint32_t threads, uint32_t startNounce, uint64_t *outputHash)
 {
@@ -102,6 +107,39 @@ void skein256_gpu_hash_32(uint32_t threads, uint32_t startNounce, uint64_t *outp
 			{ 0x33EDFC13, 0x3EEDBA18 },
 			{ 0xC73A4E2A, 0xB69D3CFC }
 		};
+=======
+
+
+__global__ __launch_bounds__(256,4)
+void skein256_gpu_hash_32(uint32_t threads, uint32_t startNounce, uint64_t *outputHash)
+{
+	const uint32_t thread = (blockDim.x * blockIdx.x + threadIdx.x);
+	const uint2 skein_ks_parity = { 0xA9FC1A22, 0x1BD11BDA };
+
+	const uint2 h2[9] = {
+		{ 0x2FDB3E13, 0xCCD044A1 },
+		{ 0x1A79A9EB, 0xE8359030 },
+		{ 0x4F816E6F, 0x55AEA061 },
+		{ 0xAE9B94DB, 0x2A2767A4 },
+		{ 0x74DD7683, 0xEC06025E },
+		{ 0xC4746251, 0xE7A436CD },
+		{ 0x393AD185, 0xC36FBAF9 },
+		{ 0x33EDFC13, 0x3EEDBA18 },
+		{ 0xC73A4E2A, 0xB69D3CFC }
+	};
+	const uint2 t12[6] = {
+		{ 0x20, 0 },
+		{ 0, 0xf0000000 },
+		{ 0x20, 0xf0000000 },
+		{ 0x08, 0 },
+		{ 0, 0xff000000 },
+		{ 0x08, 0xff000000 }
+	};
+
+	if (thread < threads)
+	{
+
+>>>>>>> 8c320ca... added xevan
 		uint2 dt0,dt1,dt2,dt3;
 		uint2 p0, p1, p2, p3, p4, p5, p6, p7;
 
@@ -110,6 +148,7 @@ void skein256_gpu_hash_32(uint32_t threads, uint32_t startNounce, uint64_t *outp
 		LOHI(dt2.x,dt2.y,outputHash[2*threads+thread]);
 		LOHI(dt3.x,dt3.y,outputHash[3*threads+thread]);
 
+<<<<<<< HEAD
 		p0 = h[0] + dt0;
 		p1 = h[1] + dt1;
 		p2 = h[2] + dt2;
@@ -129,12 +168,36 @@ void skein256_gpu_hash_32(uint32_t threads, uint32_t startNounce, uint64_t *outp
 		Round_8_512v35(h, t12, p0, p1, p2, p3, p4, p5, p6, p7, 13);
 		Round_8_512v35(h, t12, p0, p1, p2, p3, p4, p5, p6, p7, 15);
 		Round_8_512v35(h, t12, p0, p1, p2, p3, p4, p5, p6, p7, 17);
+=======
+		p0 = h2[0] + dt0;
+		p1 = h2[1] + dt1;
+		p2 = h2[2] + dt2;
+		p3 = h2[3] + dt3;
+		p4 = h2[4];
+		p5 = h2[5] + t12[0];
+		p6 = h2[6] + t12[1];
+		p7 = h2[7];
+
+		Round_8_512v35(h2, t12, p0, p1, p2, p3, p4, p5, p6, p7, 1);
+		Round_8_512v35(h2, t12, p0, p1, p2, p3, p4, p5, p6, p7, 3);
+		Round_8_512v35(h2, t12, p0, p1, p2, p3, p4, p5, p6, p7, 5);
+		Round_8_512v35(h2, t12, p0, p1, p2, p3, p4, p5, p6, p7, 7);
+		Round_8_512v35(h2, t12, p0, p1, p2, p3, p4, p5, p6, p7, 9);
+		Round_8_512v35(h2, t12, p0, p1, p2, p3, p4, p5, p6, p7, 11);
+		Round_8_512v35(h2, t12, p0, p1, p2, p3, p4, p5, p6, p7, 13);
+		Round_8_512v35(h2, t12, p0, p1, p2, p3, p4, p5, p6, p7, 15);
+		Round_8_512v35(h2, t12, p0, p1, p2, p3, p4, p5, p6, p7, 17);
+>>>>>>> 8c320ca... added xevan
 
 		p0 ^= dt0;
 		p1 ^= dt1;
 		p2 ^= dt2;
 		p3 ^= dt3;
 
+<<<<<<< HEAD
+=======
+		uint2 h[9];
+>>>>>>> 8c320ca... added xevan
 		h[0] = p0;
 		h[1] = p1;
 		h[2] = p2;
@@ -149,7 +212,10 @@ void skein256_gpu_hash_32(uint32_t threads, uint32_t startNounce, uint64_t *outp
 		p5 += t12[3];  //p5 already equal h[5]
 		p6 += t12[4];
 
+<<<<<<< HEAD
 		// forced unroll
+=======
+>>>>>>> 8c320ca... added xevan
 		Round_8_512v35(h, t, p0, p1, p2, p3, p4, p5, p6, p7, 1);
 		Round_8_512v35(h, t, p0, p1, p2, p3, p4, p5, p6, p7, 3);
 		Round_8_512v35(h, t, p0, p1, p2, p3, p4, p5, p6, p7, 5);
@@ -167,6 +233,7 @@ void skein256_gpu_hash_32(uint32_t threads, uint32_t startNounce, uint64_t *outp
 	}
 }
 
+<<<<<<< HEAD
 static __forceinline__ __device__
 void Round512v30(uint64_t &p0, uint64_t &p1, uint64_t &p2, uint64_t &p3,
 	uint64_t &p4, uint64_t &p5, uint64_t &p6, uint64_t &p7,
@@ -298,10 +365,22 @@ void skein256_cpu_hash_32(int thr_id, uint32_t threads, uint32_t startNounce, ui
 {
 	const uint32_t threadsperblock = 256;
 	int dev_id = device_map[thr_id];
+=======
+__host__
+void skein256_cpu_init(int thr_id, uint32_t threads)
+{
+}
+
+__host__
+void skein256_cpu_hash_32(int thr_id, uint32_t threads, uint32_t startNounce, uint64_t *d_outputHash)
+{
+	const uint32_t threadsperblock = 256;
+>>>>>>> 8c320ca... added xevan
 
 	dim3 grid((threads + threadsperblock - 1) / threadsperblock);
 	dim3 block(threadsperblock);
 
+<<<<<<< HEAD
 	// only 1kH/s perf change between kernels on a 960...
 	if (device_sm[dev_id] > 300 && cuda_arch[dev_id] > 300)
 		skein256_gpu_hash_32<<<grid, block>>>(threads, startNounce, d_outputHash);
@@ -309,5 +388,8 @@ void skein256_cpu_hash_32(int thr_id, uint32_t threads, uint32_t startNounce, ui
 		skein256_gpu_hash_32_v30<<<grid, block>>>(threads, startNounce, d_outputHash);
 
 	MyStreamSynchronize(NULL, order, thr_id);
+=======
+	skein256_gpu_hash_32<<<grid, block>>>(threads, startNounce, d_outputHash);
+>>>>>>> 8c320ca... added xevan
 }
 

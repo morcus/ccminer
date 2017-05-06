@@ -1,9 +1,17 @@
 ﻿#include <stdio.h>
 #include <memory.h>
 #include <string.h>
+<<<<<<< HEAD
 #include <unistd.h>
 #include <map>
 
+=======
+#include <map>
+
+#ifndef _WIN32
+#include <unistd.h>
+#endif
+>>>>>>> 8c320ca... added xevan
 // include thrust
 #ifndef __cplusplus
 #include <thrust/version.h>
@@ -15,6 +23,7 @@
 #endif
 
 #include "miner.h"
+<<<<<<< HEAD
 #include "nvml.h"
 
 #include "cuda_runtime.h"
@@ -23,17 +32,31 @@
 /* miner.h functions are declared in C type, not C++ */
 extern "C" {
 #endif
+=======
+
+#include "cuda_runtime.h"
+cudaStream_t gpustream[MAX_GPUS] = { 0 };
+extern int opt_api_listen;
+>>>>>>> 8c320ca... added xevan
 
 // CUDA Devices on the System
 int cuda_num_devices()
 {
+<<<<<<< HEAD
 	int version = 0, GPU_N = 0;
 	cudaError_t err = cudaDriverGetVersion(&version);
 	if (err != cudaSuccess) {
+=======
+	int version;
+	cudaError_t err = cudaDriverGetVersion(&version);
+	if (err != cudaSuccess)
+	{
+>>>>>>> 8c320ca... added xevan
 		applog(LOG_ERR, "Unable to query CUDA driver version! Is an nVidia driver installed?");
 		exit(1);
 	}
 
+<<<<<<< HEAD
 	if (version < CUDART_VERSION) {
 		applog(LOG_ERR, "Your system does not support CUDA %d.%d API!",
 			CUDART_VERSION / 1000, (CUDART_VERSION % 1000) / 10);
@@ -42,17 +65,33 @@ int cuda_num_devices()
 
 	err = cudaGetDeviceCount(&GPU_N);
 	if (err != cudaSuccess) {
+=======
+	int maj = version / 1000, min = version % 100; // same as in deviceQuery sample
+	if (maj < 5 || (maj == 5 && min < 5))
+	{
+		applog(LOG_ERR, "Driver does not support CUDA %d.%d API! Update your nVidia driver!", 5, 5);
+		exit(1);
+	}
+
+	int GPU_N;
+	err = cudaGetDeviceCount(&GPU_N);
+	if (err != cudaSuccess)
+	{
+>>>>>>> 8c320ca... added xevan
 		applog(LOG_ERR, "Unable to query number of CUDA devices! Is an nVidia driver installed?");
 		exit(1);
 	}
 	return GPU_N;
 }
 
+<<<<<<< HEAD
 int cuda_version()
 {
 	return (int) CUDART_VERSION;
 }
 
+=======
+>>>>>>> 8c320ca... added xevan
 void cuda_devicenames()
 {
 	cudaError_t err;
@@ -64,6 +103,7 @@ void cuda_devicenames()
 		exit(1);
 	}
 
+<<<<<<< HEAD
 	if (opt_n_threads)
 		GPU_N = min(MAX_GPUS, opt_n_threads);
 	for (int i=0; i < GPU_N; i++)
@@ -93,10 +133,31 @@ void cuda_devicenames()
 	}
 }
 
+=======
+	for (int i = 0; i < GPU_N*opt_n_gputhreads; i++)
+	{
+		cudaDeviceProp props;
+		cudaGetDeviceProperties(&props, device_map[i / opt_n_gputhreads]);
+
+		device_name[i] = strdup(props.name);
+		device_sm[i] = (props.major * 100 + props.minor * 10);
+	}
+}
+
+// Can't be called directly in cpu-miner.c
+void cuda_devicereset()
+{
+	cudaDeviceSynchronize();
+	cudaDeviceReset();
+}
+
+
+>>>>>>> 8c320ca... added xevan
 void cuda_print_devices()
 {
 	int ngpus = cuda_num_devices();
 	cuda_devicenames();
+<<<<<<< HEAD
 	for (int n=0; n < ngpus; n++) {
 		int dev_id = device_map[n % MAX_GPUS];
 		cudaDeviceProp props;
@@ -115,10 +176,19 @@ void cuda_print_devices()
 			}
 #endif
 #endif
+=======
+	for (int n = 0; n < ngpus; n++) {
+		int m = device_map[n % MAX_GPUS];
+		cudaDeviceProp props;
+		cudaGetDeviceProperties(&props, m);
+		if (!opt_n_threads || n < opt_n_threads) {
+			fprintf(stderr, "GPU #%d: SM %d.%d %s\n", m, props.major, props.minor, device_name[n]);
+>>>>>>> 8c320ca... added xevan
 		}
 	}
 }
 
+<<<<<<< HEAD
 void cuda_shutdown()
 {
 	// require gpu init first
@@ -127,6 +197,8 @@ void cuda_shutdown()
 	cudaDeviceReset();
 }
 
+=======
+>>>>>>> 8c320ca... added xevan
 static bool substringsearch(const char *haystack, const char *needle, int &match)
 {
 	int hlen = (int) strlen(haystack);
@@ -162,6 +234,7 @@ int cuda_finddevice(char *name)
 	return -1;
 }
 
+<<<<<<< HEAD
 // since 1.7
 uint32_t cuda_default_throughput(int thr_id, uint32_t defcount)
 {
@@ -285,6 +358,30 @@ cudaError_t MyStreamSynchronize(cudaStream_t stream, int situation, int thr_id)
 
 		double tsync = 0.0;
 		double tsleep = 0.95 * tsum[situation].value[thr_id];
+=======
+uint32_t device_intensity(int thr_id, const char *func, uint32_t defcount)
+{
+	uint32_t throughput = gpus_intensity[thr_id] ? gpus_intensity[thr_id] : defcount;
+	if(opt_api_listen!=0) api_set_throughput(thr_id, throughput);
+	return throughput;
+}
+
+// Zeitsynchronisations-Routine von cudaminer mit CPU sleep
+typedef struct { double value[8]; } tsumarray;
+
+cudaError_t MyStreamSynchronize(cudaStream_t stream, int situation, int thr_id)
+{
+	cudaError_t result = cudaSuccess;
+	if (situation >= 0)
+	{
+		static std::map<int, tsumarray> tsum;
+		double tsync = 0.0;
+		double tsleep = 0.95;
+
+		double a = 0.95, b = 0.05;
+		if (tsum.find(situation) == tsum.end()) { a = 0.5; b = 0.5; } // faster initial convergence
+		tsleep = 0.95*tsum[situation].value[thr_id];
+>>>>>>> 8c320ca... added xevan
 		if (cudaStreamQuery(stream) == cudaErrorNotReady)
 		{
 			usleep((useconds_t)(1e6*tsleep));
@@ -292,19 +389,45 @@ cudaError_t MyStreamSynchronize(cudaStream_t stream, int situation, int thr_id)
 			gettimeofday(&tv_start, NULL);
 			result = cudaStreamSynchronize(stream);
 			gettimeofday(&tv_end, NULL);
+<<<<<<< HEAD
 			tsync = 1e-6 * (tv_end.tv_usec-tv_start.tv_usec) + (tv_end.tv_sec-tv_start.tv_sec);
 		}
 		if (tsync >= 0) tsum[situation].value[thr_id] = a * tsum[situation].value[thr_id] + b * (tsleep+tsync);
+=======
+			tsync = 1e-6 * (tv_end.tv_usec - tv_start.tv_usec) + (tv_end.tv_sec - tv_start.tv_sec);
+		}
+		if (tsync >= 0) tsum[situation].value[thr_id] = a * tsum[situation].value[thr_id] + b * (tsleep + tsync);
+>>>>>>> 8c320ca... added xevan
 	}
 	else
 		result = cudaStreamSynchronize(stream);
 	return result;
 }
 
+<<<<<<< HEAD
+=======
+
+int cuda_gpu_clocks(struct cgpu_info *gpu)
+{
+	cudaDeviceProp props;
+	if (cudaGetDeviceProperties(&props, gpu->gpu_id) == cudaSuccess) {
+		gpu->gpu_clock = props.clockRate;
+		gpu->gpu_memclock = props.memoryClockRate;
+		gpu->gpu_mem = props.totalGlobalMem;
+		return 0;
+	}
+	return -1;
+}
+
+>>>>>>> 8c320ca... added xevan
 void cudaReportHardwareFailure(int thr_id, cudaError_t err, const char* func)
 {
 	struct cgpu_info *gpu = &thr_info[thr_id].gpu;
 	gpu->hw_errors++;
+<<<<<<< HEAD
 	gpulog(LOG_ERR, thr_id, "%s %s", func, cudaGetErrorString(err));
+=======
+	applog(LOG_ERR, "GPU #%d: %s %s", device_map[thr_id], func, cudaGetErrorString(err));
+>>>>>>> 8c320ca... added xevan
 	sleep(1);
 }

@@ -386,7 +386,11 @@ extern "C"{
 		if ((Wlow = T32(Wlow + 1)) == 0) \
 			Whigh = T32(Whigh + 1); \
 	} while (0)
+<<<<<<< HEAD
 #if 0
+=======
+
+>>>>>>> 8c320ca... added xevan
 static const sph_u32 A_init_192[] = {
 	C32(0xFD749ED4), C32(0xB798E530), C32(0x33904B6F), C32(0x46BDA85E),
 	C32(0x076934B4), C32(0x454B4058), C32(0x77F74527), C32(0xFB4CF465),
@@ -466,7 +470,11 @@ static const sph_u32 C_init_384[] = {
 	C32(0x6E6E36DC), C32(0x63130DAD), C32(0xA9C69BD6), C32(0x1E90EA0C),
 	C32(0x7C35073B), C32(0x28D95E6D), C32(0xAA340E0D), C32(0xCB3DEE70)
 };
+<<<<<<< HEAD
 #endif
+=======
+
+>>>>>>> 8c320ca... added xevan
 static const sph_u32 A_init_512[] = {
 	C32(0x20728DFD), C32(0x46C0BD53), C32(0xE782B699), C32(0x55304632),
 	C32(0x71B4EF90), C32(0x0EA9E82C), C32(0xDBB930F1), C32(0xFAD06B8B),
@@ -500,7 +508,10 @@ shabal_init(void *cc, unsigned size)
 	sph_shabal_context *sc;
 
 	switch (size) {
+<<<<<<< HEAD
 #if 0
+=======
+>>>>>>> 8c320ca... added xevan
 	case 192:
 		A_init = A_init_192;
 		B_init = B_init_192;
@@ -521,7 +532,10 @@ shabal_init(void *cc, unsigned size)
 		B_init = B_init_384;
 		C_init = C_init_384;
 		break;
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> 8c320ca... added xevan
 	case 512:
 		A_init = A_init_512;
 		B_init = B_init_512;
@@ -662,7 +676,10 @@ shabal_close(void *cc, unsigned ub, unsigned n, void *dst, unsigned size_words)
 	memcpy(dst, u.tmp_out + (sizeof u.tmp_out) - out_len, out_len);
 	shabal_init(sc, size_words << 5);
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 8c320ca... added xevan
 #if 0
 /* see sph_shabal.h */
 void
@@ -720,6 +737,10 @@ sph_shabal224_addbits_and_close(void *cc, unsigned ub, unsigned n, void *dst)
 	shabal_close(cc, ub, n, dst, 7);
 }
 
+<<<<<<< HEAD
+=======
+#endif
+>>>>>>> 8c320ca... added xevan
 /* see sph_shabal.h */
 void
 sph_shabal256_init(void *cc)
@@ -748,6 +769,10 @@ sph_shabal256_addbits_and_close(void *cc, unsigned ub, unsigned n, void *dst)
 	shabal_close(cc, ub, n, dst, 8);
 }
 
+<<<<<<< HEAD
+=======
+#if 0
+>>>>>>> 8c320ca... added xevan
 /* see sph_shabal.h */
 void
 sph_shabal384_init(void *cc)
@@ -775,7 +800,10 @@ sph_shabal384_addbits_and_close(void *cc, unsigned ub, unsigned n, void *dst)
 {
 	shabal_close(cc, ub, n, dst, 12);
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 8c320ca... added xevan
 #endif
 
 /* see sph_shabal.h */

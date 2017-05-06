@@ -18,8 +18,13 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 #ifndef LYRA2_H_
+<<<<<<< HEAD
 #define LYRA2_H_
 
+=======
+#define LYRA2_H_ 
+ 
+>>>>>>> 8c320ca... added xevan
 #include <stdint.h>
 
 typedef unsigned char byte;
@@ -37,6 +42,11 @@ typedef unsigned char byte;
         #define BLOCK_LEN_BYTES (BLOCK_LEN_INT64 * 8)    //Block length, in bytes
 #endif
 
+<<<<<<< HEAD
 int LYRA2(void *K, int64_t kLen, const void *pwd, int32_t pwdlen, const void *salt, int32_t saltlen, int64_t timeCost, const int16_t nRows, const int16_t nCols);
+=======
+int LYRA2(void *K, uint64_t kLen, const void *pwd, uint64_t pwdlen, const void *salt, uint64_t saltlen, uint64_t timeCost, uint64_t nRows, uint64_t nCols);
+int LYRA2_old(void *K, uint64_t kLen, const void *pwd, uint64_t pwdlen, const void *salt, uint64_t saltlen, uint64_t timeCost, uint64_t nRows, uint64_t nCols);
+>>>>>>> 8c320ca... added xevan
 
 #endif /* LYRA2_H_ */

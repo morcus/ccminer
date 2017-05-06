@@ -1,10 +1,18 @@
 /**
  * Hash log of submitted job nonces
+<<<<<<< HEAD
  * Prevent duplicate shares and remember shares diff
  *
  * (to be merged later with stats)
  *
  * tpruvot@github 2014 - 2017
+=======
+ * Prevent duplicate shares
+ *
+ * (to be merged later with stats)
+ *
+ * tpruvot@github 2014
+>>>>>>> 8c320ca... added xevan
  */
 #include <stdlib.h>
 #include <memory.h>
@@ -18,6 +26,7 @@
 
 /* from miner.h
 struct hashlog_data {
+<<<<<<< HEAD
 	uint8_t npool;
 	uint8_t pool_type;
 	uint8_t nonce_id;
@@ -26,12 +35,19 @@ struct hashlog_data {
 	double sharediff;
 	uint32_t njobid;
 	uint32_t nonce;
+=======
+	uint32_t tm_sent;
+	uint32_t height;
+>>>>>>> 8c320ca... added xevan
 	uint32_t scanned_from;
 	uint32_t scanned_to;
 	uint32_t last_from;
 	uint32_t tm_add;
 	uint32_t tm_upd;
+<<<<<<< HEAD
 	uint32_t tm_sent;
+=======
+>>>>>>> 8c320ca... added xevan
 };
 */
 
@@ -39,8 +55,11 @@ static std::map<uint64_t, hashlog_data> tlastshares;
 
 #define LOG_PURGE_TIMEOUT 5*60
 
+<<<<<<< HEAD
 extern struct stratum_ctx stratum;
 
+=======
+>>>>>>> 8c320ca... added xevan
 /**
  * str hex to uint32
  */
@@ -79,6 +98,7 @@ void hashlog_remember_submit(struct work* work, uint32_t nonce)
 	hashlog_data data;
 
 	memset(&data, 0, sizeof(data));
+<<<<<<< HEAD
 	data.nonce_id = work->submit_nonce_id;
 	data.scanned_from = work->scanned_from;
 	data.scanned_to = work->scanned_to;
@@ -89,6 +109,13 @@ void hashlog_remember_submit(struct work* work, uint32_t nonce)
 	data.npool = (uint8_t) cur_pooln;
 	data.pool_type = pools[cur_pooln].type;
 	data.job_nonce_id = (uint8_t) stratum.job.shares_count;
+=======
+	data.scanned_from = work->scanned_from;
+	data.scanned_to = nonce;
+	data.height = work->height;
+	data.njobid = (uint32_t) njobid;
+	data.tm_add = data.tm_upd = data.tm_sent = (uint32_t) time(NULL);
+>>>>>>> 8c320ca... added xevan
 	tlastshares[key] = data;
 }
 
@@ -170,6 +197,7 @@ uint64_t hashlog_get_scan_range(char* jobid)
 uint32_t hashlog_get_last_sent(char* jobid)
 {
 	uint32_t nonce = 0;
+<<<<<<< HEAD
 	uint64_t njobid = jobid ? hextouint(jobid) : UINT32_MAX;
 	uint64_t keypfx = (njobid << 32);
 	std::map<uint64_t, hashlog_data>::reverse_iterator i = tlastshares.rbegin();
@@ -177,6 +205,14 @@ uint32_t hashlog_get_last_sent(char* jobid)
 		if ((keypfx & i->first) == keypfx && i->second.tm_sent) {
 			nonce = LO_DWORD(i->first);
 			break;
+=======
+	uint64_t njobid = hextouint(jobid);
+	uint64_t keypfx = (njobid << 32);
+	std::map<uint64_t, hashlog_data>::iterator i = tlastshares.begin();
+	while (i != tlastshares.end()) {
+		if ((keypfx & i->first) == keypfx && i->second.tm_sent > 0) {
+			nonce = LO_DWORD(i->first);
+>>>>>>> 8c320ca... added xevan
 		}
 		i++;
 	}
@@ -184,6 +220,7 @@ uint32_t hashlog_get_last_sent(char* jobid)
 }
 
 /**
+<<<<<<< HEAD
  * To display correcly second nonce(s) share diff (on pool accept)
  */
 double hashlog_get_sharediff(char* jobid, int job_nonceid, double defvalue)
@@ -209,6 +246,8 @@ double hashlog_get_sharediff(char* jobid, int job_nonceid, double defvalue)
 }
 
 /**
+=======
+>>>>>>> 8c320ca... added xevan
  * Export data for api calls
  */
 int hashlog_get_history(struct hashlog_data *data, int max_records)
@@ -234,7 +273,11 @@ void hashlog_purge_job(char* jobid)
 	int deleted = 0;
 	uint64_t njobid = hextouint(jobid);
 	uint64_t keypfx = (njobid << 32);
+<<<<<<< HEAD
 	uint32_t sz = (uint32_t) tlastshares.size();
+=======
+	uint32_t sz = tlastshares.size();
+>>>>>>> 8c320ca... added xevan
 	std::map<uint64_t, hashlog_data>::iterator i = tlastshares.begin();
 	while (i != tlastshares.end()) {
 		if ((keypfx & i->first) == keypfx) {
@@ -255,7 +298,11 @@ void hashlog_purge_old(void)
 {
 	int deleted = 0;
 	uint32_t now = (uint32_t) time(NULL);
+<<<<<<< HEAD
 	uint32_t sz = (uint32_t) tlastshares.size();
+=======
+	uint32_t sz = tlastshares.size();
+>>>>>>> 8c320ca... added xevan
 	std::map<uint64_t, hashlog_data>::iterator i = tlastshares.begin();
 	while (i != tlastshares.end()) {
 		if ((now - i->second.tm_sent) > LOG_PURGE_TIMEOUT) {
@@ -282,7 +329,11 @@ void hashlog_purge_all(void)
  */
 void hashlog_getmeminfo(uint64_t *mem, uint32_t *records)
 {
+<<<<<<< HEAD
 	(*records) = (uint32_t) tlastshares.size();
+=======
+	(*records) = tlastshares.size();
+>>>>>>> 8c320ca... added xevan
 	(*mem) = (*records) * sizeof(hashlog_data);
 }
 

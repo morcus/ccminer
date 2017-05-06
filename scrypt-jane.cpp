@@ -1,16 +1,27 @@
 /*
+<<<<<<< HEAD
  * scrypt-jane by Andrew M, https://github.com/floodyberry/scrypt-jane
  *
  * Public Domain or MIT License, whichever is easier
  *
  * Adapted to ccminer by tpruvot@github (2015)
  */
+=======
+	scrypt-jane by Andrew M, https://github.com/floodyberry/scrypt-jane
+
+	Public Domain or MIT License, whichever is easier
+*/
+>>>>>>> 8c320ca... added xevan
 
 #include "miner.h"
 
 #include "scrypt/scrypt-jane.h"
 #include "scrypt/code/scrypt-jane-portable.h"
+<<<<<<< HEAD
 #include "scrypt/code/scrypt-jane-chacha.h"
+=======
+#include "scrypt/code/scrypt-jane-romix.h"
+>>>>>>> 8c320ca... added xevan
 #include "scrypt/keccak.h"
 
 #include "scrypt/salsa_kernel.h"
@@ -52,8 +63,13 @@ static const uint64_t keccak_round_constants[24] = {
 	0x0000000080000001ull, 0x8000000080008008ull
 };
 
+<<<<<<< HEAD
 static void keccak_block(scrypt_hash_state *S, const uint8_t *in)
 {
+=======
+static void
+keccak_block(scrypt_hash_state *S, const uint8_t *in) {
+>>>>>>> 8c320ca... added xevan
 	size_t i;
 	uint64_t *s = S->state, t[5], u[5], v, w;
 
@@ -122,12 +138,22 @@ static void keccak_block(scrypt_hash_state *S, const uint8_t *in)
 	}
 }
 
+<<<<<<< HEAD
 static void scrypt_hash_init(scrypt_hash_state *S) {
 	memset(S, 0, sizeof(*S));
 }
 
 static void scrypt_hash_update(scrypt_hash_state *S, const uint8_t *in, size_t inlen)
 {
+=======
+static void
+scrypt_hash_init(scrypt_hash_state *S) {
+	memset(S, 0, sizeof(*S));
+}
+
+static void
+scrypt_hash_update(scrypt_hash_state *S, const uint8_t *in, size_t inlen) {
+>>>>>>> 8c320ca... added xevan
 	size_t want;
 
 	/* handle the previous data */
@@ -156,8 +182,13 @@ static void scrypt_hash_update(scrypt_hash_state *S, const uint8_t *in, size_t i
 		memcpy(S->buffer, in, S->leftover);
 }
 
+<<<<<<< HEAD
 static void scrypt_hash_finish(scrypt_hash_state *S, uint8_t *hash)
 {
+=======
+static void
+scrypt_hash_finish(scrypt_hash_state *S, uint8_t *hash) {
+>>>>>>> 8c320ca... added xevan
 	size_t i;
 
 	S->buffer[S->leftover] = 0x01;
@@ -179,18 +210,29 @@ typedef struct scrypt_hmac_state_t {
 } scrypt_hmac_state;
 
 
+<<<<<<< HEAD
 static void scrypt_hash(scrypt_hash_digest hash, const uint8_t *m, size_t mlen)
 {
 	scrypt_hash_state st;
 
+=======
+static void
+scrypt_hash(scrypt_hash_digest hash, const uint8_t *m, size_t mlen) {
+	scrypt_hash_state st;
+>>>>>>> 8c320ca... added xevan
 	scrypt_hash_init(&st);
 	scrypt_hash_update(&st, m, mlen);
 	scrypt_hash_finish(&st, hash);
 }
 
 /* hmac */
+<<<<<<< HEAD
 static void scrypt_hmac_init(scrypt_hmac_state *st, const uint8_t *key, size_t keylen)
 {
+=======
+static void
+scrypt_hmac_init(scrypt_hmac_state *st, const uint8_t *key, size_t keylen) {
+>>>>>>> 8c320ca... added xevan
 	uint8_t pad[SCRYPT_HASH_BLOCK_SIZE] = {0};
 	size_t i;
 
@@ -218,14 +260,24 @@ static void scrypt_hmac_init(scrypt_hmac_state *st, const uint8_t *key, size_t k
 	scrypt_hash_update(&st->outer, pad, SCRYPT_HASH_BLOCK_SIZE);
 }
 
+<<<<<<< HEAD
 static void scrypt_hmac_update(scrypt_hmac_state *st, const uint8_t *m, size_t mlen)
 {
+=======
+static void
+scrypt_hmac_update(scrypt_hmac_state *st, const uint8_t *m, size_t mlen) {
+>>>>>>> 8c320ca... added xevan
 	/* h(inner || m...) */
 	scrypt_hash_update(&st->inner, m, mlen);
 }
 
+<<<<<<< HEAD
 static void scrypt_hmac_finish(scrypt_hmac_state *st, scrypt_hash_digest mac)
 {
+=======
+static void
+scrypt_hmac_finish(scrypt_hmac_state *st, scrypt_hash_digest mac) {
+>>>>>>> 8c320ca... added xevan
 	/* h(inner || m) */
 	scrypt_hash_digest innerhash;
 	scrypt_hash_finish(&st->inner, innerhash);
@@ -239,6 +291,7 @@ static void scrypt_hmac_finish(scrypt_hmac_state *st, scrypt_hash_digest mac)
  * Special version where N = 1
  *  - mikaelh
  */
+<<<<<<< HEAD
 static void scrypt_pbkdf2_1(const uint8_t *password, size_t password_len,
 	const uint8_t *salt, size_t salt_len, uint8_t *out, uint64_t bytes)
 {
@@ -246,6 +299,15 @@ static void scrypt_pbkdf2_1(const uint8_t *password, size_t password_len,
 	scrypt_hash_digest ti, u;
 	uint8_t be[4];
 	uint32_t i, blocks;
+=======
+static void
+scrypt_pbkdf2_1(const uint8_t *password, size_t password_len, const uint8_t *salt, size_t salt_len, uint8_t *out, size_t bytes) {
+	scrypt_hmac_state hmac_pw, hmac_pw_salt, work;
+	scrypt_hash_digest ti, u;
+	uint8_t be[4];
+	uint32_t i, /*j,*/ blocks;
+//	uint64_t c;
+>>>>>>> 8c320ca... added xevan
 
 	/* bytes must be <= (0xffffffff - (SCRYPT_HASH_DIGEST_SIZE - 1)), which they will always be under scrypt */
 
@@ -265,7 +327,11 @@ static void scrypt_pbkdf2_1(const uint8_t *password, size_t password_len,
 		scrypt_hmac_finish(&work, ti);
 		memcpy(u, ti, sizeof(u));
 
+<<<<<<< HEAD
 		memcpy(out, ti, (size_t) (bytes > SCRYPT_HASH_DIGEST_SIZE ? SCRYPT_HASH_DIGEST_SIZE : bytes));
+=======
+		memcpy(out, ti, (bytes > SCRYPT_HASH_DIGEST_SIZE) ? SCRYPT_HASH_DIGEST_SIZE : bytes);
+>>>>>>> 8c320ca... added xevan
 		out += SCRYPT_HASH_DIGEST_SIZE;
 		bytes -= SCRYPT_HASH_DIGEST_SIZE;
 	}
@@ -273,14 +339,24 @@ static void scrypt_pbkdf2_1(const uint8_t *password, size_t password_len,
 
 // ---------------------------- END PBKDF2 functions ------------------------------------
 
+<<<<<<< HEAD
 static void scrypt_fatal_error_default(const char *msg) {
+=======
+static void
+scrypt_fatal_error_default(const char *msg) {
+>>>>>>> 8c320ca... added xevan
 	fprintf(stderr, "%s\n", msg);
 	exit(1);
 }
 
 static scrypt_fatal_errorfn scrypt_fatal_error = scrypt_fatal_error_default;
 
+<<<<<<< HEAD
 void scrypt_set_fatal_error_default(scrypt_fatal_errorfn fn) {
+=======
+void
+scrypt_set_fatal_error_default(scrypt_fatal_errorfn fn) {
+>>>>>>> 8c320ca... added xevan
 	scrypt_fatal_error = fn;
 }
 
@@ -293,8 +369,13 @@ static uint8_t *mem_base = (uint8_t *)0;
 static size_t mem_bump = 0;
 
 /* allocations are assumed to be multiples of 64 bytes and total allocations not to exceed ~1.01gb */
+<<<<<<< HEAD
 static scrypt_aligned_alloc scrypt_alloc(uint64_t size)
 {
+=======
+static scrypt_aligned_alloc
+scrypt_alloc(uint64_t size) {
+>>>>>>> 8c320ca... added xevan
 	scrypt_aligned_alloc aa;
 	if (!mem_base) {
 		mem_base = (uint8_t *)malloc((1024 * 1024 * 1024) + (1024 * 1024) + (SCRYPT_BLOCK_BYTES - 1));
@@ -308,6 +389,7 @@ static scrypt_aligned_alloc scrypt_alloc(uint64_t size)
 	return aa;
 }
 
+<<<<<<< HEAD
 static void scrypt_free(scrypt_aligned_alloc *aa)
 {
 	mem_bump = 0;
@@ -315,6 +397,15 @@ static void scrypt_free(scrypt_aligned_alloc *aa)
 #else
 static scrypt_aligned_alloc scrypt_alloc(uint64_t size)
 {
+=======
+static void
+scrypt_free(scrypt_aligned_alloc *aa) {
+	mem_bump = 0;
+}
+#else
+static scrypt_aligned_alloc
+scrypt_alloc(uint64_t size) {
+>>>>>>> 8c320ca... added xevan
 	static const size_t max_alloc = (size_t)-1;
 	scrypt_aligned_alloc aa;
 	size += (SCRYPT_BLOCK_BYTES - 1);
@@ -327,14 +418,20 @@ static scrypt_aligned_alloc scrypt_alloc(uint64_t size)
 	return aa;
 }
 
+<<<<<<< HEAD
 static void scrypt_free(scrypt_aligned_alloc *aa)
 {
+=======
+static void
+scrypt_free(scrypt_aligned_alloc *aa) {
+>>>>>>> 8c320ca... added xevan
 	free(aa->mem);
 }
 #endif
 
 
 // yacoin: increasing Nfactor gradually
+<<<<<<< HEAD
 unsigned char GetNfactor(unsigned int nTimestamp)
 {
 	int l = 0;
@@ -345,6 +442,17 @@ unsigned char GetNfactor(unsigned int nTimestamp)
 	unsigned int Ntimestamp = 1367991200;
 	unsigned int minN = 4;
 	unsigned int maxN = 30;
+=======
+unsigned char GetNfactor(uint32_t nTimestamp) {
+	int l = 0;
+
+	uint32_t Nfactor = 0;
+
+	// Yacoin defaults
+	uint32_t Ntimestamp = 1367991200;
+	uint32_t minN = 4;
+	uint32_t maxN = 30;
+>>>>>>> 8c320ca... added xevan
 
 	if (strlen(jane_params) > 0) {
 		if (!strcmp(jane_params, "YAC") || !strcasecmp(jane_params, "Yacoin")) {} // No-Op
@@ -395,9 +503,12 @@ unsigned char GetNfactor(unsigned int nTimestamp)
 		} else if (!strcmp(jane_params, "RAD") || !strcasecmp(jane_params, "RadioactiveCoin")) {
 			// InternetCoin:1389196388, minN: 4, maxN: 30
 			Ntimestamp = 1389196388; minN= 4; maxN= 30;
+<<<<<<< HEAD
 		} else if (!strcmp(jane_params, "LEO") || !strcasecmp(jane_params, "LEOCoin")) {
 			// LEOCoin:1402845776, minN: 4, maxN: 30
 			Ntimestamp = 1402845776; minN= 4; maxN= 30;
+=======
+>>>>>>> 8c320ca... added xevan
 		} else {
 			if (sscanf(jane_params, "%u,%u,%u", &Ntimestamp, &minN, &maxN) != 3)
 			if (sscanf(jane_params, "%u", &Nfactor) == 1) return Nfactor; // skip bounding against minN, maxN
@@ -429,6 +540,7 @@ unsigned char GetNfactor(unsigned int nTimestamp)
 	return Nfactor;
 }
 
+<<<<<<< HEAD
 static bool init[MAX_GPUS] = { 0 };
 
 // cleanup
@@ -457,6 +569,17 @@ int scanhash_scrypt_jane(int thr_id, struct work *work, uint32_t max_nonce, unsi
 	uint32_t *ptarget = work->target;
 	const uint32_t Htarg = ptarget[7];
 	uint32_t N;
+=======
+#define bswap_32x4(x) ((((x) << 24) & 0xff000000u) | (((x) << 8) & 0x00ff0000u) \
+					 | (((x) >> 8) & 0x0000ff00u) | (((x) >> 24) & 0x000000ffu))
+
+static int s_Nfactor = 0;
+
+int scanhash_scrypt_jane(int thr_id, uint32_t *pdata, const uint32_t *ptarget, unsigned char *scratchbuf,
+	uint32_t max_nonce, unsigned long *hashes_done, struct timeval *tv_start, struct timeval *tv_end)
+{
+	const uint32_t Htarg = ptarget[7];
+>>>>>>> 8c320ca... added xevan
 
 	if (s_Nfactor == 0 && strlen(jane_params) > 0)
 		applog(LOG_INFO, "Given scrypt-jane parameters: %s", jane_params);
@@ -465,12 +588,23 @@ int scanhash_scrypt_jane(int thr_id, struct work *work, uint32_t max_nonce, unsi
 	if (Nfactor > scrypt_maxN) {
 		scrypt_fatal_error("scrypt: N out of range");
 	}
+<<<<<<< HEAD
 	N = (1 << (Nfactor + 1));
 
 	if (Nfactor != s_Nfactor)
 	{
 		opt_nfactor = Nfactor;
 		applog(LOG_INFO, "N-factor is %d (%d)!", Nfactor, N);
+=======
+
+	if (Nfactor != s_Nfactor)
+	{
+		// all of this isn't very thread-safe...
+		opt_nfactor = (1 << (Nfactor + 1));
+
+		applog(LOG_INFO, "Nfactor is %d (N=%d)!", Nfactor, opt_nfactor);
+
+>>>>>>> 8c320ca... added xevan
 		if (s_Nfactor != 0) {
 			// handle N-factor increase at runtime
 			// by adjusting the lookup_gap by factor 2
@@ -481,6 +615,7 @@ int scanhash_scrypt_jane(int thr_id, struct work *work, uint32_t max_nonce, unsi
 		s_Nfactor = Nfactor;
 	}
 
+<<<<<<< HEAD
 	static __thread int throughput = 0;
 	if(!init[thr_id]) {
 		int dev_id = device_map[thr_id];
@@ -495,6 +630,9 @@ int scanhash_scrypt_jane(int thr_id, struct work *work, uint32_t max_nonce, unsi
 
 		init[thr_id] = true;
 	}
+=======
+	int throughput = cuda_throughput(thr_id);
+>>>>>>> 8c320ca... added xevan
 
 	if(throughput == 0)
 		return -1;
@@ -514,7 +652,11 @@ int scanhash_scrypt_jane(int thr_id, struct work *work, uint32_t max_nonce, unsi
 	if (parallel == 2) prepare_keccak512(thr_id, pdata);
 
 	scrypt_aligned_alloc Xbuf[2] = { scrypt_alloc(128 * throughput), scrypt_alloc(128 * throughput) };
+<<<<<<< HEAD
 	scrypt_aligned_alloc Vbuf = scrypt_alloc(N * 128);
+=======
+	scrypt_aligned_alloc Vbuf = scrypt_alloc((uint64_t)opt_nfactor * 128);
+>>>>>>> 8c320ca... added xevan
 	scrypt_aligned_alloc Ybuf = scrypt_alloc(128);
 
 	uint32_t nonce[2];
@@ -532,8 +674,11 @@ int scanhash_scrypt_jane(int thr_id, struct work *work, uint32_t max_nonce, unsi
 
 		if (parallel < 2)
 		{
+<<<<<<< HEAD
 			// half of cpu
 
+=======
+>>>>>>> 8c320ca... added xevan
 			for(int i=0;i<throughput;++i) {
 				uint32_t tmp_nonce = n++;
 				data[nxt][20*i + 19] = bswap_32x4(tmp_nonce);
@@ -545,14 +690,26 @@ int scanhash_scrypt_jane(int thr_id, struct work *work, uint32_t max_nonce, unsi
 			memcpy(cuda_X[nxt], Xbuf[nxt].ptr, 128 * throughput);
 			cuda_scrypt_serialize(thr_id, nxt);
 			cuda_scrypt_HtoD(thr_id, cuda_X[nxt], nxt);
+<<<<<<< HEAD
 			cuda_scrypt_core(thr_id, nxt, N);
+=======
+			cuda_scrypt_core(thr_id, nxt, opt_nfactor);
+>>>>>>> 8c320ca... added xevan
 			cuda_scrypt_done(thr_id, nxt);
 
 			cuda_scrypt_DtoH(thr_id, cuda_X[nxt], nxt, false);
 
+<<<<<<< HEAD
 			//cuda_scrypt_flush(thr_id, nxt);
 			if(!cuda_scrypt_sync(thr_id, nxt)) {
 				break;
+=======
+			cuda_scrypt_flush(thr_id, nxt);
+
+			if(!cuda_scrypt_sync(thr_id, cur))
+			{
+				return -1;
+>>>>>>> 8c320ca... added xevan
 			}
 
 			memcpy(Xbuf[cur].ptr, cuda_X[cur], 128 * throughput);
@@ -566,7 +723,11 @@ int scanhash_scrypt_jane(int thr_id, struct work *work, uint32_t max_nonce, unsi
 				for(int i=0;i<throughput;++i)
 					scrypt_ROMix_1((scrypt_mix_word_t *)(Xbuf[cur].ptr + 128 * i), (scrypt_mix_word_t *)Ybuf.ptr, (scrypt_mix_word_t *)Vbuf.ptr, N);
 
+<<<<<<< HEAD
 				unsigned int err = 0;
+=======
+				uint32_t err = 0;
+>>>>>>> 8c320ca... added xevan
 				for(int i=0;i<throughput;++i) {
 					unsigned char *ref = (Xbuf[cur].ptr + 128 * i);
 					unsigned char *dat = (unsigned char*)(cuda_X[cur] + 32 * i);
@@ -587,6 +748,7 @@ int scanhash_scrypt_jane(int thr_id, struct work *work, uint32_t max_nonce, unsi
 			}
 #endif
 		} else {
+<<<<<<< HEAD
 
 			// all on gpu
 
@@ -601,11 +763,21 @@ int scanhash_scrypt_jane(int thr_id, struct work *work, uint32_t max_nonce, unsi
 			if (!cuda_scrypt_sync(thr_id, nxt)) {
 				break;
 			}
+=======
+			n += throughput;
+
+			cuda_scrypt_serialize(thr_id, nxt);
+			pre_keccak512(thr_id, nxt, nonce[nxt], throughput);
+			cuda_scrypt_core(thr_id, nxt, opt_nfactor);
+
+			cuda_scrypt_flush(thr_id, nxt);
+>>>>>>> 8c320ca... added xevan
 
 			post_keccak512(thr_id, nxt, nonce[nxt], throughput);
 			cuda_scrypt_done(thr_id, nxt);
 
 			cuda_scrypt_DtoH(thr_id, hash[nxt], nxt, true);
+<<<<<<< HEAD
 			//cuda_scrypt_flush(thr_id, nxt); // made by cuda_scrypt_sync
 			if (!cuda_scrypt_sync(thr_id, nxt)) {
 				break;
@@ -640,6 +812,48 @@ int scanhash_scrypt_jane(int thr_id, struct work *work, uint32_t max_nonce, unsi
 					return 1;
 				} else {
 					gpulog(LOG_WARNING, thr_id, "result does not validate on CPU! (i=%d, s=%d)", i, cur);
+=======
+
+			if(!cuda_scrypt_sync(thr_id, cur))
+			{
+				return -1;
+			}
+		}
+
+		if(iteration > 0)
+		{
+			for(int i=0;i<throughput;++i) {
+				volatile unsigned char *hashc = (unsigned char *)(&hash[cur][8*i]);
+
+				if (hash[cur][8*i+7] <= Htarg && fulltest(&hash[cur][8*i], ptarget))
+				{
+					uint32_t _ALIGN(64) thash[8], tdata[20];
+					uint32_t tmp_nonce = nonce[cur] + i;
+
+					for(int z=0;z<20;z++)
+						tdata[z] = bswap_32x4(pdata[z]);
+					tdata[19] = bswap_32x4(tmp_nonce);
+
+					scrypt_pbkdf2_1((unsigned char *)tdata, 80, (unsigned char *)tdata, 80, Xbuf[cur].ptr + 128 * i, 128);
+					scrypt_ROMix_1((scrypt_mix_word_t *)(Xbuf[cur].ptr + 128 * i), (scrypt_mix_word_t *)(Ybuf.ptr), (scrypt_mix_word_t *)(Vbuf.ptr), opt_nfactor);
+					scrypt_pbkdf2_1((unsigned char *)tdata, 80, Xbuf[cur].ptr + 128 * i, 128, (unsigned char *)thash, 32);
+
+					if (memcmp(thash, &hash[cur][8*i], 32) == 0)
+					{
+						//applog(LOG_INFO, "GPU #%d: %s result validates on CPU.", device_map[thr_id], device_name[thr_id]);
+
+						*hashes_done = n - pdata[19];
+						pdata[19] = tmp_nonce;
+						scrypt_free(&Vbuf);
+						scrypt_free(&Ybuf);
+						scrypt_free(&Xbuf[0]); scrypt_free(&Xbuf[1]);
+						delete[] data[0]; delete[] data[1];
+						gettimeofday(tv_end, NULL);
+						return 1;
+					} else {
+						applog(LOG_INFO, "GPU #%d: %s result does not validate on CPU (i=%d, s=%d)!", device_map[thr_id], device_name[thr_id], i, cur);
+					}
+>>>>>>> 8c320ca... added xevan
 				}
 			}
 		}
@@ -647,7 +861,11 @@ int scanhash_scrypt_jane(int thr_id, struct work *work, uint32_t max_nonce, unsi
 		cur = (cur+1)&1;
 		nxt = (nxt+1)&1;
 		++iteration;
+<<<<<<< HEAD
 	} while (n <= max_nonce && !work_restart[thr_id].restart);
+=======
+	} while (n <= max_nonce && !scan_abort_flag && !work_restart[thr_id].restart);
+>>>>>>> 8c320ca... added xevan
 
 	scrypt_free(&Vbuf);
 	scrypt_free(&Ybuf);
@@ -659,6 +877,7 @@ int scanhash_scrypt_jane(int thr_id, struct work *work, uint32_t max_nonce, unsi
 	gettimeofday(tv_end, NULL);
 	return 0;
 }
+<<<<<<< HEAD
 
 
 static void scrypt_jane_hash_1_1(const uchar *password, size_t password_len, const uchar*salt, size_t salt_len, uint32_t N,
@@ -711,3 +930,5 @@ void scryptjane_hash(void* output, const void* input)
 	scrypt_free(&V);
 	scrypt_free(&YX);
 }
+=======
+>>>>>>> 8c320ca... added xevan

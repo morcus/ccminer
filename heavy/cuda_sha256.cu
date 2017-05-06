@@ -160,9 +160,14 @@ template <int BLOCKSIZE> __global__ void sha256_gpu_hash(uint32_t threads, uint3
 	}
 }
 
+<<<<<<< HEAD
 // Setup Function
 __host__
 void sha256_cpu_init(int thr_id, uint32_t threads)
+=======
+// Setup-Funktionen
+__host__ void sha256_cpu_init(int thr_id, uint32_t threads)
+>>>>>>> 8c320ca... added xevan
 {
 	// Kopiere die Hash-Tabellen in den GPU-Speicher
 	cudaMemcpyToSymbol(	sha256_gpu_constantTable,
@@ -170,6 +175,7 @@ void sha256_cpu_init(int thr_id, uint32_t threads)
 						sizeof(uint32_t) * 64 );
 
 	// Speicher für alle Ergebnisse belegen
+<<<<<<< HEAD
 	cudaMalloc(&d_hash2output[thr_id], (size_t) 8 * sizeof(uint32_t) * threads);
 }
 
@@ -177,6 +183,9 @@ __host__
 void sha256_cpu_free(int thr_id)
 {
 	cudaFree(d_hash2output[thr_id]);
+=======
+	cudaMalloc(&d_hash2output[thr_id], 8 * sizeof(uint32_t) * threads);
+>>>>>>> 8c320ca... added xevan
 }
 
 static int BLOCKSIZE = 84;
@@ -260,7 +269,11 @@ __host__ void sha256_cpu_copyHeftyHash(int thr_id, uint32_t threads, void *hefty
 	// Hefty1 Hashes kopieren
 	if (copy)
 		CUDA_SAFE_CALL(cudaMemcpy(heavy_heftyHashes[thr_id], heftyHashes, 8 * sizeof(uint32_t) * threads, cudaMemcpyHostToDevice));
+<<<<<<< HEAD
 	//else cudaThreadSynchronize();
+=======
+	//else cudaDeviceSynchronize();
+>>>>>>> 8c320ca... added xevan
 }
 
 __host__ void sha256_cpu_hash(int thr_id, uint32_t threads, int startNounce)
@@ -271,6 +284,7 @@ __host__ void sha256_cpu_hash(int thr_id, uint32_t threads, int startNounce)
 	dim3 grid((threads + threadsperblock-1)/threadsperblock);
 	dim3 block(threadsperblock);
 
+<<<<<<< HEAD
 	// Größe des dynamischen Shared Memory Bereichs
 	size_t shared_size = 0;
 
@@ -278,5 +292,11 @@ __host__ void sha256_cpu_hash(int thr_id, uint32_t threads, int startNounce)
 		sha256_gpu_hash<84><<<grid, block, shared_size>>>(threads, startNounce, d_hash2output[thr_id], heavy_heftyHashes[thr_id], heavy_nonceVector[thr_id]);
 	else if (BLOCKSIZE == 80) {
 		sha256_gpu_hash<80><<<grid, block, shared_size>>>(threads, startNounce, d_hash2output[thr_id], heavy_heftyHashes[thr_id], heavy_nonceVector[thr_id]);
+=======
+	if (BLOCKSIZE == 84)
+		sha256_gpu_hash<84><<<grid, block>>>(threads, startNounce, d_hash2output[thr_id], heavy_heftyHashes[thr_id], heavy_nonceVector[thr_id]);
+	else if (BLOCKSIZE == 80) {
+		sha256_gpu_hash<80><<<grid, block>>>(threads, startNounce, d_hash2output[thr_id], heavy_heftyHashes[thr_id], heavy_nonceVector[thr_id]);
+>>>>>>> 8c320ca... added xevan
 	}
 }

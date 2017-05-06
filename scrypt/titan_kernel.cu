@@ -9,7 +9,11 @@
 
 #include <map>
 
+<<<<<<< HEAD
 #include <cuda_runtime.h>
+=======
+#include "cuda_runtime.h"
+>>>>>>> 8c320ca... added xevan
 #include "miner.h"
 
 #include "salsa_kernel.h"
@@ -23,13 +27,20 @@ typedef enum
 	SIMPLE
 } MemoryAccess;
 
+<<<<<<< HEAD
 #if __CUDA_ARCH__ < 320
+=======
+#if __CUDA_ARCH__ < 350
+>>>>>>> 8c320ca... added xevan
 	// Kepler (Compute 3.0)
 	#define __ldg(x) (*(x))
 #endif
 
+<<<<<<< HEAD
 #if !defined(__CUDA_ARCH__) ||  __CUDA_ARCH__ >= 300
 
+=======
+>>>>>>> 8c320ca... added xevan
 // scratchbuf constants (pointers to scratch buffer for each warp, i.e. 32 hashes)
 __constant__ uint32_t* c_V[TOTAL_WARP_LIMIT];
 
@@ -92,7 +103,11 @@ void write_keys_direct(const uint4 &b, const uint4 &bx, uint32_t start)
 {
 	uint32_t *scratch = c_V[(blockIdx.x*blockDim.x + threadIdx.x)/32];
 	if (SCHEME == ANDERSEN) {
+<<<<<<< HEAD
 		int target_thread = (threadIdx.x + 4)&31;
+=======
+		int target_thread = (threadIdx.x + 4)%32;
+>>>>>>> 8c320ca... added xevan
 		uint4 t=b, t2=__shfl(bx, target_thread);
 		int t2_start = __shfl((int)start, target_thread) + 4;
 		bool c = (threadIdx.x & 0x4);
@@ -109,12 +124,20 @@ void read_keys_direct(uint4 &b, uint4 &bx, uint32_t start)
 {
 	uint32_t *scratch = c_V[(blockIdx.x*blockDim.x + threadIdx.x)/32];
 	if (SCHEME == ANDERSEN) {
+<<<<<<< HEAD
 		int t2_start = __shfl((int)start, (threadIdx.x + 4)&31) + 4;
+=======
+		int t2_start = __shfl((int)start, (threadIdx.x + 4)%32) + 4;
+>>>>>>> 8c320ca... added xevan
 		bool c = (threadIdx.x & 0x4);
 		b  = __ldg((uint4 *)(&scratch[c ? t2_start : start]));
 		bx = __ldg((uint4 *)(&scratch[c ? start : t2_start]));
 		uint4 tmp = b; b = (c ? bx : b); bx = (c ? tmp : bx);
+<<<<<<< HEAD
 		bx = __shfl(bx, (threadIdx.x + 28)&31);
+=======
+		bx = __shfl(bx, (threadIdx.x + 28)%32);
+>>>>>>> 8c320ca... added xevan
 	} else {
 		b = *((uint4 *)(&scratch[start]));
 		bx = *((uint4 *)(&scratch[start+16]));
@@ -124,9 +147,15 @@ void read_keys_direct(uint4 &b, uint4 &bx, uint32_t start)
 __device__  __forceinline__
 void primary_order_shuffle(uint32_t b[4], uint32_t bx[4]) {
 	/* Inner loop shuffle targets */
+<<<<<<< HEAD
 	int x1 = (threadIdx.x & 0xfc) + (((threadIdx.x & 3)+1)&3);
 	int x2 = (threadIdx.x & 0xfc) + (((threadIdx.x & 3)+2)&3);
 	int x3 = (threadIdx.x & 0xfc) + (((threadIdx.x & 3)+3)&3);
+=======
+	int x1 = (threadIdx.x & 0xfc) + (((threadIdx.x & 0x03)+1)&0x3);
+	int x2 = (threadIdx.x & 0xfc) + (((threadIdx.x & 0x03)+2)&0x3);
+	int x3 = (threadIdx.x & 0xfc) + (((threadIdx.x & 0x03)+3)&0x3);
+>>>>>>> 8c320ca... added xevan
 
 	b[3] = __shfl((int)b[3], x1);
 	b[2] = __shfl((int)b[2], x2);
@@ -142,9 +171,15 @@ void primary_order_shuffle(uint32_t b[4], uint32_t bx[4]) {
 __device__  __forceinline__
 void primary_order_shuffle(uint4 &b, uint4 &bx) {
 	/* Inner loop shuffle targets */
+<<<<<<< HEAD
 	int x1 = (threadIdx.x & 0x1c) + (((threadIdx.x & 3)+1)&3);
 	int x2 = (threadIdx.x & 0x1c) + (((threadIdx.x & 3)+2)&3);
 	int x3 = (threadIdx.x & 0x1c) + (((threadIdx.x & 3)+3)&3);
+=======
+	int x1 = (threadIdx.x & 0x1c) + (((threadIdx.x & 0x03)+1)&0x3);
+	int x2 = (threadIdx.x & 0x1c) + (((threadIdx.x & 0x03)+2)&0x3);
+	int x3 = (threadIdx.x & 0x1c) + (((threadIdx.x & 0x03)+3)&0x3);
+>>>>>>> 8c320ca... added xevan
 
 	b.w = __shfl((int)b.w, x1);
 	b.z = __shfl((int)b.z, x2);
@@ -163,6 +198,7 @@ void primary_order_shuffle(uint4 &b, uint4 &bx) {
  * After loading, each thread has its four b and four bx keys stored
  * in internal processing order.
  */
+<<<<<<< HEAD
 __device__  __forceinline__
 void load_key_salsa(const uint32_t *B, uint4 &b, uint4 &bx)
 {
@@ -181,6 +217,25 @@ void load_key_salsa(const uint32_t *B, uint4 &b, uint4 &bx)
 	bx.y = B[key_offset + (thread_in_block+1) & 3U];
 	bx.z = B[key_offset + (thread_in_block+2) & 3U];
 	bx.w = B[key_offset + (thread_in_block+3) & 3U];
+=======
+
+__device__  __forceinline__
+void load_key_salsa(const uint32_t *B, uint4 &b, uint4 &bx)
+{
+	int scrypt_block = (blockIdx.x*blockDim.x + threadIdx.x)/THREADS_PER_WU;
+	int key_offset = scrypt_block * 32;
+	uint32_t thread_in_block = threadIdx.x % 4;
+
+	// Read in permuted order. Key loads are not our bottleneck right now.
+	b.x = B[key_offset + 4*thread_in_block + (thread_in_block+0)%4];
+	b.y = B[key_offset + 4*thread_in_block + (thread_in_block+1)%4];
+	b.z = B[key_offset + 4*thread_in_block + (thread_in_block+2)%4];
+	b.w = B[key_offset + 4*thread_in_block + (thread_in_block+3)%4];
+	bx.x = B[key_offset + 4*thread_in_block + (thread_in_block+0)%4 + 16];
+	bx.y = B[key_offset + 4*thread_in_block + (thread_in_block+1)%4 + 16];
+	bx.z = B[key_offset + 4*thread_in_block + (thread_in_block+2)%4 + 16];
+	bx.w = B[key_offset + 4*thread_in_block + (thread_in_block+3)%4 + 16];
+>>>>>>> 8c320ca... added xevan
 
 	primary_order_shuffle(b, bx);
 }
@@ -190,6 +245,7 @@ void load_key_salsa(const uint32_t *B, uint4 &b, uint4 &bx)
  * internally-ordered b and bx and storing them into a contiguous
  * region of B in external order.
  */
+<<<<<<< HEAD
 __device__  __forceinline__
 void store_key_salsa(uint32_t *B, uint4 &b, uint4 &bx)
 {
@@ -209,6 +265,26 @@ void store_key_salsa(uint32_t *B, uint4 &b, uint4 &bx)
 	B[key_offset + (thread_in_block+1) & 3U] = bx.y;
 	B[key_offset + (thread_in_block+2) & 3U] = bx.z;
 	B[key_offset + (thread_in_block+3) & 3U] = bx.w;
+=======
+
+__device__  __forceinline__
+void store_key_salsa(uint32_t *B, uint4 &b, uint4 &bx)
+{
+	int scrypt_block = (blockIdx.x*blockDim.x + threadIdx.x)/THREADS_PER_WU;
+	int key_offset = scrypt_block * 32;
+	uint32_t thread_in_block = threadIdx.x % 4;
+
+	primary_order_shuffle(b, bx);
+
+	B[key_offset + 4*thread_in_block + (thread_in_block+0)%4] = b.x;
+	B[key_offset + 4*thread_in_block + (thread_in_block+1)%4] = b.y;
+	B[key_offset + 4*thread_in_block + (thread_in_block+2)%4] = b.z;
+	B[key_offset + 4*thread_in_block + (thread_in_block+3)%4] = b.w;
+	B[key_offset + 4*thread_in_block + (thread_in_block+0)%4 + 16] = bx.x;
+	B[key_offset + 4*thread_in_block + (thread_in_block+1)%4 + 16] = bx.y;
+	B[key_offset + 4*thread_in_block + (thread_in_block+2)%4 + 16] = bx.z;
+	B[key_offset + 4*thread_in_block + (thread_in_block+3)%4 + 16] = bx.w;
+>>>>>>> 8c320ca... added xevan
 }
 
 
@@ -218,6 +294,7 @@ void store_key_salsa(uint32_t *B, uint4 &b, uint4 &bx)
  * After loading, each thread has its four b and four bx keys stored
  * in internal processing order.
  */
+<<<<<<< HEAD
 __device__  __forceinline__
 void load_key_chacha(const uint32_t *B, uint4 &b, uint4 &bx)
 {
@@ -236,6 +313,25 @@ void load_key_chacha(const uint32_t *B, uint4 &b, uint4 &bx)
 	bx.y = B[key_offset + 4  ];
 	bx.z = B[key_offset + 4*2];
 	bx.w = B[key_offset + 4*3];
+=======
+
+__device__  __forceinline__
+void load_key_chacha(const uint32_t *B, uint4 &b, uint4 &bx)
+{
+	int scrypt_block = (blockIdx.x*blockDim.x + threadIdx.x)/THREADS_PER_WU;
+	int key_offset = scrypt_block * 32;
+	uint32_t thread_in_block = threadIdx.x % 4;
+
+	// Read in permuted order. Key loads are not our bottleneck right now.
+	b.x = B[key_offset + 4*0 + thread_in_block%4];
+	b.y = B[key_offset + 4*1 + thread_in_block%4];
+	b.z = B[key_offset + 4*2 + thread_in_block%4];
+	b.w = B[key_offset + 4*3 + thread_in_block%4];
+	bx.x = B[key_offset + 4*0 + thread_in_block%4 + 16];
+	bx.y = B[key_offset + 4*1 + thread_in_block%4 + 16];
+	bx.z = B[key_offset + 4*2 + thread_in_block%4 + 16];
+	bx.w = B[key_offset + 4*3 + thread_in_block%4 + 16];
+>>>>>>> 8c320ca... added xevan
 }
 
 /*
@@ -243,6 +339,7 @@ void load_key_chacha(const uint32_t *B, uint4 &b, uint4 &bx)
  * internally-ordered b and bx and storing them into a contiguous
  * region of B in external order.
  */
+<<<<<<< HEAD
 __device__  __forceinline__
 void store_key_chacha(uint32_t *B, const uint4 &b, const uint4 &bx)
 {
@@ -260,6 +357,24 @@ void store_key_chacha(uint32_t *B, const uint4 &b, const uint4 &bx)
 	B[key_offset + 4  ] = bx.y;
 	B[key_offset + 4*2] = bx.z;
 	B[key_offset + 4*3] = bx.w;
+=======
+
+__device__  __forceinline__
+void store_key_chacha(uint32_t *B, const uint4 &b, const uint4 &bx)
+{
+	int scrypt_block = (blockIdx.x*blockDim.x + threadIdx.x)/THREADS_PER_WU;
+	int key_offset = scrypt_block * 32;
+	uint32_t thread_in_block = threadIdx.x % 4;
+
+	B[key_offset + 4*0 + thread_in_block%4] = b.x;
+	B[key_offset + 4*1 + thread_in_block%4] = b.y;
+	B[key_offset + 4*2 + thread_in_block%4] = b.z;
+	B[key_offset + 4*3 + thread_in_block%4] = b.w;
+	B[key_offset + 4*0 + thread_in_block%4 + 16] = bx.x;
+	B[key_offset + 4*1 + thread_in_block%4 + 16] = bx.y;
+	B[key_offset + 4*2 + thread_in_block%4 + 16] = bx.z;
+	B[key_offset + 4*3 + thread_in_block%4 + 16] = bx.w;
+>>>>>>> 8c320ca... added xevan
 }
 
 
@@ -405,17 +520,28 @@ void salsa_xor_core(uint4 &b, uint4 &bx, const int x1, const int x2, const int x
 __device__  __forceinline__
 void chacha_xor_core(uint4 &b, uint4 &bx, const int x1, const int x2, const int x3)
 {
+<<<<<<< HEAD
 	uint4 x = b ^= bx;
 
 	//b ^= bx;
 	//x = b;
+=======
+	uint4 x;
+
+	b ^= bx;
+	x = b;
+>>>>>>> 8c320ca... added xevan
 
 	// Enter in "column" mode (t0 has 0, 4,  8, 12)
 	//                        (t1 has 1, 5,  9, 13)
 	//                        (t2 has 2, 6, 10, 14)
 	//                        (t3 has 3, 7, 11, 15)
 
+<<<<<<< HEAD
 	//#pragma unroll
+=======
+#pragma unroll 4
+>>>>>>> 8c320ca... added xevan
 	for (int j = 0; j < 4; j++) {
 
 		// Column Mixing phase of chacha
@@ -444,7 +570,11 @@ void chacha_xor_core(uint4 &b, uint4 &bx, const int x1, const int x2, const int 
 	bx ^= b;
 	x = bx;
 
+<<<<<<< HEAD
 	//#pragma unroll
+=======
+	#pragma unroll
+>>>>>>> 8c320ca... added xevan
 	for (int j = 0; j < 4; j++) 
 	{
 
@@ -533,7 +663,11 @@ void titan_scrypt_core_kernelA(const uint32_t *d_idata, int begin, int end)
 }
 
 template <int ALGO, MemoryAccess SCHEME> __global__
+<<<<<<< HEAD
 void titan_scrypt_core_kernelA_LG(const uint32_t *d_idata, int begin, int end, unsigned int LOOKUP_GAP)
+=======
+void titan_scrypt_core_kernelA_LG(const uint32_t *d_idata, int begin, int end, uint32_t LOOKUP_GAP)
+>>>>>>> 8c320ca... added xevan
 {
 	uint4 b, bx;
 
@@ -599,7 +733,11 @@ void titan_scrypt_core_kernelB(uint32_t *d_odata, int begin, int end)
 }
 
 template <int ALGO, MemoryAccess SCHEME> __global__
+<<<<<<< HEAD
 void titan_scrypt_core_kernelB_LG(uint32_t *d_odata, int begin, int end, unsigned int LOOKUP_GAP)
+=======
+void titan_scrypt_core_kernelB_LG(uint32_t *d_odata, int begin, int end, uint32_t LOOKUP_GAP)
+>>>>>>> 8c320ca... added xevan
 {
 	uint4 b, bx;
 
@@ -679,6 +817,7 @@ void TitanKernel::set_scratchbuf_constants(int MAXWARPS, uint32_t** h_V)
 }
 
 bool TitanKernel::run_kernel(dim3 grid, dim3 threads, int WARPS_PER_BLOCK, int thr_id, cudaStream_t stream,
+<<<<<<< HEAD
 	uint32_t* d_idata, uint32_t* d_odata, unsigned int N, unsigned int LOOKUP_GAP, bool interactive, bool benchmark, int texture_cache)
 {
 	bool success = true;
@@ -688,6 +827,14 @@ bool TitanKernel::run_kernel(dim3 grid, dim3 threads, int WARPS_PER_BLOCK, int t
 	// make some constants available to kernel, update only initially and when changing
 	static uint32_t prev_N[MAX_GPUS] = { 0 };
 
+=======
+	uint32_t* d_idata, uint32_t* d_odata, uint32_t N, uint32_t LOOKUP_GAP, bool interactive, bool benchmark, int texture_cache)
+{
+	bool success = true;
+
+	// make some constants available to kernel, update only initially and when changing
+	static int prev_N[MAX_DEVICES] = {0};
+>>>>>>> 8c320ca... added xevan
 	if (N != prev_N[thr_id]) {
 		uint32_t h_N = N;
 		uint32_t h_N_1 = N-1;
@@ -708,6 +855,7 @@ bool TitanKernel::run_kernel(dim3 grid, dim3 threads, int WARPS_PER_BLOCK, int t
 
 	int batch = device_batchsize[thr_id];
 
+<<<<<<< HEAD
 	unsigned int pos = 0;
 	do {
 		if (LOOKUP_GAP == 1) {
@@ -716,6 +864,16 @@ bool TitanKernel::run_kernel(dim3 grid, dim3 threads, int WARPS_PER_BLOCK, int t
 		} else {
 			if (scrypt) titan_scrypt_core_kernelA_LG<A_SCRYPT,    ANDERSEN> <<< grid, threads, 0, stream >>>(d_idata, pos, min(pos+batch, N), LOOKUP_GAP);
 			if (chacha) titan_scrypt_core_kernelA_LG<A_SCRYPT_JANE, SIMPLE> <<< grid, threads, 0, stream >>>(d_idata, pos, min(pos+batch, N), LOOKUP_GAP);
+=======
+	uint32_t pos = 0;
+	do {
+		if (LOOKUP_GAP == 1) {
+			if (IS_SCRYPT())      titan_scrypt_core_kernelA<A_SCRYPT,    ANDERSEN> <<< grid, threads, 0, stream >>>(d_idata, pos, min(pos+batch, N));
+			if (IS_SCRYPT_JANE()) titan_scrypt_core_kernelA<A_SCRYPT_JANE, SIMPLE> <<< grid, threads, 0, stream >>>(d_idata, pos, min(pos+batch, N));
+		} else {
+			if (IS_SCRYPT())      titan_scrypt_core_kernelA_LG<A_SCRYPT,    ANDERSEN> <<< grid, threads, 0, stream >>>(d_idata, pos, min(pos+batch, N), LOOKUP_GAP);
+			if (IS_SCRYPT_JANE()) titan_scrypt_core_kernelA_LG<A_SCRYPT_JANE, SIMPLE> <<< grid, threads, 0, stream >>>(d_idata, pos, min(pos+batch, N), LOOKUP_GAP);
+>>>>>>> 8c320ca... added xevan
 		}
 		pos += batch;
 
@@ -726,11 +884,19 @@ bool TitanKernel::run_kernel(dim3 grid, dim3 threads, int WARPS_PER_BLOCK, int t
 	pos = 0;
 	do {
 		if (LOOKUP_GAP == 1)  {
+<<<<<<< HEAD
 			if (scrypt) titan_scrypt_core_kernelB<A_SCRYPT,    ANDERSEN> <<< grid, threads, 0, stream >>>(d_odata, pos, min(pos+batch, N));
 			if (chacha) titan_scrypt_core_kernelB<A_SCRYPT_JANE, SIMPLE> <<< grid, threads, 0, stream >>>(d_odata, pos, min(pos+batch, N));
 		} else {
 			if (scrypt) titan_scrypt_core_kernelB_LG<A_SCRYPT,    ANDERSEN> <<< grid, threads, 0, stream >>>(d_odata, pos, min(pos+batch, N), LOOKUP_GAP);
 			if (chacha) titan_scrypt_core_kernelB_LG<A_SCRYPT_JANE, SIMPLE> <<< grid, threads, 0, stream >>>(d_odata, pos, min(pos+batch, N), LOOKUP_GAP);
+=======
+			if (IS_SCRYPT())      titan_scrypt_core_kernelB<A_SCRYPT,    ANDERSEN> <<< grid, threads, 0, stream >>>(d_odata, pos, min(pos+batch, N));
+			if (IS_SCRYPT_JANE()) titan_scrypt_core_kernelB<A_SCRYPT_JANE, SIMPLE> <<< grid, threads, 0, stream >>>(d_odata, pos, min(pos+batch, N));
+		} else {
+			if (IS_SCRYPT())      titan_scrypt_core_kernelB_LG<A_SCRYPT,    ANDERSEN> <<< grid, threads, 0, stream >>>(d_odata, pos, min(pos+batch, N), LOOKUP_GAP);
+			if (IS_SCRYPT_JANE()) titan_scrypt_core_kernelB_LG<A_SCRYPT_JANE, SIMPLE> <<< grid, threads, 0, stream >>>(d_odata, pos, min(pos+batch, N), LOOKUP_GAP);
+>>>>>>> 8c320ca... added xevan
 		}
 		pos += batch;
 
@@ -738,5 +904,8 @@ bool TitanKernel::run_kernel(dim3 grid, dim3 threads, int WARPS_PER_BLOCK, int t
 
 	return success;
 }
+<<<<<<< HEAD
 
 #endif /* prevent SM 2 */
+=======
+>>>>>>> 8c320ca... added xevan

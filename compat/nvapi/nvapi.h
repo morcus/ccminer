@@ -4,6 +4,7 @@
 #include"nvapi_lite_surround.h"
 #include"nvapi_lite_stereo.h"
 #include"nvapi_lite_d3dext.h"
+<<<<<<< HEAD
  /************************************************************************************************************************************\
 |*                                                                                                                                    *|
 |*     Copyright © 2012 NVIDIA Corporation.  All rights reserved.                                                                     *|
@@ -42,6 +43,50 @@
 ///////////////////////////////////////////////////////////////////////////////
 //
 // Date: Jan 27, 2016
+=======
+ /***************************************************************************\
+|*                                                                           *|
+|*      Copyright 2005-2010 NVIDIA Corporation.  All rights reserved.        *|
+|*                                                                           *|
+|*   NOTICE TO USER:                                                         *|
+|*                                                                           *|
+|*   This source code is subject to NVIDIA ownership rights under U.S.       *|
+|*   and international Copyright laws.  Users and possessors of this         *|
+|*   source code are hereby granted a nonexclusive, royalty-free             *|
+|*   license to use this code in individual and commercial software.         *|
+|*                                                                           *|
+|*   NVIDIA MAKES NO REPRESENTATION ABOUT THE SUITABILITY OF THIS SOURCE     *|
+|*   CODE FOR ANY PURPOSE. IT IS PROVIDED "AS IS" WITHOUT EXPRESS OR         *|
+|*   IMPLIED WARRANTY OF ANY KIND. NVIDIA DISCLAIMS ALL WARRANTIES WITH      *|
+|*   REGARD TO THIS SOURCE CODE, INCLUDING ALL IMPLIED WARRANTIES OF         *|
+|*   MERCHANTABILITY, NONINFRINGEMENT, AND FITNESS FOR A PARTICULAR          *|
+|*   PURPOSE. IN NO EVENT SHALL NVIDIA BE LIABLE FOR ANY SPECIAL,            *|
+|*   INDIRECT, INCIDENTAL, OR CONSEQUENTIAL DAMAGES, OR ANY DAMAGES          *|
+|*   WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN      *|
+|*   AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING     *|
+|*   OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOURCE      *|
+|*   CODE.                                                                   *|
+|*                                                                           *|
+|*   U.S. Government End Users. This source code is a "commercial item"      *|
+|*   as that term is defined at 48 C.F.R. 2.101 (OCT 1995), consisting       *|
+|*   of "commercial computer  software" and "commercial computer software    *|
+|*   documentation" as such terms are used in 48 C.F.R. 12.212 (SEPT 1995)   *|
+|*   and is provided to the U.S. Government only as a commercial end item.   *|
+|*   Consistent with 48 C.F.R.12.212 and 48 C.F.R. 227.7202-1 through        *|
+|*   227.7202-4 (JUNE 1995), all U.S. Government End Users acquire the       *|
+|*   source code with only those rights set forth herein.                    *|
+|*                                                                           *|
+|*   Any use of this source code in individual and commercial software must  *|
+|*   include, in the user documentation and internal comments to the code,   *|
+|*   the above Disclaimer and U.S. Government End Users Notice.              *|
+|*                                                                           *|
+|*                                                                           *|
+ \***************************************************************************/
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Date: Sep 30, 2014
+>>>>>>> 8c320ca... added xevan
 // File: nvapi.h
 //
 // NvAPI provides an interface to NVIDIA devices. This file contains the
@@ -59,6 +104,10 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+<<<<<<< HEAD
+=======
+
+>>>>>>> 8c320ca... added xevan
 // ====================================================
 // Universal NvAPI Definitions
 // ====================================================
@@ -81,7 +130,11 @@ extern "C" {
 //
 // FUNCTION NAME: NvAPI_Initialize
 //
+<<<<<<< HEAD
 //! This function initializes the NvAPI library (if not already initialized) but always increments the ref-counter.
+=======
+//! This function initializes the NvAPI library.
+>>>>>>> 8c320ca... added xevan
 //! This must be called before calling other NvAPI_ functions.
 //!
 //! SUPPORTED OS:  Windows XP and higher,  Mac OS X
@@ -102,18 +155,30 @@ NVAPI_INTERFACE NvAPI_Initialize();
 //
 // FUNCTION NAME: NvAPI_Unload
 //
+<<<<<<< HEAD
 //!   DESCRIPTION: Decrements the ref-counter and when it reaches ZERO, unloads NVAPI library.
 //!                This must be called in pairs with NvAPI_Initialize.
+=======
+//!   DESCRIPTION: Unloads NVAPI library. This must be the last function called.
+>>>>>>> 8c320ca... added xevan
 //!
 //! SUPPORTED OS:  Windows XP and higher,  Mac OS X
 //!
 //!
+<<<<<<< HEAD
 //!  Note: By design, it is not mandatory to call NvAPI_Initialize before calling any NvAPI.
 //!        When any NvAPI is called without first calling NvAPI_Initialize, the internal refcounter
 //!        will be implicitly incremented. In such cases, calling NvAPI_Initialize from a different thread will
 //!        result in incrementing the refcount again and the user has to call NvAPI_Unload twice to
 //!        unload the library. However, note that the implicit increment of the refcounter happens only once.
 //!        If the client wants unload functionality, it is recommended to always call NvAPI_Initialize and NvAPI_Unload in pairs.
+=======
+//!  !! This is not thread safe. In a multithreaded environment, calling NvAPI_Unload       !! \n
+//!  !! while another thread is executing another NvAPI_XXX function, results in           !!  \n
+//!  !! undefined behaviour and might even cause the application to crash. Developers       !! \n
+//!  !! must make sure that they are not in any other function before calling NvAPI_Unload. !! \n
+//!
+>>>>>>> 8c320ca... added xevan
 //!
 //!  Unloading NvAPI library is not supported when the library is in a resource locked state.
 //!  Some functions in the NvAPI library initiates an operation or allocates certain resources
@@ -186,8 +251,12 @@ typedef enum _NV_DP_LINK_RATE
 {
     NV_DP_1_62GBPS            = 6,
     NV_DP_2_70GBPS            = 0xA,
+<<<<<<< HEAD
     NV_DP_5_40GBPS            = 0x14,
     NV_DP_8_10GBPS            = 0x1E
+=======
+    NV_DP_5_40GBPS            = 0x14
+>>>>>>> 8c320ca... added xevan
 } NV_DP_LINK_RATE;
 
 
@@ -819,6 +888,7 @@ typedef struct _NV_DISPLAYCONFIG_PATH_ADVANCED_TARGET_INFO_V1
                                             //!< target will automatically be primary.
 #ifdef NV_PAN_AND_SCAN_DEFINED
     NvU32                   isPanAndScanTarget:1; //!< Whether on this target Pan and Scan is enabled or has to be enabled. Valid only
+<<<<<<< HEAD
                                                   //!< when the target is part of clone topology.
 #else
     NvU32                   reservedBit1:1;
@@ -826,6 +896,13 @@ typedef struct _NV_DISPLAYCONFIG_PATH_ADVANCED_TARGET_INFO_V1
     NvU32                   disableVirtualModeSupport:1;
     NvU32                   isPreferredUnscaledTarget:1;
     NvU32                   reserved:27;
+=======
+	                                              //!< when the target is part of clone topology.
+    NvU32                   reserved:29;
+#else
+    NvU32                   reserved:30;
+#endif
+>>>>>>> 8c320ca... added xevan
     // TV format information
     NV_GPU_CONNECTOR_TYPE   connector;      //!< Specify connector type. For TV only, ignored if tvFormat == NV_DISPLAY_TV_FORMAT_NONE
     NV_DISPLAY_TV_FORMAT    tvFormat;       //!< (IN) to choose the last TV format set this value to NV_DISPLAY_TV_FORMAT_NONE
@@ -893,7 +970,13 @@ typedef struct _NV_DISPLAYCONFIG_SOURCE_MODE_INFO_V1
     NvU32                                   reserved : 30;              //!< Must be 0
 } NV_DISPLAYCONFIG_SOURCE_MODE_INFO_V1;
 
+<<<<<<< HEAD
 
+=======
+//! \ingroup dispcontrol
+//! As version is not defined for this structure we will be using version of NV_DISPLAYCONFIG_PATH_INFO
+typedef NV_DISPLAYCONFIG_SOURCE_MODE_INFO_V1 NV_DISPLAYCONFIG_SOURCE_MODE_INFO;
+>>>>>>> 8c320ca... added xevan
 
 //! \ingroup dispcontrol
 typedef struct _NV_DISPLAYCONFIG_PATH_INFO_V1
@@ -904,7 +987,11 @@ typedef struct _NV_DISPLAYCONFIG_PATH_INFO_V1
                                                                         //!< these will be computed automatically.
     NvU32                                   targetInfoCount;            //!< Number of elements in targetInfo array
     NV_DISPLAYCONFIG_PATH_TARGET_INFO_V1*   targetInfo;
+<<<<<<< HEAD
     NV_DISPLAYCONFIG_SOURCE_MODE_INFO_V1*   sourceModeInfo;             //!< May be NULL if mode info is not important
+=======
+    NV_DISPLAYCONFIG_SOURCE_MODE_INFO*      sourceModeInfo;             //!< May be NULL if mode info is not important
+>>>>>>> 8c320ca... added xevan
 } NV_DISPLAYCONFIG_PATH_INFO_V1;
 
 //! \ingroup dispcontrol
@@ -921,8 +1008,13 @@ typedef struct _NV_DISPLAYCONFIG_PATH_INFO_V2
     };
 
     NvU32                                   targetInfoCount;            //!< Number of elements in targetInfo array
+<<<<<<< HEAD
     NV_DISPLAYCONFIG_PATH_TARGET_INFO_V2*   targetInfo;
     NV_DISPLAYCONFIG_SOURCE_MODE_INFO_V1*   sourceModeInfo;             //!< May be NULL if mode info is not important
+=======
+    NV_DISPLAYCONFIG_PATH_TARGET_INFO*      targetInfo;
+    NV_DISPLAYCONFIG_SOURCE_MODE_INFO*      sourceModeInfo;             //!< May be NULL if mode info is not important
+>>>>>>> 8c320ca... added xevan
     NvU32                                   IsNonNVIDIAAdapter : 1;     //!< True for non-NVIDIA adapter.
     NvU32                                   reserved : 31;              //!< Must be 0
     void                                    *pOSAdapterID;              //!< Used by Non-NVIDIA adapter for pointer to OS Adapter of LUID
@@ -930,11 +1022,18 @@ typedef struct _NV_DISPLAYCONFIG_PATH_INFO_V2
 } NV_DISPLAYCONFIG_PATH_INFO_V2;
 
 //! \ingroup dispcontrol
+<<<<<<< HEAD
+=======
+typedef NV_DISPLAYCONFIG_PATH_INFO_V2 NV_DISPLAYCONFIG_PATH_INFO;
+
+//! \ingroup dispcontrol
+>>>>>>> 8c320ca... added xevan
 #define NV_DISPLAYCONFIG_PATH_INFO_VER1                 MAKE_NVAPI_VERSION(NV_DISPLAYCONFIG_PATH_INFO_V1,1)
 
 //! \ingroup dispcontrol
 #define NV_DISPLAYCONFIG_PATH_INFO_VER2                 MAKE_NVAPI_VERSION(NV_DISPLAYCONFIG_PATH_INFO_V2,2)
 
+<<<<<<< HEAD
 #ifndef NV_DISPLAYCONFIG_PATH_INFO_VER
 
 typedef NV_DISPLAYCONFIG_PATH_INFO_V2 NV_DISPLAYCONFIG_PATH_INFO;
@@ -946,6 +1045,11 @@ typedef NV_DISPLAYCONFIG_SOURCE_MODE_INFO_V1 NV_DISPLAYCONFIG_SOURCE_MODE_INFO;
 #endif
 
 
+=======
+//! \ingroup dispcontrol
+#define NV_DISPLAYCONFIG_PATH_INFO_VER                  NV_DISPLAYCONFIG_PATH_INFO_VER2
+
+>>>>>>> 8c320ca... added xevan
 //! \ingroup dispcontrol
 typedef enum _NV_DISPLAYCONFIG_FLAGS
 {
@@ -1122,7 +1226,11 @@ NVAPI_INTERFACE NvAPI_GetDisplayDriverVersion(NvDisplayHandle hNvDisplay, NV_DIS
 //!
 //!   \ingroup oglapi
 ///////////////////////////////////////////////////////////////////////////////
+<<<<<<< HEAD
 typedef void (* NVAPI_OGLEXPERT_CALLBACK) (unsigned int categoryId, unsigned int messageId, unsigned int detailLevel, int objectId, const char *messageStr);
+=======
+typedef void (* NVAPI_OGLEXPERT_CALLBACK) (uint32_t categoryId, uint32_t messageId, uint32_t detailLevel, int objectId, const char *messageStr);
+>>>>>>> 8c320ca... added xevan
 
 
 
@@ -1481,6 +1589,10 @@ typedef enum
 } NV_MONITOR_CONN_TYPE;
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 8c320ca... added xevan
 //! \addtogroup gpu
 //! @{
 #define NV_GPU_CONNECTED_IDS_FLAG_UNCACHED          NV_BIT(0) //!< Get uncached connected devices
@@ -1507,17 +1619,26 @@ typedef struct _NV_GPU_DISPLAYIDS
     NvU32    isOSVisible:1;             //!< if bit is set, then this display is reported to the OS
     NvU32    isWFD:1;                   //!< if bit is set, then this display is wireless
     NvU32    isConnected:1;             //!< if bit is set, then this display is connected
+<<<<<<< HEAD
     NvU32    reservedInternal:10;       //!< Do not use
     NvU32    isPhysicallyConnected:1;   //!< if bit is set, then this display is a phycially connected display; Valid only when isConnected bit is set
     NvU32    reserved: 14;              //!< must be zero
+=======
+    NvU32    reserved: 22;              //!< must be zero
+>>>>>>> 8c320ca... added xevan
 } NV_GPU_DISPLAYIDS;
 
 //! \ingroup gpu
 //! Macro for constructing the version field of ::_NV_GPU_DISPLAYIDS
 #define NV_GPU_DISPLAYIDS_VER1          MAKE_NVAPI_VERSION(NV_GPU_DISPLAYIDS,1)
+<<<<<<< HEAD
 #define NV_GPU_DISPLAYIDS_VER2          MAKE_NVAPI_VERSION(NV_GPU_DISPLAYIDS,3)
 
 #define NV_GPU_DISPLAYIDS_VER NV_GPU_DISPLAYIDS_VER2
+=======
+
+#define NV_GPU_DISPLAYIDS_VER NV_GPU_DISPLAYIDS_VER1
+>>>>>>> 8c320ca... added xevan
 
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -1710,7 +1831,11 @@ NVAPI_INTERFACE NvAPI_GPU_GetActiveOutputs(NvPhysicalGpuHandle hPhysicalGpu, NvU
 // FUNCTION NAME: NvAPI_GPU_SetEDID
 //
 //!  Thus function sets the EDID data for the specified GPU handle and connection bit mask.
+<<<<<<< HEAD
 //!  User can either send (Gpu handle & output id)  or only display Id in variable displayOutputId parameter & hPhysicalGpu parameter can be default handle (0).
+=======
+//!  displayOutputId should have exactly 1 bit set to indicate a single display. See \ref handles.
+>>>>>>> 8c320ca... added xevan
 //!  \note The EDID will be cached across the boot session and will be enumerated to the OS in this call.
 //!        To remove the EDID set sizeofEDID to zero.
 //!        OS and NVAPI connection status APIs will reflect the newly set or removed EDID dynamically.
@@ -2155,6 +2280,7 @@ NVAPI_INTERFACE NvAPI_GPU_GetVirtualFrameBufferSize(NvPhysicalGpuHandle hPhysica
 
 
 
+<<<<<<< HEAD
 ///////////////////////////////////////////////////////////////////////////////
 //
 // FUNCTION NAME: NvAPI_GPU_GetQuadroStatus
@@ -2172,6 +2298,8 @@ NVAPI_INTERFACE NvAPI_GPU_GetVirtualFrameBufferSize(NvPhysicalGpuHandle hPhysica
 NVAPI_INTERFACE NvAPI_GPU_GetQuadroStatus(NvPhysicalGpuHandle hPhysicalGpu, NvU32 *pStatus);
 
 
+=======
+>>>>>>> 8c320ca... added xevan
 
 
 //! \ingroup gpu
@@ -2182,6 +2310,7 @@ typedef struct _NV_BOARD_INFO
 
 }NV_BOARD_INFO_V1;
 
+<<<<<<< HEAD
 #define NV_BOARD_INFO_VER1  MAKE_NVAPI_VERSION(NV_BOARD_INFO_V1,1)
 #ifndef NV_BOARD_INFO_VER
 //! \ingroup gpu
@@ -2190,6 +2319,14 @@ typedef NV_BOARD_INFO_V1    NV_BOARD_INFO;
 //! \ingroup gpu
 #define NV_BOARD_INFO_VER   NV_BOARD_INFO_VER1
 #endif
+=======
+//! \ingroup gpu
+typedef NV_BOARD_INFO_V1    NV_BOARD_INFO;
+//! \ingroup gpu
+#define NV_BOARD_INFO_VER1  MAKE_NVAPI_VERSION(NV_BOARD_INFO_V1,1)
+//! \ingroup gpu
+#define NV_BOARD_INFO_VER   NV_BOARD_INFO_VER1
+>>>>>>> 8c320ca... added xevan
 
 //! SUPPORTED OS:  Windows XP and higher
 //!
@@ -2230,7 +2367,11 @@ NVAPI_INTERFACE NvAPI_GPU_GetBoardInfo(NvPhysicalGpuHandle hPhysicalGpu, NV_BOAR
 
 //! \ingroup gpuclock
 //! @{
+<<<<<<< HEAD
 #define NVAPI_MAX_GPU_CLOCKS            32
+=======
+#define NVAPI_MAX_GPU_CLOCKS 32
+>>>>>>> 8c320ca... added xevan
 #define NVAPI_MAX_GPU_PUBLIC_CLOCKS     32
 #define NVAPI_MAX_GPU_PERF_CLOCKS       32
 #define NVAPI_MAX_GPU_PERF_VOLTAGES     16
@@ -2243,7 +2384,10 @@ typedef enum _NV_GPU_PUBLIC_CLOCK_ID
     NVAPI_GPU_PUBLIC_CLOCK_GRAPHICS  = 0,
     NVAPI_GPU_PUBLIC_CLOCK_MEMORY    = 4,
     NVAPI_GPU_PUBLIC_CLOCK_PROCESSOR = 7,
+<<<<<<< HEAD
     NVAPI_GPU_PUBLIC_CLOCK_VIDEO     = 8,
+=======
+>>>>>>> 8c320ca... added xevan
     NVAPI_GPU_PUBLIC_CLOCK_UNDEFINED = NVAPI_MAX_GPU_PUBLIC_CLOCKS,
 } NV_GPU_PUBLIC_CLOCK_ID;
 
@@ -2305,8 +2449,12 @@ typedef NV_GPU_CLOCK_FREQUENCIES_V2 NV_GPU_CLOCK_FREQUENCIES;
 //! @{
 #define NV_GPU_CLOCK_FREQUENCIES_VER_1    MAKE_NVAPI_VERSION(NV_GPU_CLOCK_FREQUENCIES_V1,1)
 #define NV_GPU_CLOCK_FREQUENCIES_VER_2    MAKE_NVAPI_VERSION(NV_GPU_CLOCK_FREQUENCIES_V2,2)
+<<<<<<< HEAD
 #define NV_GPU_CLOCK_FREQUENCIES_VER_3    MAKE_NVAPI_VERSION(NV_GPU_CLOCK_FREQUENCIES_V2,3)
 #define NV_GPU_CLOCK_FREQUENCIES_VER	  NV_GPU_CLOCK_FREQUENCIES_VER_3
+=======
+#define NV_GPU_CLOCK_FREQUENCIES_VER	  NV_GPU_CLOCK_FREQUENCIES_VER_2
+>>>>>>> 8c320ca... added xevan
 //! @}
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -2447,11 +2595,16 @@ typedef  NV_GPU_PERF_PSTATES_INFO_V2 NV_GPU_PERF_PSTATES_INFO;
 //! Macro for constructing the version field of NV_GPU_PERF_PSTATES_INFO_V2
 #define NV_GPU_PERF_PSTATES_INFO_VER2  MAKE_NVAPI_VERSION(NV_GPU_PERF_PSTATES_INFO_V2,2)
 
+<<<<<<< HEAD
 //! Macro for constructing the version field of NV_GPU_PERF_PSTATES_INFO_V2
 #define NV_GPU_PERF_PSTATES_INFO_VER3  MAKE_NVAPI_VERSION(NV_GPU_PERF_PSTATES_INFO_V2,3)
 
 //! Macro for constructing the version field of NV_GPU_PERF_PSTATES_INFO
 #define NV_GPU_PERF_PSTATES_INFO_VER   NV_GPU_PERF_PSTATES_INFO_VER3
+=======
+//! Macro for constructing the version field of NV_GPU_PERF_PSTATES_INFO
+#define NV_GPU_PERF_PSTATES_INFO_VER   NV_GPU_PERF_PSTATES_INFO_VER2
+>>>>>>> 8c320ca... added xevan
 
 //! @}
 
@@ -2718,11 +2871,16 @@ typedef NV_GPU_PERF_PSTATES20_INFO_V2   NV_GPU_PERF_PSTATES20_INFO;
 //! Macro for constructing the version field of NV_GPU_PERF_PSTATES20_INFO_V2
 #define NV_GPU_PERF_PSTATES20_INFO_VER2 MAKE_NVAPI_VERSION(NV_GPU_PERF_PSTATES20_INFO_V2,2)
 
+<<<<<<< HEAD
 //! Macro for constructing the version field of NV_GPU_PERF_PSTATES20_INFO_V2
 #define NV_GPU_PERF_PSTATES20_INFO_VER3 MAKE_NVAPI_VERSION(NV_GPU_PERF_PSTATES20_INFO_V2,3)
 
 //! Macro for constructing the version field of NV_GPU_PERF_PSTATES20_INFO
 #define NV_GPU_PERF_PSTATES20_INFO_VER  NV_GPU_PERF_PSTATES20_INFO_VER3
+=======
+//! Macro for constructing the version field of NV_GPU_PERF_PSTATES20_INFO
+#define NV_GPU_PERF_PSTATES20_INFO_VER  NV_GPU_PERF_PSTATES20_INFO_VER2
+>>>>>>> 8c320ca... added xevan
 
 //! @}
 
@@ -2838,6 +2996,10 @@ typedef struct
 ///////////////////////////////////////////////////////////////////////////////
 NVAPI_INTERFACE NvAPI_GPU_GetDynamicPstatesInfoEx(NvPhysicalGpuHandle hPhysicalGpu, NV_GPU_DYNAMIC_PSTATES_INFO_EX *pDynamicPstatesInfoEx);
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 8c320ca... added xevan
 ///////////////////////////////////////////////////////////////////////////////////
 //  Thermal API
 //  Provides ability to get temperature levels from the various thermal sensors associated with the GPU
@@ -3654,7 +3816,11 @@ typedef struct
 //! \retval ::NVAPI_API_NOT_INITIALIZED NvAPI not initialized.
 //! \retval ::NVAPI_NOT_SUPPORTED Interface not supported by the driver used, or only supported on selected GPUs
 //! \retval ::NVAPI_INVALID_ARGUMENT Invalid input data.
+<<<<<<< HEAD
 //! \retval ::NVAPI_INCOMPATIBLE_STRUCT_VERSION NV_SCANOUT_WARPING_DATA structure version mismatch.
+=======
+//! \retval ::NVAPI_INCOMPATIBLE_STRUCT_VERSION NV_SCANOUT_INTENSITY_DATA structure version mismatch.
+>>>>>>> 8c320ca... added xevan
 //! \retval ::NVAPI_OK Feature enabled.
 //! \retval ::NVAPI_ERROR Miscellaneous error occurred.
 //!
@@ -3698,6 +3864,7 @@ typedef struct _NV_SCANOUT_WARPING_STATE_DATA
 ///////////////////////////////////////////////////////////////////////////////
 NVAPI_INTERFACE NvAPI_GPU_GetScanoutWarpingState(__in NvU32 displayId, __inout NV_SCANOUT_WARPING_STATE_DATA* scanoutWarpingStateData);
 
+<<<<<<< HEAD
 typedef enum
 {
     NV_GPU_SCANOUT_COMPOSITION_PARAMETER_WARPING_RESAMPLING_METHOD      = 0
@@ -3774,6 +3941,8 @@ NVAPI_INTERFACE NvAPI_GPU_SetScanoutCompositionParameter(NvU32 displayId, NV_GPU
 NVAPI_INTERFACE NvAPI_GPU_GetScanoutCompositionParameter(__in NvU32 displayId, __in NV_GPU_SCANOUT_COMPOSITION_PARAMETER parameter,
                                                          __out NV_GPU_SCANOUT_COMPOSITION_PARAMETER_VALUE *parameterData, __out float *pContainer);
 
+=======
+>>>>>>> 8c320ca... added xevan
 
 ///////////////////////////////////////////////////////////////////////////////
 // FUNCTION NAME: NvAPI_GPU_GetScanoutConfiguration
@@ -3810,7 +3979,11 @@ typedef struct _NV_SCANOUT_INFORMATION
     NvSBox     targetViewportRect;      //!< Area inside the rect described by targetDisplayWidth/Height sourceViewportRect is scanned out to.
     NvU32      targetDisplayWidth;      //!< Horizontal size of the active resolution scanned out to the display.
     NvU32      targetDisplayHeight;     //!< Vertical size of the active resolution scanned out to the display.
+<<<<<<< HEAD
     NvU32      cloneImportance;         //!< If targets are cloned views of the sourceDesktopRect the cloned targets have an importance assigned (0:primary,1 secondary,...).
+=======
+    NvU32      cloneImportance;         //!< If targets are cloned views of the sourceDesktopRect the cloned targets have an imporantce assigned (0:primary,1 secondary,...).
+>>>>>>> 8c320ca... added xevan
     NV_ROTATE  sourceToTargetRotation;  //!< Rotation performed between the sourceViewportRect and the targetViewportRect.
 } NV_SCANOUT_INFORMATION;
 
@@ -3834,6 +4007,10 @@ typedef struct _NV_SCANOUT_INFORMATION
 ///////////////////////////////////////////////////////////////////////////////
 NVAPI_INTERFACE NvAPI_GPU_GetScanoutConfigurationEx(__in NvU32 displayId, __inout NV_SCANOUT_INFORMATION *pScanoutInformation);
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 8c320ca... added xevan
 //! Used in NvAPI_GPU_GetPerfDecreaseInfo.
 //! Bit masks for knowing the exact reason for performance decrease
 typedef enum _NVAPI_GPU_PERF_DECREASE
@@ -4322,6 +4499,7 @@ NVAPI_INTERFACE NvAPI_GetAssociatedDisplayOutputId(NvDisplayHandle hNvDisplay, N
 
 //! \ingroup dispcontrol
 //! Used in NvAPI_GetDisplayPortInfo().
+<<<<<<< HEAD
 typedef struct _NV_DISPLAY_PORT_INFO_V1
 {
     NvU32               version;                                  //!< Structure version
@@ -4370,6 +4548,35 @@ typedef struct _NV_DISPLAY_PORT_INFO_V1
 #define NV_DISPLAY_PORT_INFO_VER1  MAKE_NVAPI_VERSION(NV_DISPLAY_PORT_INFO,1)
 #define NV_DISPLAY_PORT_INFO_VER2  MAKE_NVAPI_VERSION(NV_DISPLAY_PORT_INFO,2)
 #define NV_DISPLAY_PORT_INFO_VER   NV_DISPLAY_PORT_INFO_VER2
+=======
+typedef struct
+{
+    NvU32               version;                     //!< Structure version
+    NvU32               dpcd_ver;                    //!< DPCD version of the monitor
+    NV_DP_LINK_RATE     maxLinkRate;                 //!< Maximum supported link rate
+    NV_DP_LANE_COUNT    maxLaneCount;                //!< Maximum supported lane count
+    NV_DP_LINK_RATE     curLinkRate;                 //!< Current link rate
+    NV_DP_LANE_COUNT    curLaneCount;                //!< Current lane count
+    NV_DP_COLOR_FORMAT  colorFormat;                 //!< Current color format
+    NV_DP_DYNAMIC_RANGE dynamicRange;                //!< Dynamic range
+    NV_DP_COLORIMETRY   colorimetry;                 //!< Ignored in RGB space
+    NV_DP_BPC           bpc;                         //!< Current bit-per-component;
+    NvU32               isDp                   : 1;  //!< If the monitor is driven by a DisplayPort
+    NvU32               isInternalDp           : 1;  //!< If the monitor is driven by an NV Dp transmitter
+    NvU32               isColorCtrlSupported   : 1;  //!< If the color format change is supported
+    NvU32               is6BPCSupported        : 1;  //!< If 6 bpc is supported
+    NvU32               is8BPCSupported        : 1;  //!< If 8 bpc is supported
+    NvU32               is10BPCSupported       : 1;  //!< If 10 bpc is supported
+    NvU32               is12BPCSupported       : 1;  //!< If 12 bpc is supported
+    NvU32               is16BPCSupported       : 1;  //!< If 16 bpc is supported
+    NvU32               isYCrCb422Supported    : 1;  //!< If YCrCb422 is supported
+    NvU32               isYCrCb444Supported    : 1;  //!< If YCrCb444 is supported
+
+ } NV_DISPLAY_PORT_INFO;
+
+//! Macro for constructing the version field of NV_DISPLAY_PORT_INFO.
+#define NV_DISPLAY_PORT_INFO_VER  MAKE_NVAPI_VERSION(NV_DISPLAY_PORT_INFO,1)
+>>>>>>> 8c320ca... added xevan
 
 ///////////////////////////////////////////////////////////////////////////////
 // FUNCTION NAME:   NvAPI_GetDisplayPortInfo
@@ -5060,8 +5267,11 @@ typedef enum
     NV_COLOR_FORMAT_RGB             = 0,
     NV_COLOR_FORMAT_YUV422,
     NV_COLOR_FORMAT_YUV444,
+<<<<<<< HEAD
     NV_COLOR_FORMAT_YUV420,
 
+=======
+>>>>>>> 8c320ca... added xevan
     NV_COLOR_FORMAT_DEFAULT         = 0xFE,
     NV_COLOR_FORMAT_AUTO            = 0xFF
 } NV_COLOR_FORMAT;
@@ -5078,14 +5288,18 @@ typedef enum
     NV_COLOR_COLORIMETRY_SYCC601,
     NV_COLOR_COLORIMETRY_ADOBEYCC601,
     NV_COLOR_COLORIMETRY_ADOBERGB,
+<<<<<<< HEAD
     NV_COLOR_COLORIMETRY_BT2020RGB,
     NV_COLOR_COLORIMETRY_BT2020YCC,
     NV_COLOR_COLORIMETRY_BT2020cYCC,
 
+=======
+>>>>>>> 8c320ca... added xevan
     NV_COLOR_COLORIMETRY_DEFAULT         = 0xFE,
     NV_COLOR_COLORIMETRY_AUTO            = 0xFF
 } NV_COLOR_COLORIMETRY;
 
+<<<<<<< HEAD
 typedef enum _NV_DYNAMIC_RANGE
 {
     NV_DYNAMIC_RANGE_VESA     = 0x0,
@@ -5130,12 +5344,16 @@ typedef struct _NV_COLOR_DATA_V2
 } NV_COLOR_DATA_V2;
 
 typedef struct _NV_COLOR_DATA_V3
+=======
+typedef struct
+>>>>>>> 8c320ca... added xevan
 {
     NvU32 version; //!< Version of this structure
     NvU16 size;    //!< Size of this structure
     NvU8  cmd;
     struct
     {
+<<<<<<< HEAD
         NvU8     colorFormat;    //!< One of NV_COLOR_FORMAT enum values.
         NvU8     colorimetry;    //!< One of NV_COLOR_COLORIMETRY enum values.
         NvU8     dynamicRange;   //!< One of NV_DYNAMIC_RANGE enum values.
@@ -5152,6 +5370,18 @@ typedef NV_COLOR_DATA_V3    NV_COLOR_DATA;
 
 NVAPI_INTERFACE NvAPI_Disp_ColorControl(NvU32 displayId, NV_COLOR_DATA *pColorData);
 
+=======
+        NvU8  colorFormat;
+        NvU8  colorimetry;
+    } data;
+} NV_COLOR_DATA;
+
+NVAPI_INTERFACE NvAPI_Disp_ColorControl(NvU32 displayId, NV_COLOR_DATA *pColorData);
+
+//! Macro for constructing the version field of ::NV_COLOR_DATA
+#define NV_COLOR_DATA_VER   MAKE_NVAPI_VERSION(NV_COLOR_DATA,1)
+
+>>>>>>> 8c320ca... added xevan
 //! @}
 
 //! \ingroup dispcontrol
@@ -5177,6 +5407,7 @@ typedef struct
 //! Used in NvAPI_DISP_GetTiming().
 typedef struct _NV_TIMING_INPUT
 {
+<<<<<<< HEAD
     NvU32 version;                      //!< (IN)     structure version
 
     NvU32 width;						//!< Visible horizontal size
@@ -5186,6 +5417,17 @@ typedef struct _NV_TIMING_INPUT
     NV_TIMING_FLAG flag;				//!< Flag containing additional info for timing calculation.
 
     NV_TIMING_OVERRIDE type;			//!< Timing type(formula) to use for calculating the timing
+=======
+	NvU32 version;                       //!< (IN)     structure version
+
+	NvU32 width;						//!< Visible horizontal size
+	NvU32 height;						//!< Visible vertical size
+	float rr;							//!< Timing refresh rate
+
+	NV_TIMING_FLAG flag;				//!< Flag containing additional info for timing calculation.
+
+	NV_TIMING_OVERRIDE type;			//!< Timing type(formula) to use for calculating the timing
+>>>>>>> 8c320ca... added xevan
 }NV_TIMING_INPUT;
 
 #define NV_TIMING_INPUT_VER   MAKE_NVAPI_VERSION(NV_TIMING_INPUT,1)
@@ -5305,7 +5547,11 @@ typedef struct _NV_MONITOR_CAPS_VSDB
 
 
 //! See NvAPI_DISP_GetMonitorCapabilities().
+<<<<<<< HEAD
 typedef struct _NV_MONITOR_CAPABILITIES_V1
+=======
+typedef struct _NV_MONITOR_CAPABILITIES
+>>>>>>> 8c320ca... added xevan
 {
     NvU32    version;
     NvU16    size;
@@ -5316,6 +5562,7 @@ typedef struct _NV_MONITOR_CAPABILITIES_V1
         NV_MONITOR_CAPS_VSDB  vsdb;
         NV_MONITOR_CAPS_VCDB  vcdb;
     } data;
+<<<<<<< HEAD
 } NV_MONITOR_CAPABILITIES_V1;
 
 typedef NV_MONITOR_CAPABILITIES_V1 NV_MONITOR_CAPABILITIES;
@@ -5323,6 +5570,12 @@ typedef NV_MONITOR_CAPABILITIES_V1 NV_MONITOR_CAPABILITIES;
 //! Macro for constructing the version field of ::NV_MONITOR_CAPABILITIES_V1
 #define NV_MONITOR_CAPABILITIES_VER1   MAKE_NVAPI_VERSION(NV_MONITOR_CAPABILITIES_V1,1)
 #define NV_MONITOR_CAPABILITIES_VER    NV_MONITOR_CAPABILITIES_VER1
+=======
+} NV_MONITOR_CAPABILITIES;
+
+//! Macro for constructing the version field of ::NV_MONITOR_CAPABILITIES
+#define NV_MONITOR_CAPABILITIES_VER   MAKE_NVAPI_VERSION(NV_MONITOR_CAPABILITIES,1)
+>>>>>>> 8c320ca... added xevan
 
 //! @}
 
@@ -5891,6 +6144,7 @@ typedef struct
 
 //
 //! Basic per-display settings that are used in setting/getting the Mosaic mode
+<<<<<<< HEAD
 typedef struct _NV_MOSAIC_DISPLAY_SETTING_V1
 {
     NvU32                        version;            //!< Version of this structure
@@ -5901,12 +6155,16 @@ typedef struct _NV_MOSAIC_DISPLAY_SETTING_V1
 } NV_MOSAIC_DISPLAY_SETTING_V1;
 
 typedef struct NV_MOSAIC_DISPLAY_SETTING_V2
+=======
+typedef struct
+>>>>>>> 8c320ca... added xevan
 {
     NvU32                        version;            //!< Version of this structure
     NvU32                        width;              //!< Per-display width
     NvU32                        height;             //!< Per-display height
     NvU32                        bpp;                //!< Bits per pixel
     NvU32                        freq;               //!< Display frequency
+<<<<<<< HEAD
     NvU32                        rrx1k;              //!< Display frequency in x1k
 } NV_MOSAIC_DISPLAY_SETTING_V2;
 
@@ -5916,6 +6174,12 @@ typedef NV_MOSAIC_DISPLAY_SETTING_V2 NV_MOSAIC_DISPLAY_SETTING;
 #define NVAPI_MOSAIC_DISPLAY_SETTING_VER1         MAKE_NVAPI_VERSION(NV_MOSAIC_DISPLAY_SETTING_V1,1)
 #define NVAPI_MOSAIC_DISPLAY_SETTING_VER2         MAKE_NVAPI_VERSION(NV_MOSAIC_DISPLAY_SETTING_V2,2)
 #define NVAPI_MOSAIC_DISPLAY_SETTING_VER          NVAPI_MOSAIC_DISPLAY_SETTING_VER2
+=======
+} NV_MOSAIC_DISPLAY_SETTING;
+
+//! Macro for constructing the version field of NV_MOSAIC_DISPLAY_SETTING
+#define NVAPI_MOSAIC_DISPLAY_SETTING_VER         MAKE_NVAPI_VERSION(NV_MOSAIC_DISPLAY_SETTING,1)
+>>>>>>> 8c320ca... added xevan
 
 
 //
@@ -5929,6 +6193,7 @@ typedef NV_MOSAIC_DISPLAY_SETTING_V2 NV_MOSAIC_DISPLAY_SETTING;
 //
 //! This structure is used to contain a list of supported Mosaic topologies
 //! along with the display settings that can be used.
+<<<<<<< HEAD
 typedef struct _NV_MOSAIC_SUPPORTED_TOPO_INFO_V1
 {
     NvU32                          version;                                         //!< Version of this structure
@@ -5955,6 +6220,20 @@ typedef NV_MOSAIC_SUPPORTED_TOPO_INFO_V2 NV_MOSAIC_SUPPORTED_TOPO_INFO;
 #define NVAPI_MOSAIC_SUPPORTED_TOPO_INFO_VER1         MAKE_NVAPI_VERSION(NV_MOSAIC_SUPPORTED_TOPO_INFO_V1,1)
 #define NVAPI_MOSAIC_SUPPORTED_TOPO_INFO_VER2         MAKE_NVAPI_VERSION(NV_MOSAIC_SUPPORTED_TOPO_INFO_V2,2)
 #define NVAPI_MOSAIC_SUPPORTED_TOPO_INFO_VER          NVAPI_MOSAIC_SUPPORTED_TOPO_INFO_VER2
+=======
+typedef struct
+{
+    NvU32                       version;                                         //!< Version of this structure
+    NvU32                       topoBriefsCount;                                 //!< Number of topologies in below array
+    NV_MOSAIC_TOPO_BRIEF        topoBriefs[NV_MOSAIC_TOPO_MAX];                  //!< List of supported topologies with only brief details
+    NvU32                       displaySettingsCount;                            //!< Number of display settings in below array
+    NV_MOSAIC_DISPLAY_SETTING   displaySettings[NV_MOSAIC_DISPLAY_SETTINGS_MAX]; //!< List of per display settings possible
+
+} NV_MOSAIC_SUPPORTED_TOPO_INFO;
+
+//! Macro forconstructing  the version field of NV_MOSAIC_SUPPORTED_TOPO_INFO
+#define NVAPI_MOSAIC_SUPPORTED_TOPO_INFO_VER         MAKE_NVAPI_VERSION(NV_MOSAIC_SUPPORTED_TOPO_INFO,1)
+>>>>>>> 8c320ca... added xevan
 
 
 //
@@ -6269,13 +6548,18 @@ NVAPI_INTERFACE NvAPI_Mosaic_EnableCurrentTopo(NvU32 enable);
 
 //! \ingroup mosaicapi
 //! @{
+<<<<<<< HEAD
 typedef struct _NV_MOSAIC_GRID_TOPO_DISPLAY_V1
+=======
+typedef struct
+>>>>>>> 8c320ca... added xevan
 {
     NvU32                       displayId;              //!< DisplayID of the display
     NvS32                       overlapX;               //!< (+overlap, -gap)
     NvS32                       overlapY;               //!< (+overlap, -gap)
     NV_ROTATE                   rotation;               //!< Rotation of display
     NvU32                       cloneGroup;             //!< Reserved, must be 0
+<<<<<<< HEAD
 } NV_MOSAIC_GRID_TOPO_DISPLAY_V1;
 
 typedef enum _NV_PIXEL_SHIFT_TYPE
@@ -6345,6 +6629,35 @@ typedef NV_MOSAIC_GRID_TOPO_V2           NV_MOSAIC_GRID_TOPO;
 
 //! Macro for constructing the version field of ::NV_MOSAIC_GRID_TOPO
 #define NV_MOSAIC_GRID_TOPO_VER          NV_MOSAIC_GRID_TOPO_VER2
+=======
+} NV_MOSAIC_GRID_TOPO_DISPLAY;
+
+typedef struct
+{
+    NvU32                       version;                            //!< Version of this structure
+    NvU32                       rows;                               //!< Number of rows
+    NvU32                       columns;                            //!< Number of columns
+    NvU32                       displayCount;                       //!< Number of display details
+    NvU32                       applyWithBezelCorrect : 1;          //!< When enabling and doing the modeset, do we switch to the bezel-corrected resolution
+    NvU32                       immersiveGaming : 1;                //!< Enable as immersive gaming instead of Mosaic SLI (for Quadro-boards only)
+    NvU32                       baseMosaic : 1;                     //!< Enable as Base Mosaic (Panoramic) instead of Mosaic SLI (for NVS and Quadro-boards only)
+    NvU32                       driverReloadAllowed : 1;            //!< If necessary, reloading the driver is permitted (for Vista and above only). Will not be persisted. Value undefined on get.
+    NvU32                       acceleratePrimaryDisplay : 1;       //!< Enable SLI acceleration on the primary display while in single-wide mode (For Immersive Gaming only). Will not be persisted. Value undefined on get.
+    NvU32                       reserved : 27;                      //!< Reserved, must be 0
+    NV_MOSAIC_GRID_TOPO_DISPLAY displays[NV_MOSAIC_MAX_DISPLAYS];   //!< Displays are done as [(row * columns) + column]
+    NV_MOSAIC_DISPLAY_SETTING   displaySettings;                    //!< Display settings
+} NV_MOSAIC_GRID_TOPO_V1;
+
+//! Macro for constructing the version field of ::NV_MOSAIC_GRID_TOPO_V1
+#define NV_MOSAIC_GRID_TOPO_VER1         MAKE_NVAPI_VERSION(NV_MOSAIC_GRID_TOPO_V1,1)
+
+#ifndef NV_MOSAIC_GRID_TOPO_VER
+
+typedef NV_MOSAIC_GRID_TOPO_V1           NV_MOSAIC_GRID_TOPO;
+
+//! Macro for constructing the version field of ::NV_MOSAIC_GRID_TOPO
+#define NV_MOSAIC_GRID_TOPO_VER          NV_MOSAIC_GRID_TOPO_VER1
+>>>>>>> 8c320ca... added xevan
 
 #endif
 
@@ -6352,6 +6665,7 @@ typedef NV_MOSAIC_GRID_TOPO_V2           NV_MOSAIC_GRID_TOPO;
 
 //! since Release R290
 
+<<<<<<< HEAD
 #define NV_MOSAIC_DISPLAYCAPS_PROBLEM_DISPLAY_ON_INVALID_GPU        NV_BIT(0)
 #define NV_MOSAIC_DISPLAYCAPS_PROBLEM_DISPLAY_ON_WRONG_CONNECTOR    NV_BIT(1)
 #define NV_MOSAIC_DISPLAYCAPS_PROBLEM_NO_COMMON_TIMINGS             NV_BIT(2)
@@ -6366,6 +6680,8 @@ typedef NV_MOSAIC_GRID_TOPO_V2           NV_MOSAIC_GRID_TOPO;
 
 
 
+=======
+>>>>>>> 8c320ca... added xevan
 
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -6420,6 +6736,7 @@ NVAPI_INTERFACE NvAPI_Mosaic_SetDisplayGrids(__in_ecount(gridCount) NV_MOSAIC_GR
 
 
 //! \ingroup mosaicapi
+<<<<<<< HEAD
 //! Indicates that a display's position in the grid is sub-optimal.
 #define NV_MOSAIC_DISPLAYTOPO_WARNING_DISPLAY_POSITION            NV_BIT(0)
 
@@ -6428,6 +6745,8 @@ NVAPI_INTERFACE NvAPI_Mosaic_SetDisplayGrids(__in_ecount(gridCount) NV_MOSAIC_GR
 #define NV_MOSAIC_DISPLAYTOPO_WARNING_DRIVER_RELOAD_REQUIRED      NV_BIT(1)
 
 //! \ingroup mosaicapi
+=======
+>>>>>>> 8c320ca... added xevan
 typedef struct
 {
     NvU32 version;
@@ -6438,7 +6757,11 @@ typedef struct
     struct
     {
         NvU32 displayId;             //!< (OUT) The DisplayID of this display.
+<<<<<<< HEAD
         NvU32 errorFlags;            //!< (OUT) Any of the NV_MOSAIC_DISPLAYCAPS_PROBLEM_* flags.
+=======
+        NvU32 errorFlags;            //!< (OUT) Any of the NV_MOSAIC_DISPLAYTOPO_ERROR_* flags.
+>>>>>>> 8c320ca... added xevan
         NvU32 warningFlags;          //!< (OUT) Any of the NV_MOSAIC_DISPLAYTOPO_WARNING_* flags.
 
         NvU32  supportsRotation : 1; //!< (OUT) This display can be rotated
@@ -6784,22 +7107,35 @@ NVAPI_INTERFACE NvAPI_GSync_EnumSyncDevices(__out NvGSyncDeviceHandle nvGSyncHan
 
 
 //! Used in NvAPI_GSync_QueryCapabilities().
+<<<<<<< HEAD
 typedef struct _NV_GSYNC_CAPABILITIES_V1
+=======
+typedef struct _NV_GSYNC_CAPABILITIES
+>>>>>>> 8c320ca... added xevan
 {
     NvU32   version;						//!< Version of the structure
     NvU32   boardId;						//!< Board ID
     NvU32   revision;						//!< FPGA Revision
     NvU32   capFlags;						//!< Capabilities of the Sync board. Reserved for future use
+<<<<<<< HEAD
 } NV_GSYNC_CAPABILITIES_V1;
 
 typedef NV_GSYNC_CAPABILITIES_V1 NV_GSYNC_CAPABILITIES;
+=======
+} NV_GSYNC_CAPABILITIES;
+
+>>>>>>> 8c320ca... added xevan
 
 
 //! \ingroup gsyncapi
 //! Macro for constructing the version field of NV_GSYNC_CAPABILITIES.
+<<<<<<< HEAD
 #define NV_GSYNC_CAPABILITIES_VER1  MAKE_NVAPI_VERSION(NV_GSYNC_CAPABILITIES_V1,1)
 #define NV_GSYNC_CAPABILITIES_VER NV_GSYNC_CAPABILITIES_VER1
 
+=======
+#define NV_GSYNC_CAPABILITIES_VER  MAKE_NVAPI_VERSION(NV_GSYNC_CAPABILITIES,1)
+>>>>>>> 8c320ca... added xevan
 
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -7514,6 +7850,7 @@ NVAPI_INTERFACE NvAPI_D3D11_SetNvShaderExtnSlot(__in IUnknown *pDev,
 #if defined (__cplusplus) && (defined(__d3d11_h__) || defined(__d3d11_1_h__))
 ///////////////////////////////////////////////////////////////////////////////
 //
+<<<<<<< HEAD
 // FUNCTION NAME: NvAPI_D3D11_BeginUAVOverlapEx
 //
 //!   DESCRIPTION: Causes the driver to skip synchronization that is normally needed when accessing UAVs.
@@ -7545,6 +7882,8 @@ NVAPI_INTERFACE NvAPI_D3D11_BeginUAVOverlapEx(__in  IUnknown *pDeviceOrContext, 
 #if defined (__cplusplus) && (defined(__d3d11_h__) || defined(__d3d11_1_h__))
 ///////////////////////////////////////////////////////////////////////////////
 //
+=======
+>>>>>>> 8c320ca... added xevan
 // FUNCTION NAME: NvAPI_D3D11_BeginUAVOverlap
 //
 //!   DESCRIPTION: Causes the driver to skip synchronization that is normally needed when accessing UAVs.
@@ -7587,6 +7926,12 @@ NVAPI_INTERFACE NvAPI_D3D11_EndUAVOverlap(__in  IUnknown *pDeviceOrContext);
 
 #endif //defined (__cplusplus) && (defined(__d3d11_h__) || defined(__d3d11_1_h__))
 
+<<<<<<< HEAD
+=======
+//-----------------------------------------------------------------------------
+// Private Direct3D11 APIs
+//-----------------------------------------------------------------------------
+>>>>>>> 8c320ca... added xevan
 #if defined(_D3D9_H_) || defined(__d3d10_h__) || defined(__d3d10_1_h__) || defined(__d3d11_h__)
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -7609,9 +7954,17 @@ NVAPI_INTERFACE NvAPI_D3D_SetFPSIndicatorState(IUnknown *pDev, NvU8 doEnable);
 
 #endif //if defined(_D3D9_H_) || defined(__d3d10_h__) || defined(__d3d10_1_h__) || defined(__d3d11_h__)
 
+<<<<<<< HEAD
 //! SUPPORTED OS:  Windows Vista and higher
 //!
 #if defined (__cplusplus) && (defined(__d3d11_h__) || defined(__d3d11_1_h__) || defined(__d3d12_h__))
+=======
+
+//! SUPPORTED OS:  Windows Vista and higher
+//!
+
+#if defined (__cplusplus) && (defined(__d3d11_h__) || defined(__d3d11_1_h__))
+>>>>>>> 8c320ca... added xevan
 
 enum NVAPI_QUAD_FILLMODE
 {
@@ -7620,6 +7973,7 @@ enum NVAPI_QUAD_FILLMODE
     NVAPI_QUAD_FILLMODE_FULL_VIEWPORT = 2,
 };
 
+<<<<<<< HEAD
 #endif //defined(__cplusplus) && (defined(__d3d11_h__) || defined(__d3d11_1_h__) || defined(__d3d12_h__))
 
 //! SUPPORTED OS:  Windows Vista and higher
@@ -7641,6 +7995,10 @@ typedef struct NvAPI_D3D11_RASTERIZER_DESC_EX
     BOOL AntialiasedLineEnable;
 
     // NvAPI_D3D11_RASTERIZER_DESC_EX specific member variables
+=======
+typedef struct NvAPI_D3D11_RASTERIZER_DESC_EX : public D3D11_RASTERIZER_DESC
+{
+>>>>>>> 8c320ca... added xevan
     NvU32 ForcedSampleCount;                 //<! Added DX 11.1, part of _DESC1 version of this struct.
     bool ProgrammableSamplePositionsEnable;  //<! enable Programmable Samples feature
     bool InterleavedSamplingEnable;          //<! when jitter is enabled, an app need to fill the whole arrays below, otherwise only as much entries as samples
@@ -7677,6 +8035,10 @@ NVAPI_INTERFACE NvAPI_D3D11_CreateRasterizerState(__in ID3D11Device *pDevice,
 
 #endif //defined(__cplusplus) && defined(__d3d11_h__)
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 8c320ca... added xevan
 //! SUPPORTED OS:  Windows Vista and higher
 //!
 
@@ -7710,6 +8072,7 @@ NVAPI_INTERFACE NvAPI_D3D11_AliasMSAATexture2DAsNonMSAA(__in ID3D11Device *pDevi
 
 #endif //defined(__cplusplus) && defined(__d3d11_h__)
 
+<<<<<<< HEAD
 #if defined (__cplusplus) && (defined(__d3d11_h__) || defined(__d3d12_h__)) && (!defined(CINTERFACE))
 typedef UINT NvAPI_D3D11_SWIZZLE_MODE;
 
@@ -8012,11 +8375,41 @@ NVAPI_INTERFACE NvAPI_D3D12_CreateGraphicsPipelineState(__in ID3D12Device *pDevi
 //! The valid values for minDepth and maxDepth are such that 0 <= minDepth <= maxDepth <= 1
 //!
 //! SUPPORTED OS:  Windows 10
+=======
+//! SUPPORTED OS:  Windows Vista and higher
+//!
+
+#if defined (__cplusplus) && defined(__d3d11_h__)
+
+typedef UINT NvAPI_D3D11_SWIZZLE_MODE;
+
+typedef struct NvAPI_D3D11_VIEWPORT_EX : public D3D11_VIEWPORT
+{
+    bool bUseSubpixelBits;  // Define the number of bits used for sub-pixel snap. 8 is standard.
+                            // The rest is integer pixel coordinate. Leaving fewer bits than necessary to represent
+                            // entire range of int(width) or int(height) produces in undefined results.
+    UINT NumSubpixelBits;
+    bool bUseCoordinateSwizzle;
+    NvAPI_D3D11_SWIZZLE_MODE CoordinateSwizzle;       // Defines how clip-space (x,y,z,w) is swizzled and negated to produce output (x,y,z,w)
+}NvAPI_D3D11_VIEWPORT_EX;
+///////////////////////////////////////////////////////////////////////////////
+//
+// FUNCTION NAME: NvAPI_D3D11_RSSetViewports
+//
+//! \code
+//!   DESCRIPTION: This function is an extension of ID3D11DeviceContext::RSSetViewports with additional per viewport properties
+//!
+//!         \param [in]        pDevice             current d3d device
+//!         \param [in]        NumViewports        Number of viewports to bind
+//!         \param [in]        pViewports          Viewport declaration of type NVAPI_D3D11_VIEWPORT_EX
+//!
+>>>>>>> 8c320ca... added xevan
 //!
 //! \return ::NVAPI_OK     if the call succeeds.
 //! \endcode
 //! \ingroup dx
 ///////////////////////////////////////////////////////////////////////////////
+<<<<<<< HEAD
 
 NVAPI_INTERFACE NvAPI_D3D12_SetDepthBoundsTestValues(__in ID3D12GraphicsCommandList *pCommandList,
                                                      __in const float minDepth,
@@ -8073,6 +8466,13 @@ NVAPI_INTERFACE NvAPI_D3D_IsGSyncActive(__in IUnknown *pDeviceOrContext, __in NV
 #endif //if defined(_D3D9_H_) || defined(__d3d10_h__) || defined(__d3d11_h__)
 
 
+=======
+NVAPI_INTERFACE NvAPI_D3D11_RSSetViewports(__in ID3D11Device *pDevice,
+                                           __in UINT NumViewports,
+                                           __in const NvAPI_D3D11_VIEWPORT_EX *pViewports);
+
+#endif //defined(__cplusplus) && defined(__d3d11_h__)
+>>>>>>> 8c320ca... added xevan
 
 //! SUPPORTED OS:  Windows Vista and higher
 //!
@@ -8095,6 +8495,7 @@ NVAPI_INTERFACE NvAPI_D3D1x_DisableShaderDiskCache(IUnknown *pDevice);
 
 #endif //defined(__cplusplus) && ( defined(__d3d10_h__) || defined(__d3d10_1_h__) ||defined(__d3d11_h__) )
 
+<<<<<<< HEAD
 //! SUPPORTED OS:  Windows Vista and higher
 //!
 #if defined (__cplusplus) && ( defined(__d3d10_h__) || defined(__d3d10_1_h__) ||defined(__d3d11_h__) )
@@ -8442,6 +8843,8 @@ NVAPI_INTERFACE NvAPI_D3D1x_GetLowLatencySupport(__in LUID pAdapterId,
 
 #endif //defined(__cplusplus) && ( defined(__d3d10_h__) || defined(__d3d10_1_h__) || defined(__d3d11_h__) )
 
+=======
+>>>>>>> 8c320ca... added xevan
 /////////////////////////////////////////////////////////////////////////
 // Video Input Output (VIO) API
 /////////////////////////////////////////////////////////////////////////
@@ -10761,7 +11164,11 @@ typedef struct _NVDRS_SETTING_VALUES
 //! Macro for constructing the version field of ::_NVDRS_SETTING_VALUES
 #define NVDRS_SETTING_VALUES_VER    MAKE_NVAPI_VERSION(NVDRS_SETTING_VALUES,1)
 
+<<<<<<< HEAD
 typedef struct _NVDRS_SETTING_V1
+=======
+typedef struct _NVDRS_SETTING
+>>>>>>> 8c320ca... added xevan
 {
      NvU32                      version;                //!< Structure Version
      NvAPI_UnicodeString        settingName;            //!< String name of setting
@@ -10787,6 +11194,7 @@ typedef struct _NVDRS_SETTING_V1
                                                         //!< or only valueLength will be filled in.
          NvAPI_UnicodeString        wszCurrentValue;    //!< Accessing current unicode string value of this setting.
      };
+<<<<<<< HEAD
 } NVDRS_SETTING_V1;
 
 //! Macro for constructing the version field of ::_NVDRS_SETTING
@@ -10794,6 +11202,12 @@ typedef struct _NVDRS_SETTING_V1
 
 typedef NVDRS_SETTING_V1          NVDRS_SETTING;
 #define NVDRS_SETTING_VER         NVDRS_SETTING_VER1
+=======
+} NVDRS_SETTING;
+
+//! Macro for constructing the version field of ::_NVDRS_SETTING
+#define NVDRS_SETTING_VER        MAKE_NVAPI_VERSION(NVDRS_SETTING,1)
+>>>>>>> 8c320ca... added xevan
 
 typedef struct _NVDRS_APPLICATION_V1
 {
@@ -10825,8 +11239,12 @@ typedef struct _NVDRS_APPLICATION_V3
      NvAPI_UnicodeString        fileInFolder;       //!< Select this application only if this file is found.
                                                     //!< When specifying multiple files, separate them using the ':' character.
      NvU32                      isMetro:1;          //!< Windows 8 style app
+<<<<<<< HEAD
      NvU32                      isCommandLine:1;    //!< Command line parsing for the application name
      NvU32                      reserved:30;        //!< Reserved. Should be 0.
+=======
+     NvU32                      reserved:31;        //!< Reserved. Should be 0.
+>>>>>>> 8c320ca... added xevan
 } NVDRS_APPLICATION_V3;
 
 #define NVDRS_APPLICATION_VER_V1        MAKE_NVAPI_VERSION(NVDRS_APPLICATION_V1,1)
@@ -10836,7 +11254,11 @@ typedef struct _NVDRS_APPLICATION_V3
 typedef NVDRS_APPLICATION_V3 NVDRS_APPLICATION;
 #define NVDRS_APPLICATION_VER NVDRS_APPLICATION_VER_V3
 
+<<<<<<< HEAD
 typedef struct _NVDRS_PROFILE_V1
+=======
+typedef struct _NVDRS_PROFILE
+>>>>>>> 8c320ca... added xevan
 {
      NvU32                      version;            //!< Structure Version
      NvAPI_UnicodeString        profileName;        //!< String name of the Profile
@@ -10845,6 +11267,7 @@ typedef struct _NVDRS_PROFILE_V1
      NvU32                      isPredefined;       //!< Is the Profile user-defined, or predefined
      NvU32                      numOfApps;          //!< Total number of applications that belong to this profile. Read-only
      NvU32                      numOfSettings;      //!< Total number of settings applied for this Profile. Read-only
+<<<<<<< HEAD
 } NVDRS_PROFILE_V1;
 
 typedef NVDRS_PROFILE_V1         NVDRS_PROFILE;
@@ -10852,6 +11275,12 @@ typedef NVDRS_PROFILE_V1         NVDRS_PROFILE;
 //! Macro for constructing the version field of ::NVDRS_PROFILE
 #define NVDRS_PROFILE_VER1       MAKE_NVAPI_VERSION(NVDRS_PROFILE_V1,1)
 #define NVDRS_PROFILE_VER        NVDRS_PROFILE_VER1
+=======
+} NVDRS_PROFILE;
+
+//! Macro for constructing the version field of ::_NVDRS_PROFILE
+#define NVDRS_PROFILE_VER        MAKE_NVAPI_VERSION(NVDRS_PROFILE,1)
+>>>>>>> 8c320ca... added xevan
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -11275,11 +11704,19 @@ NVAPI_INTERFACE NvAPI_DRS_EnumApplications(NvDRSSessionHandle hSession, NvDRSPro
 //! SUPPORTED OS:  Windows XP and higher
 //!
 //!
+<<<<<<< HEAD
 //! \param [in]      hSession       Input to the hSession handle
 //! \param [in]      appName        Input appName. For best results, provide a fully qualified path of the type
 //!                                 c:/Folder1/Folder2/App.exe
 //! \param [out]     *phProfile     Returns profile handle.
 //! \param [in,out]  *pApplication  Returns NVDRS_APPLICATION struct pointer.
+=======
+//! \param [in]   hSession       Input to the hSession handle
+//! \param [in]   appName        Input appName. For best results, provide a fully qualified path of the type
+//!                              c:/Folder1/Folder2/App.exe
+//! \param [out]  *phProfile     Returns profile handle.
+//! \param [out]  *pApplication  Returns NVDRS_APPLICATION struct pointer.
+>>>>>>> 8c320ca... added xevan
 //!
 //! \return  This API can return any of the error codes enumerated in #NvAPI_Status.
 //!                  If there are return error codes with specific meaning for this API,
@@ -11289,7 +11726,11 @@ NVAPI_INTERFACE NvAPI_DRS_EnumApplications(NvDRSSessionHandle hSession, NvDRSPro
 //!
 //! \ingroup drsapi
 ///////////////////////////////////////////////////////////////////////////////
+<<<<<<< HEAD
 NVAPI_INTERFACE NvAPI_DRS_FindApplicationByName(__in NvDRSSessionHandle hSession, __in NvAPI_UnicodeString appName, __out NvDRSProfileHandle *phProfile, __inout NVDRS_APPLICATION *pApplication);
+=======
+NVAPI_INTERFACE NvAPI_DRS_FindApplicationByName(NvDRSSessionHandle hSession, NvAPI_UnicodeString appName, NvDRSProfileHandle *phProfile, NVDRS_APPLICATION *pApplication);
+>>>>>>> 8c320ca... added xevan
 
 ///////////////////////////////////////////////////////////////////////////////
 //

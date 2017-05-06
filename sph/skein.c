@@ -35,11 +35,14 @@
 
 #include "sph_skein.h"
 
+<<<<<<< HEAD
 #ifdef __cplusplus
 extern "C"{
 #endif
 
 
+=======
+>>>>>>> 8c320ca... added xevan
 #if SPH_SMALL_FOOTPRINT && !defined SPH_SMALL_FOOTPRINT_SKEIN
 #define SPH_SMALL_FOOTPRINT_SKEIN   1
 #endif
@@ -1247,8 +1250,11 @@ sph_skein512_addbits_and_close(void *cc, unsigned ub, unsigned n, void *dst)
 }
 
 #endif
+<<<<<<< HEAD
 
 
 #ifdef __cplusplus
 }
 #endif
+=======
+>>>>>>> 8c320ca... added xevan

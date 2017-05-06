@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 ﻿/*
+=======
+/*
+>>>>>>> 8c320ca... added xevan
  * A trivial little dlopen()-based wrapper library for the
  * NVIDIA NVML library, to allow runtime discovery of NVML on an
  * arbitrary system.  This is all very hackish and simple-minded, but
@@ -15,16 +19,31 @@
  *
  */
 
+<<<<<<< HEAD
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+=======
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#ifndef _MSC_VER
+#include <libgen.h>
+#endif
+>>>>>>> 8c320ca... added xevan
 
 #include "miner.h"
 #include "nvml.h"
 #include "cuda_runtime.h"
 
+<<<<<<< HEAD
+=======
+// cuda.cpp
+int cuda_num_devices();
+
+>>>>>>> 8c320ca... added xevan
 #ifdef USE_WRAPNVML
 
 extern nvml_handle *hnvml;
@@ -32,6 +51,7 @@ extern char driver_version[32];
 
 static uint32_t device_bus_ids[MAX_GPUS] = { 0 };
 
+<<<<<<< HEAD
 extern uint32_t device_gpu_clocks[MAX_GPUS];
 extern uint32_t device_mem_clocks[MAX_GPUS];
 extern int32_t device_mem_offsets[MAX_GPUS];
@@ -48,6 +68,8 @@ uint32_t limit_prev[MAX_GPUS] = { 0 };
 static bool nvml_plimit_set = false;
 extern bool need_memclockrst;
 
+=======
+>>>>>>> 8c320ca... added xevan
 /*
  * Wrappers to emulate dlopen() on other systems like Windows
  */
@@ -94,7 +116,11 @@ nvml_handle * nvml_create()
 	int i=0;
 	nvml_handle *nvmlh = NULL;
 
+<<<<<<< HEAD
 #ifdef WIN32
+=======
+#if defined(WIN32)
+>>>>>>> 8c320ca... added xevan
 	/* Windows (do not use slashes, else ExpandEnvironmentStrings will mix them) */
 #define  libnvidia_ml "%PROGRAMFILES%\\NVIDIA Corporation\\NVSMI\\nvml.dll"
 #else
@@ -122,18 +148,30 @@ nvml_handle * nvml_create()
 
 	nvmlh->nvml_dll = nvml_dll;
 
+<<<<<<< HEAD
 	nvmlh->nvmlInit = (nvmlReturn_t (*)(void)) wrap_dlsym(nvmlh->nvml_dll, "nvmlInit_v2");
 	if (!nvmlh->nvmlInit)
 		nvmlh->nvmlInit = (nvmlReturn_t (*)(void)) wrap_dlsym(nvmlh->nvml_dll, "nvmlInit");
 	nvmlh->nvmlDeviceGetCount = (nvmlReturn_t (*)(int *)) wrap_dlsym(nvmlh->nvml_dll, "nvmlDeviceGetCount_v2");
 	if (!nvmlh->nvmlDeviceGetCount)
 		nvmlh->nvmlDeviceGetCount = (nvmlReturn_t (*)(int *)) wrap_dlsym(nvmlh->nvml_dll, "nvmlDeviceGetCount");
+=======
+	nvmlh->nvmlInit = (nvmlReturn_t (*)(void))
+		wrap_dlsym(nvmlh->nvml_dll, "nvmlInit_v2");
+	if (!nvmlh->nvmlInit) {
+		nvmlh->nvmlInit = (nvmlReturn_t (*)(void))
+			wrap_dlsym(nvmlh->nvml_dll, "nvmlInit");
+	}
+	nvmlh->nvmlDeviceGetCount = (nvmlReturn_t (*)(int *))
+		wrap_dlsym(nvmlh->nvml_dll, "nvmlDeviceGetCount_v2");
+>>>>>>> 8c320ca... added xevan
 	nvmlh->nvmlDeviceGetHandleByIndex = (nvmlReturn_t (*)(int, nvmlDevice_t *))
 		wrap_dlsym(nvmlh->nvml_dll, "nvmlDeviceGetHandleByIndex_v2");
 	nvmlh->nvmlDeviceGetAPIRestriction = (nvmlReturn_t (*)(nvmlDevice_t, nvmlRestrictedAPI_t, nvmlEnableState_t *))
 		wrap_dlsym(nvmlh->nvml_dll, "nvmlDeviceGetAPIRestriction");
 	nvmlh->nvmlDeviceSetAPIRestriction = (nvmlReturn_t (*)(nvmlDevice_t, nvmlRestrictedAPI_t, nvmlEnableState_t))
 		wrap_dlsym(nvmlh->nvml_dll, "nvmlDeviceSetAPIRestriction");
+<<<<<<< HEAD
 	nvmlh->nvmlDeviceGetDefaultApplicationsClock = (nvmlReturn_t (*)(nvmlDevice_t, nvmlClockType_t, unsigned int *clock))
 		wrap_dlsym(nvmlh->nvml_dll, "nvmlDeviceGetDefaultApplicationsClock");
 	nvmlh->nvmlDeviceGetApplicationsClock = (nvmlReturn_t (*)(nvmlDevice_t, nvmlClockType_t, unsigned int *clocks))
@@ -186,11 +224,39 @@ nvml_handle * nvml_create()
 	nvmlh->nvmlDeviceGetVbiosVersion = (nvmlReturn_t (*)(nvmlDevice_t, char *, unsigned int))
 		wrap_dlsym(nvmlh->nvml_dll, "nvmlDeviceGetVbiosVersion");
 	nvmlh->nvmlSystemGetDriverVersion = (nvmlReturn_t (*)(char *, unsigned int))
+=======
+	nvmlh->nvmlDeviceGetDefaultApplicationsClock = (nvmlReturn_t (*)(nvmlDevice_t, nvmlClockType_t, uint32_t *clock))
+		wrap_dlsym(nvmlh->nvml_dll, "nvmlDeviceGetDefaultApplicationsClock");
+	nvmlh->nvmlDeviceGetApplicationsClock = (nvmlReturn_t (*)(nvmlDevice_t, nvmlClockType_t, uint32_t *clocks))
+		wrap_dlsym(nvmlh->nvml_dll, "nvmlDeviceGetApplicationsClock");
+	nvmlh->nvmlDeviceSetApplicationsClocks = (nvmlReturn_t (*)(nvmlDevice_t, uint32_t mem, uint32_t gpu))
+		wrap_dlsym(nvmlh->nvml_dll, "nvmlDeviceSetApplicationsClocks");
+	nvmlh->nvmlDeviceGetClockInfo = (nvmlReturn_t (*)(nvmlDevice_t, nvmlClockType_t, uint32_t *clock))
+		wrap_dlsym(nvmlh->nvml_dll, "nvmlDeviceGetClockInfo");
+	nvmlh->nvmlDeviceGetPciInfo = (nvmlReturn_t (*)(nvmlDevice_t, nvmlPciInfo_t *))
+		wrap_dlsym(nvmlh->nvml_dll, "nvmlDeviceGetPciInfo");
+	nvmlh->nvmlDeviceGetName = (nvmlReturn_t (*)(nvmlDevice_t, char *, int))
+		wrap_dlsym(nvmlh->nvml_dll, "nvmlDeviceGetName");
+	nvmlh->nvmlDeviceGetTemperature = (nvmlReturn_t (*)(nvmlDevice_t, int, uint32_t *))
+		wrap_dlsym(nvmlh->nvml_dll, "nvmlDeviceGetTemperature");
+	nvmlh->nvmlDeviceGetFanSpeed = (nvmlReturn_t (*)(nvmlDevice_t, uint32_t *))
+		wrap_dlsym(nvmlh->nvml_dll, "nvmlDeviceGetFanSpeed");
+	nvmlh->nvmlDeviceGetPerformanceState = (nvmlReturn_t (*)(nvmlDevice_t, int *))
+		wrap_dlsym(nvmlh->nvml_dll, "nvmlDeviceGetPowerUsage");
+	nvmlh->nvmlDeviceGetSerial = (nvmlReturn_t (*)(nvmlDevice_t, char *, uint32_t))
+		wrap_dlsym(nvmlh->nvml_dll, "nvmlDeviceGetSerial");
+	nvmlh->nvmlDeviceGetUUID = (nvmlReturn_t (*)(nvmlDevice_t, char *, uint32_t))
+		wrap_dlsym(nvmlh->nvml_dll, "nvmlDeviceGetUUID");
+	nvmlh->nvmlDeviceGetVbiosVersion = (nvmlReturn_t (*)(nvmlDevice_t, char *, uint32_t))
+		wrap_dlsym(nvmlh->nvml_dll, "nvmlDeviceGetVbiosVersion");
+	nvmlh->nvmlSystemGetDriverVersion = (nvmlReturn_t (*)(char *, uint32_t))
+>>>>>>> 8c320ca... added xevan
 		wrap_dlsym(nvmlh->nvml_dll, "nvmlSystemGetDriverVersion");
 	nvmlh->nvmlErrorString = (char* (*)(nvmlReturn_t))
 		wrap_dlsym(nvmlh->nvml_dll, "nvmlErrorString");
 	nvmlh->nvmlShutdown = (nvmlReturn_t (*)())
 		wrap_dlsym(nvmlh->nvml_dll, "nvmlShutdown");
+<<<<<<< HEAD
 	// v331
 	nvmlh->nvmlDeviceGetEnforcedPowerLimit = (nvmlReturn_t (*)(nvmlDevice_t, unsigned int *limit))
 		wrap_dlsym(nvmlh->nvml_dll, "nvmlDeviceGetEnforcedPowerLimit");
@@ -209,14 +275,26 @@ nvml_handle * nvml_create()
 	// v36x (API 8 / Pascal)
 	nvmlh->nvmlDeviceGetClock = (nvmlReturn_t (*)(nvmlDevice_t, nvmlClockType_t clockType, nvmlClockId_t clockId, unsigned int *clockMHz))
 		wrap_dlsym(nvmlh->nvml_dll, "nvmlDeviceGetClock");
+=======
+>>>>>>> 8c320ca... added xevan
 
 	if (nvmlh->nvmlInit == NULL ||
 			nvmlh->nvmlShutdown == NULL ||
 			nvmlh->nvmlErrorString == NULL ||
+<<<<<<< HEAD
 			nvmlh->nvmlDeviceGetCount == NULL ||
 			nvmlh->nvmlDeviceGetHandleByIndex == NULL ||
 			nvmlh->nvmlDeviceGetPciInfo == NULL ||
 			nvmlh->nvmlDeviceGetName == NULL)
+=======
+			nvmlh->nvmlSystemGetDriverVersion == NULL ||
+			nvmlh->nvmlDeviceGetCount == NULL ||
+			nvmlh->nvmlDeviceGetHandleByIndex == NULL ||
+			nvmlh->nvmlDeviceGetPciInfo == NULL ||
+			nvmlh->nvmlDeviceGetName == NULL ||
+			nvmlh->nvmlDeviceGetTemperature == NULL ||
+			nvmlh->nvmlDeviceGetFanSpeed == NULL)
+>>>>>>> 8c320ca... added xevan
 	{
 		if (opt_debug)
 			applog(LOG_DEBUG, "Failed to obtain required NVML function pointers");
@@ -226,8 +304,12 @@ nvml_handle * nvml_create()
 	}
 
 	nvmlh->nvmlInit();
+<<<<<<< HEAD
 	if (nvmlh->nvmlSystemGetDriverVersion)
 		nvmlh->nvmlSystemGetDriverVersion(driver_version, sizeof(driver_version));
+=======
+	nvmlh->nvmlSystemGetDriverVersion(driver_version, sizeof(driver_version));
+>>>>>>> 8c320ca... added xevan
 	nvmlh->nvmlDeviceGetCount(&nvmlh->nvml_gpucount);
 
 	/* Query CUDA device count, in case it doesn't agree with NVML, since  */
@@ -241,11 +323,18 @@ nvml_handle * nvml_create()
 	}
 
 	nvmlh->devs = (nvmlDevice_t *) calloc(nvmlh->nvml_gpucount, sizeof(nvmlDevice_t));
+<<<<<<< HEAD
 	nvmlh->nvml_pci_domain_id = (unsigned int*) calloc(nvmlh->nvml_gpucount, sizeof(unsigned int));
 	nvmlh->nvml_pci_bus_id = (unsigned int*) calloc(nvmlh->nvml_gpucount, sizeof(unsigned int));
 	nvmlh->nvml_pci_device_id = (unsigned int*) calloc(nvmlh->nvml_gpucount, sizeof(unsigned int));
 	nvmlh->nvml_pci_vendor_id = (unsigned int*) calloc(nvmlh->nvml_gpucount, sizeof(unsigned int));
 	nvmlh->nvml_pci_subsys_id = (unsigned int*) calloc(nvmlh->nvml_gpucount, sizeof(unsigned int));
+=======
+	nvmlh->nvml_pci_domain_id = (uint32_t*) calloc(nvmlh->nvml_gpucount, sizeof(uint32_t));
+	nvmlh->nvml_pci_bus_id = (uint32_t*) calloc(nvmlh->nvml_gpucount, sizeof(uint32_t));
+	nvmlh->nvml_pci_device_id = (uint32_t*) calloc(nvmlh->nvml_gpucount, sizeof(uint32_t));
+	nvmlh->nvml_pci_subsys_id = (uint32_t*) calloc(nvmlh->nvml_gpucount, sizeof(uint32_t));
+>>>>>>> 8c320ca... added xevan
 	nvmlh->nvml_cuda_device_id = (int*) calloc(nvmlh->nvml_gpucount, sizeof(int));
 	nvmlh->cuda_nvml_device_id = (int*) calloc(nvmlh->cuda_gpucount, sizeof(int));
 	nvmlh->app_clocks = (nvmlEnableState_t*) calloc(nvmlh->nvml_gpucount, sizeof(nvmlEnableState_t));
@@ -264,8 +353,12 @@ nvml_handle * nvml_create()
 		nvmlh->nvml_pci_domain_id[i] = pciinfo.domain;
 		nvmlh->nvml_pci_bus_id[i]    = pciinfo.bus;
 		nvmlh->nvml_pci_device_id[i] = pciinfo.device;
+<<<<<<< HEAD
 		nvmlh->nvml_pci_vendor_id[i] = pciinfo.pci_device_id;
 		nvmlh->nvml_pci_subsys_id[i] = pciinfo.pci_subsystem_id;
+=======
+		nvmlh->nvml_pci_subsys_id[i] = pciinfo.pci_device_id;
+>>>>>>> 8c320ca... added xevan
 
 		nvmlh->app_clocks[i] = NVML_FEATURE_UNKNOWN;
 		if (nvmlh->nvmlDeviceSetAPIRestriction) {
@@ -276,6 +369,24 @@ nvml_handle * nvml_create()
 		if (nvmlh->nvmlDeviceGetAPIRestriction) {
 			nvmlh->nvmlDeviceGetAPIRestriction(nvmlh->devs[i], NVML_RESTRICTED_API_SET_APPLICATION_CLOCKS,
 				&nvmlh->app_clocks[i]);
+<<<<<<< HEAD
+=======
+			if (nvmlh->app_clocks[i] == NVML_FEATURE_ENABLED && opt_debug) {
+				applog(LOG_DEBUG, "NVML application clock feature is allowed");
+#if 0
+				uint32_t mem;
+				nvmlReturn_t rc;
+				rc = nvmlh->nvmlDeviceGetDefaultApplicationsClock(nvmlh->devs[i], NVML_CLOCK_MEM, &mem);
+				if (rc == NVML_SUCCESS)
+					applog(LOG_DEBUG, "nvmlDeviceGetDefaultApplicationsClock: mem %u", mem);
+				else
+					applog(LOG_DEBUG, "nvmlDeviceGetDefaultApplicationsClock: %s", nvmlh->nvmlErrorString(rc));
+				rc = nvmlh->nvmlDeviceSetApplicationsClocks(nvmlh->devs[i], mem, 1228000);
+				if (rc != NVML_SUCCESS)
+					applog(LOG_DEBUG, "nvmlDeviceSetApplicationsClocks: %s", nvmlh->nvmlErrorString(rc));
+#endif
+			}
+>>>>>>> 8c320ca... added xevan
 		}
 	}
 
@@ -294,7 +405,11 @@ nvml_handle * nvml_create()
 				    (nvmlh->nvml_pci_bus_id[j]    == (uint32_t) props.pciBusID) &&
 				    (nvmlh->nvml_pci_device_id[j] == (uint32_t) props.pciDeviceID)) {
 					if (opt_debug)
+<<<<<<< HEAD
 						applog(LOG_DEBUG, "CUDA GPU %d matches NVML GPU %d by busId %u",
+=======
+						applog(LOG_DEBUG, "CUDA GPU#%d matches NVML GPU %d by busId %u",
+>>>>>>> 8c320ca... added xevan
 							i, j, (uint32_t) props.pciBusID);
 					nvmlh->nvml_cuda_device_id[j] = i;
 					nvmlh->cuda_nvml_device_id[i] = j;
@@ -306,6 +421,7 @@ nvml_handle * nvml_create()
 	return nvmlh;
 }
 
+<<<<<<< HEAD
 /* apply config clocks to an used device */
 int nvml_set_clocks(nvml_handle *nvmlh, int dev_id)
 {
@@ -608,6 +724,8 @@ void nvml_print_device_info(int dev_id)
 	}
 }
 
+=======
+>>>>>>> 8c320ca... added xevan
 int nvml_get_gpucount(nvml_handle *nvmlh, int *gpucount)
 {
 	*gpucount = nvmlh->nvml_gpucount;
@@ -625,10 +743,14 @@ int nvml_get_gpu_name(nvml_handle *nvmlh, int cudaindex, char *namebuf, int bufs
 {
 	int gpuindex = nvmlh->cuda_nvml_device_id[cudaindex];
 	if (gpuindex < 0 || gpuindex >= nvmlh->nvml_gpucount)
+<<<<<<< HEAD
 		return -ENODEV;
 
 	if (!nvmlh->nvmlDeviceGetName)
 		return -ENOSYS;
+=======
+		return -1;
+>>>>>>> 8c320ca... added xevan
 
 	if (nvmlh->nvmlDeviceGetName(nvmlh->devs[gpuindex], namebuf, bufsize) != NVML_SUCCESS)
 		return -1;
@@ -637,15 +759,23 @@ int nvml_get_gpu_name(nvml_handle *nvmlh, int cudaindex, char *namebuf, int bufs
 }
 
 
+<<<<<<< HEAD
 int nvml_get_tempC(nvml_handle *nvmlh, int cudaindex, unsigned int *tempC)
+=======
+int nvml_get_tempC(nvml_handle *nvmlh, int cudaindex, uint32_t *tempC)
+>>>>>>> 8c320ca... added xevan
 {
 	nvmlReturn_t rc;
 	int gpuindex = nvmlh->cuda_nvml_device_id[cudaindex];
 	if (gpuindex < 0 || gpuindex >= nvmlh->nvml_gpucount)
+<<<<<<< HEAD
 		return -ENODEV;
 
 	if (!nvmlh->nvmlDeviceGetTemperature)
 		return -ENOSYS;
+=======
+		return -1;
+>>>>>>> 8c320ca... added xevan
 
 	rc = nvmlh->nvmlDeviceGetTemperature(nvmlh->devs[gpuindex], 0u /* NVML_TEMPERATURE_GPU */, tempC);
 	if (rc != NVML_SUCCESS) {
@@ -656,15 +786,23 @@ int nvml_get_tempC(nvml_handle *nvmlh, int cudaindex, unsigned int *tempC)
 }
 
 
+<<<<<<< HEAD
 int nvml_get_fanpcnt(nvml_handle *nvmlh, int cudaindex, unsigned int *fanpcnt)
+=======
+int nvml_get_fanpcnt(nvml_handle *nvmlh, int cudaindex, uint32_t *fanpcnt)
+>>>>>>> 8c320ca... added xevan
 {
 	nvmlReturn_t rc;
 	int gpuindex = nvmlh->cuda_nvml_device_id[cudaindex];
 	if (gpuindex < 0 || gpuindex >= nvmlh->nvml_gpucount)
+<<<<<<< HEAD
 		return -ENODEV;
 
 	if (!nvmlh->nvmlDeviceGetFanSpeed)
 		return -ENOSYS;
+=======
+		return -1;
+>>>>>>> 8c320ca... added xevan
 
 	rc = nvmlh->nvmlDeviceGetFanSpeed(nvmlh->devs[gpuindex], fanpcnt);
 	if (rc != NVML_SUCCESS) {
@@ -675,6 +813,7 @@ int nvml_get_fanpcnt(nvml_handle *nvmlh, int cudaindex, unsigned int *fanpcnt)
 }
 
 
+<<<<<<< HEAD
 int nvml_get_current_clocks(int cudaindex, unsigned int *graphics_clock, unsigned int *mem_clock)
 {
 	nvmlReturn_t rc;
@@ -685,11 +824,23 @@ int nvml_get_current_clocks(int cudaindex, unsigned int *graphics_clock, unsigne
 	rc = hnvml->nvmlDeviceGetClockInfo(hnvml->devs[gpuindex], NVML_CLOCK_SM, graphics_clock);
 	if (rc != NVML_SUCCESS) return -1;
 	rc = hnvml->nvmlDeviceGetClockInfo(hnvml->devs[gpuindex], NVML_CLOCK_MEM, mem_clock);
+=======
+int nvml_get_current_clocks(nvml_handle *nvmlh, int cudaindex, uint32_t *graphics_clock, uint32_t *mem_clock)
+{
+	nvmlReturn_t rc;
+	int gpuindex = nvmlh->cuda_nvml_device_id[cudaindex];
+	if (gpuindex < 0 || gpuindex >= nvmlh->nvml_gpucount) return -1;
+
+	rc = nvmlh->nvmlDeviceGetClockInfo(nvmlh->devs[gpuindex], NVML_CLOCK_GRAPHICS, graphics_clock);
+	if (rc != NVML_SUCCESS) return -1;
+	rc = nvmlh->nvmlDeviceGetClockInfo(nvmlh->devs[gpuindex], NVML_CLOCK_MEM, mem_clock);
+>>>>>>> 8c320ca... added xevan
 	if (rc != NVML_SUCCESS) return -1;
 
 	return 0;
 }
 
+<<<<<<< HEAD
 /* Not Supported on 750Ti 340.23 */
 int nvml_get_power_usage(nvml_handle *nvmlh, int cudaindex, unsigned int *milliwatts)
 {
@@ -704,6 +855,20 @@ int nvml_get_power_usage(nvml_handle *nvmlh, int cudaindex, unsigned int *milliw
 	if (res != NVML_SUCCESS) {
 		//if (opt_debug)
 		//	applog(LOG_DEBUG, "nvmlDeviceGetPowerUsage: %s", nvmlh->nvmlErrorString(res));
+=======
+
+/* Not Supported on 750Ti 340.23 */
+int nvml_get_power_usage(nvml_handle *nvmlh, int cudaindex, uint32_t *milliwatts)
+{
+	int gpuindex = nvmlh->cuda_nvml_device_id[cudaindex];
+	if (gpuindex < 0 || gpuindex >= nvmlh->nvml_gpucount)
+		return -1;
+
+	nvmlReturn_t res = nvmlh->nvmlDeviceGetPowerUsage(nvmlh->devs[gpuindex], milliwatts);
+	if (res != NVML_SUCCESS) {
+		if (opt_debug)
+			applog(LOG_DEBUG, "nvmlDeviceGetPowerUsage: %s", nvmlh->nvmlErrorString(res));
+>>>>>>> 8c320ca... added xevan
 		return -1;
 	}
 
@@ -715,10 +880,14 @@ int nvml_get_pstate(nvml_handle *nvmlh, int cudaindex, int *pstate)
 {
 	int gpuindex = nvmlh->cuda_nvml_device_id[cudaindex];
 	if (gpuindex < 0 || gpuindex >= nvmlh->nvml_gpucount)
+<<<<<<< HEAD
 		return -ENODEV;
 
 	if (!nvmlh->nvmlDeviceGetPerformanceState)
 		return -ENOSYS;
+=======
+		return -1;
+>>>>>>> 8c320ca... added xevan
 
 	nvmlReturn_t res = nvmlh->nvmlDeviceGetPerformanceState(nvmlh->devs[gpuindex], pstate);
 	if (res != NVML_SUCCESS) {
@@ -734,7 +903,11 @@ int nvml_get_busid(nvml_handle *nvmlh, int cudaindex, int *busid)
 {
 	int gpuindex = nvmlh->cuda_nvml_device_id[cudaindex];
 	if (gpuindex < 0 || gpuindex >= nvmlh->nvml_gpucount)
+<<<<<<< HEAD
 		return -ENODEV;
+=======
+		return -1;
+>>>>>>> 8c320ca... added xevan
 
 	(*busid) = nvmlh->nvml_pci_bus_id[gpuindex];
 	return 0;
@@ -747,6 +920,7 @@ int nvml_get_serial(nvml_handle *nvmlh, int cudaindex, char *sn, int maxlen)
 	int gpuindex = nvmlh->cuda_nvml_device_id[cudaindex];
 	nvmlReturn_t res;
 	if (gpuindex < 0 || gpuindex >= nvmlh->nvml_gpucount)
+<<<<<<< HEAD
 		return -ENODEV;
 
 	if (nvmlh->nvmlDeviceGetSerial) {
@@ -758,6 +932,15 @@ int nvml_get_serial(nvml_handle *nvmlh, int cudaindex, char *sn, int maxlen)
 	if (!nvmlh->nvmlDeviceGetUUID)
 		return -ENOSYS;
 
+=======
+		return -1;
+
+	res = nvmlh->nvmlDeviceGetSerial(nvmlh->devs[gpuindex], sn, maxlen);
+	if (res == NVML_SUCCESS) {
+		return 0;
+	}
+
+>>>>>>> 8c320ca... added xevan
 	// nvmlDeviceGetUUID: GPU-f2bd642c-369f-5a14-e0b4-0d22dfe9a1fc
 	// use a part of uuid to generate an unique serial
 	// todo: check if there is vendor id is inside
@@ -778,10 +961,14 @@ int nvml_get_bios(nvml_handle *nvmlh, int cudaindex, char *desc, int maxlen)
 	uint32_t subids = 0;
 	int gpuindex = nvmlh->cuda_nvml_device_id[cudaindex];
 	if (gpuindex < 0 || gpuindex >= nvmlh->nvml_gpucount)
+<<<<<<< HEAD
 		return -ENODEV;
 
 	if (!nvmlh->nvmlDeviceGetVbiosVersion)
 		return -ENOSYS;
+=======
+		return -1;
+>>>>>>> 8c320ca... added xevan
 
 	nvmlReturn_t res = nvmlh->nvmlDeviceGetVbiosVersion(nvmlh->devs[gpuindex], desc, maxlen);
 	if (res != NVML_SUCCESS) {
@@ -792,11 +979,16 @@ int nvml_get_bios(nvml_handle *nvmlh, int cudaindex, char *desc, int maxlen)
 	return 0;
 }
 
+<<<<<<< HEAD
 int nvml_get_info(nvml_handle *nvmlh, int cudaindex, uint16_t &vid, uint16_t &pid)
+=======
+int nvml_get_info(nvml_handle *nvmlh, int cudaindex, uint16_t *vid, uint16_t *pid)
+>>>>>>> 8c320ca... added xevan
 {
 	uint32_t subids = 0;
 	int gpuindex = nvmlh->cuda_nvml_device_id[cudaindex];
 	if (gpuindex < 0 || gpuindex >= nvmlh->nvml_gpucount)
+<<<<<<< HEAD
 		return -ENODEV;
 
 	subids = nvmlh->nvml_pci_subsys_id[gpuindex];
@@ -805,6 +997,13 @@ int nvml_get_info(nvml_handle *nvmlh, int cudaindex, uint16_t &vid, uint16_t &pi
 	vid = subids & 0xFFFF;
 	// Colorful and Inno3D
 	if (pid == 0) pid = nvmlh->nvml_pci_vendor_id[gpuindex] >> 16;
+=======
+		return -1;
+
+	subids = nvmlh->nvml_pci_subsys_id[gpuindex];
+	(*pid) = subids >> 16;
+	(*vid) = subids & 0xFFFF;
+>>>>>>> 8c320ca... added xevan
 	return 0;
 }
 
@@ -817,7 +1016,10 @@ int nvml_destroy(nvml_handle *nvmlh)
 	free(nvmlh->nvml_pci_bus_id);
 	free(nvmlh->nvml_pci_device_id);
 	free(nvmlh->nvml_pci_domain_id);
+<<<<<<< HEAD
 	free(nvmlh->nvml_pci_vendor_id);
+=======
+>>>>>>> 8c320ca... added xevan
 	free(nvmlh->nvml_pci_subsys_id);
 	free(nvmlh->nvml_cuda_device_id);
 	free(nvmlh->cuda_nvml_device_id);
@@ -828,8 +1030,11 @@ int nvml_destroy(nvml_handle *nvmlh)
 	return 0;
 }
 
+<<<<<<< HEAD
 // ----------------------------------------------------------------------------
 
+=======
+>>>>>>> 8c320ca... added xevan
 /**
  * nvapi alternative for windows x86 binaries
  * nvml api doesn't exists as 32bit dll :///
@@ -837,6 +1042,7 @@ int nvml_destroy(nvml_handle *nvmlh)
 #ifdef WIN32
 #include "nvapi/nvapi_ccminer.h"
 
+<<<<<<< HEAD
 static unsigned int nvapi_dev_map[MAX_GPUS] = { 0 };
 static NvDisplayHandle hDisplay_a[NVAPI_MAX_PHYSICAL_GPUS * 2] = { 0 };
 static NvPhysicalGpuHandle phys[NVAPI_MAX_PHYSICAL_GPUS] = { 0 };
@@ -844,11 +1050,23 @@ static NvU32 nvapi_dev_cnt = 0;
 extern bool nvapi_dll_loaded;
 
 int nvapi_temperature(unsigned int devNum, unsigned int *temperature)
+=======
+static int nvapi_dev_map[MAX_GPUS] = { 0 };
+static NvDisplayHandle hDisplay_a[NVAPI_MAX_PHYSICAL_GPUS * 2] = { 0 };
+static NvPhysicalGpuHandle phys[NVAPI_MAX_PHYSICAL_GPUS] = { 0 };
+static NvU32 nvapi_dev_cnt = 0;
+
+int nvapi_temperature(uint32_t devNum, uint32_t *temperature)
+>>>>>>> 8c320ca... added xevan
 {
 	NvAPI_Status ret;
 
 	if (devNum >= nvapi_dev_cnt)
+<<<<<<< HEAD
 		return -ENODEV;
+=======
+		return -1;
+>>>>>>> 8c320ca... added xevan
 
 	NV_GPU_THERMAL_SETTINGS thermal;
 	thermal.version = NV_GPU_THERMAL_SETTINGS_VER;
@@ -861,17 +1079,29 @@ int nvapi_temperature(unsigned int devNum, unsigned int *temperature)
 		return -1;
 	}
 
+<<<<<<< HEAD
 	(*temperature) = (unsigned int) thermal.sensor[0].currentTemp;
+=======
+	(*temperature) = (uint32_t) thermal.sensor[0].currentTemp;
+>>>>>>> 8c320ca... added xevan
 
 	return 0;
 }
 
+<<<<<<< HEAD
 int nvapi_fanspeed(unsigned int devNum, unsigned int *speed)
+=======
+int nvapi_fanspeed(uint32_t devNum, uint32_t *speed)
+>>>>>>> 8c320ca... added xevan
 {
 	NvAPI_Status ret;
 
 	if (devNum >= nvapi_dev_cnt)
+<<<<<<< HEAD
 		return -ENODEV;
+=======
+		return -1;
+>>>>>>> 8c320ca... added xevan
 
 	NvU32 fanspeed = 0;
 	ret = NvAPI_GPU_GetTachReading(phys[devNum], &fanspeed);
@@ -883,17 +1113,29 @@ int nvapi_fanspeed(unsigned int devNum, unsigned int *speed)
 		return -1;
 	}
 
+<<<<<<< HEAD
 	(*speed) = (unsigned int) fanspeed;
+=======
+	(*speed) = (uint32_t) fanspeed;
+>>>>>>> 8c320ca... added xevan
 
 	return 0;
 }
 
+<<<<<<< HEAD
 int nvapi_getpstate(unsigned int devNum, unsigned int *pstate)
+=======
+int nvapi_getpstate(uint32_t devNum, uint32_t *power)
+>>>>>>> 8c320ca... added xevan
 {
 	NvAPI_Status ret;
 
 	if (devNum >= nvapi_dev_cnt)
+<<<<<<< HEAD
 		return -ENODEV;
+=======
+		return -1;
+>>>>>>> 8c320ca... added xevan
 
 	NV_GPU_PERF_PSTATE_ID CurrentPstate = NVAPI_GPU_PERF_PSTATE_UNDEFINED; /* 16 */
 	ret = NvAPI_GPU_GetCurrentPstate(phys[devNum], &CurrentPstate);
@@ -906,19 +1148,31 @@ int nvapi_getpstate(unsigned int devNum, unsigned int *pstate)
 	}
 	else {
 		// get pstate for the moment... often 0 = P0
+<<<<<<< HEAD
 		(*pstate) = (unsigned int)CurrentPstate;
+=======
+		(*power) = (uint32_t)CurrentPstate;
+>>>>>>> 8c320ca... added xevan
 	}
 
 	return 0;
 }
 
 #define UTIL_DOMAIN_GPU 0
+<<<<<<< HEAD
 int nvapi_getusage(unsigned int devNum, unsigned int *pct)
+=======
+int nvapi_getusage(uint32_t devNum, uint32_t *pct)
+>>>>>>> 8c320ca... added xevan
 {
 	NvAPI_Status ret;
 
 	if (devNum >= nvapi_dev_cnt)
+<<<<<<< HEAD
 		return -ENODEV;
+=======
+		return -1;
+>>>>>>> 8c320ca... added xevan
 
 	NV_GPU_DYNAMIC_PSTATES_INFO_EX info;
 	info.version = NV_GPU_DYNAMIC_PSTATES_INFO_EX_VER;
@@ -938,13 +1192,21 @@ int nvapi_getusage(unsigned int devNum, unsigned int *pct)
 	return 0;
 }
 
+<<<<<<< HEAD
 int nvapi_getinfo(unsigned int devNum, uint16_t &vid, uint16_t &pid)
+=======
+int nvapi_getinfo(uint32_t devNum, uint16_t *vid, uint16_t *pid)
+>>>>>>> 8c320ca... added xevan
 {
 	NvAPI_Status ret;
 	NvU32 pDeviceId, pSubSystemId, pRevisionId, pExtDeviceId;
 
 	if (devNum >= nvapi_dev_cnt)
+<<<<<<< HEAD
 		return -ENODEV;
+=======
+		return -1;
+>>>>>>> 8c320ca... added xevan
 
 	ret = NvAPI_GPU_GetPCIIdentifiers(phys[devNum], &pDeviceId, &pSubSystemId, &pRevisionId, &pExtDeviceId);
 	if (ret != NVAPI_OK) {
@@ -955,6 +1217,7 @@ int nvapi_getinfo(unsigned int devNum, uint16_t &vid, uint16_t &pid)
 		return -1;
 	}
 
+<<<<<<< HEAD
 	pid = pDeviceId >> 16;
 	vid = pDeviceId & 0xFFFF;
 	if (vid == 0x10DE && pSubSystemId) {
@@ -963,10 +1226,15 @@ int nvapi_getinfo(unsigned int devNum, uint16_t &vid, uint16_t &pid)
 		// Colorful and Inno3D
 		if (pid == 0) pid = pDeviceId >> 16;
 	}
+=======
+	(*pid) = pDeviceId >> 16;
+	(*vid) = pDeviceId & 0xFFFF;
+>>>>>>> 8c320ca... added xevan
 
 	return 0;
 }
 
+<<<<<<< HEAD
 int nvapi_getserial(unsigned int devNum, char *serial, unsigned int maxlen)
 {
 	NvAPI_Status ret;
@@ -980,10 +1248,26 @@ int nvapi_getserial(unsigned int devNum, char *serial, unsigned int maxlen)
 
 	NvAPI_ShortString ser = { 0 };
 	ret = NvAPI_DLL_GetSerialNumber(phys[devNum], ser);
+=======
+int nvapi_getserial(uint32_t devNum, char *serial, uint32_t maxlen)
+{
+//	NvAPI_Status ret;
+	if (devNum >= nvapi_dev_cnt)
+		return -1;
+
+	sprintf(serial, "");
+
+	if (maxlen < 64) // Short String
+		return -1;
+
+#if 0
+	ret = NvAPI_GPU_Get..(phys[devNum], serial);
+>>>>>>> 8c320ca... added xevan
 	if (ret != NVAPI_OK) {
 		NvAPI_ShortString string;
 		NvAPI_GetErrorMessage(ret, string);
 		if (opt_debug)
+<<<<<<< HEAD
 			applog(LOG_DEBUG, "NVAPI GetSerialNumber: %s", string);
 		return -1;
 	}
@@ -998,6 +1282,20 @@ int nvapi_getbios(unsigned int devNum, char *desc, unsigned int maxlen)
 	NvAPI_Status ret;
 	if (devNum >= nvapi_dev_cnt)
 		return -ENODEV;
+=======
+			applog(LOG_DEBUG, "NVAPI ...: %s", string);
+		return -1;
+	}
+#endif
+	return 0;
+}
+
+int nvapi_getbios(uint32_t devNum, char *desc, uint32_t maxlen)
+{
+	NvAPI_Status ret;
+	if (devNum >= nvapi_dev_cnt)
+		return -1;
+>>>>>>> 8c320ca... added xevan
 
 	if (maxlen < 64) // Short String
 		return -1;
@@ -1013,6 +1311,7 @@ int nvapi_getbios(unsigned int devNum, char *desc, unsigned int maxlen)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int SetAsusRGBLogo(unsigned int devNum, uint32_t RGB, bool ignorePrevState)
 {
 	NvAPI_Status ret = NVAPI_OK;
@@ -1775,11 +2074,17 @@ int nvapiMemGetInfo(int dev_id, uint64_t *free, uint64_t *total)
 	return (int) ret;
 }
 
+=======
+>>>>>>> 8c320ca... added xevan
 int nvapi_init()
 {
 	int num_gpus = cuda_num_devices();
 	NvAPI_Status ret = NvAPI_Initialize();
+<<<<<<< HEAD
 	if (ret != NVAPI_OK) {
+=======
+	if (!ret == NVAPI_OK){
+>>>>>>> 8c320ca... added xevan
 		NvAPI_ShortString string;
 		NvAPI_GetErrorMessage(ret, string);
 		if (opt_debug)
@@ -1814,7 +2119,11 @@ int nvapi_init()
 				if (ret == NVAPI_OK && busId == device_bus_ids[g]) {
 					nvapi_dev_map[g] = i;
 					if (opt_debug)
+<<<<<<< HEAD
 						applog(LOG_DEBUG, "CUDA GPU %d matches NVAPI GPU %d by busId %u",
+=======
+						applog(LOG_DEBUG, "CUDA GPU#%d matches NVAPI GPU %d by busId %u",
+>>>>>>> 8c320ca... added xevan
 							g, i, busId);
 					break;
 				}
@@ -1825,23 +2134,36 @@ int nvapi_init()
 			applog(LOG_DEBUG, "NVAPI NvAPI_GPU_GetFullName: %s", string);
 		}
 	}
+<<<<<<< HEAD
 #if 0
 	if (opt_debug) {
 		NvAPI_ShortString ver;
 		NvAPI_GetInterfaceVersionString(ver);
 		applog(LOG_DEBUG, "%s", ver);
 	}
+=======
+
+#if 0
+	NvAPI_ShortString ver;
+	NvAPI_GetInterfaceVersionString(ver);
+	applog(LOG_DEBUG, "NVAPI Version: %s", ver);
+>>>>>>> 8c320ca... added xevan
 #endif
 
 	NvU32 udv;
 	NvAPI_ShortString str;
 	ret = NvAPI_SYS_GetDriverAndBranchVersion(&udv, str);
 	if (ret == NVAPI_OK) {
+<<<<<<< HEAD
 		sprintf(driver_version,"%d.%02d", udv / 100, udv % 100);
+=======
+		sprintf(driver_version,"%d.%d", udv/100, udv % 100);
+>>>>>>> 8c320ca... added xevan
 	}
 
 	return 0;
 }
+<<<<<<< HEAD
 
 int nvapi_init_settings()
 {
@@ -1928,21 +2250,36 @@ int nvapi_devid(unsigned int devNum)
 }
 
 #endif /* WIN32 : Windows specific (nvapi) */
+=======
+#endif
+>>>>>>> 8c320ca... added xevan
 
 /* api functions -------------------------------------- */
 
 // assume 2500 rpm as default, auto-updated if more
+<<<<<<< HEAD
 static unsigned int fan_speed_max = 2500;
 
 unsigned int gpu_fanpercent(struct cgpu_info *gpu)
 {
 	unsigned int pct = 0;
+=======
+static uint32_t fan_speed_max = 2500;
+
+uint32_t gpu_fanpercent(struct cgpu_info *gpu)
+{
+	uint32_t pct = 0;
+>>>>>>> 8c320ca... added xevan
 	if (hnvml) {
 		nvml_get_fanpcnt(hnvml, gpu->gpu_id, &pct);
 	}
 #ifdef WIN32
 	else {
+<<<<<<< HEAD
 		unsigned int rpm = 0;
+=======
+		uint32_t rpm = 0;
+>>>>>>> 8c320ca... added xevan
 		nvapi_fanspeed(nvapi_dev_map[gpu->gpu_id], &rpm);
 		pct = (rpm * 100) / fan_speed_max;
 		if (pct > 100) {
@@ -1954,9 +2291,15 @@ unsigned int gpu_fanpercent(struct cgpu_info *gpu)
 	return pct;
 }
 
+<<<<<<< HEAD
 unsigned int gpu_fanrpm(struct cgpu_info *gpu)
 {
 	unsigned int rpm = 0;
+=======
+uint32_t gpu_fanrpm(struct cgpu_info *gpu)
+{
+	uint32_t rpm = 0;
+>>>>>>> 8c320ca... added xevan
 #ifdef WIN32
 	nvapi_fanspeed(nvapi_dev_map[gpu->gpu_id], &rpm);
 #endif
@@ -1967,7 +2310,11 @@ unsigned int gpu_fanrpm(struct cgpu_info *gpu)
 float gpu_temp(struct cgpu_info *gpu)
 {
 	float tc = 0.0;
+<<<<<<< HEAD
 	unsigned int tmp = 0;
+=======
+	uint32_t tmp = 0;
+>>>>>>> 8c320ca... added xevan
 	if (hnvml) {
 		nvml_get_tempC(hnvml, gpu->gpu_id, &tmp);
 		tc = (float)tmp;
@@ -1990,7 +2337,11 @@ int gpu_pstate(struct cgpu_info *gpu)
 	}
 #ifdef WIN32
 	if (support == -1) {
+<<<<<<< HEAD
 		unsigned int pst = 0;
+=======
+		uint32_t pst = 0;
+>>>>>>> 8c320ca... added xevan
 		nvapi_getpstate(nvapi_dev_map[gpu->gpu_id], &pst);
 		pstate = (int) pst;
 	}
@@ -2013,15 +2364,23 @@ int gpu_busid(struct cgpu_info *gpu)
 	return busid;
 }
 
+<<<<<<< HEAD
 unsigned int gpu_power(struct cgpu_info *gpu)
 {
 	unsigned int mw = 0;
+=======
+/* not used in api (too much variable) */
+uint32_t gpu_power(struct cgpu_info *gpu)
+{
+	uint32_t mw = 0;
+>>>>>>> 8c320ca... added xevan
 	int support = -1;
 	if (hnvml) {
 		support = nvml_get_power_usage(hnvml, gpu->gpu_id, &mw);
 	}
 #ifdef WIN32
 	if (support == -1) {
+<<<<<<< HEAD
 		unsigned int pct = 0;
 		nvapi_getusage(nvapi_dev_map[gpu->gpu_id], &pct);
 		pct *= nvapi_get_plimit(nvapi_dev_map[gpu->gpu_id]);
@@ -2122,6 +2481,19 @@ int gpu_info(struct cgpu_info *gpu)
 	char vendorname[32] = { 0 };
 	int id = gpu->gpu_id;
 	uint8_t bus_id = 0;
+=======
+		uint32_t pct = 0;
+		nvapi_getusage(nvapi_dev_map[gpu->gpu_id], &pct);
+		mw = pct; // to fix
+	}
+#endif
+	return mw;
+}
+
+int gpu_info(struct cgpu_info *gpu)
+{
+	int id = gpu->gpu_id;
+>>>>>>> 8c320ca... added xevan
 
 	gpu->nvml_id = -1;
 	gpu->nvapi_id = -1;
@@ -2131,13 +2503,21 @@ int gpu_info(struct cgpu_info *gpu)
 
 	if (hnvml) {
 		gpu->nvml_id = (int8_t) hnvml->cuda_nvml_device_id[id];
+<<<<<<< HEAD
 		nvml_get_info(hnvml, id, gpu->gpu_vid, gpu->gpu_pid);
+=======
+		nvml_get_info(hnvml, id, &gpu->gpu_vid, &gpu->gpu_pid);
+>>>>>>> 8c320ca... added xevan
 		nvml_get_serial(hnvml, id, gpu->gpu_sn, sizeof(gpu->gpu_sn));
 		nvml_get_bios(hnvml, id, gpu->gpu_desc, sizeof(gpu->gpu_desc));
 	}
 #ifdef WIN32
 	gpu->nvapi_id = (int8_t) nvapi_dev_map[id];
+<<<<<<< HEAD
 	nvapi_getinfo(nvapi_dev_map[id], gpu->gpu_vid, gpu->gpu_pid);
+=======
+	nvapi_getinfo(nvapi_dev_map[id], &gpu->gpu_vid, &gpu->gpu_pid);
+>>>>>>> 8c320ca... added xevan
 	nvapi_getserial(nvapi_dev_map[id], gpu->gpu_sn, sizeof(gpu->gpu_sn));
 	nvapi_getbios(nvapi_dev_map[id], gpu->gpu_desc, sizeof(gpu->gpu_desc));
 #endif
@@ -2145,6 +2525,7 @@ int gpu_info(struct cgpu_info *gpu)
 }
 
 #endif /* USE_WRAPNVML */
+<<<<<<< HEAD
 
 static int rgb_percent(int RGB, int percent)
 {
@@ -2274,3 +2655,5 @@ abort:
 	return NULL;
 }
 #endif
+=======
+>>>>>>> 8c320ca... added xevan

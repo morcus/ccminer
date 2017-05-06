@@ -115,7 +115,11 @@ template <int BLOCKSIZE> __device__ void blake512_compress( uint64_t *h, const u
     }
 
 #pragma unroll 16
+<<<<<<< HEAD
     for( i = 0; i < 16; ++i )  h[i % 8] ^= v[i];
+=======
+    for( i = 0; i < 16; ++i )  h[i & 7] ^= v[i];
+>>>>>>> 8c320ca... added xevan
 }
 
 template <int BLOCKSIZE> __global__ void blake512_gpu_hash(uint32_t threads, uint32_t startNounce, void *outputHash, uint32_t *heftyHashes, uint32_t *nonceVector)
@@ -149,12 +153,17 @@ template <int BLOCKSIZE> __global__ void blake512_gpu_hash(uint32_t threads, uin
 		for (int i=0; i < 16; ++i) buf[i] = c_PaddedMessage[i];
 
 		// die Nounce durch die thread-spezifische ersetzen
+<<<<<<< HEAD
 		buf[9] = REPLACE_HIDWORD(buf[9], nounce);
+=======
+		buf[9] = REPLACE_HIWORD(buf[9], nounce);
+>>>>>>> 8c320ca... added xevan
 
 		uint32_t *hefty = heftyHashes + 8 * hashPosition;
 		if (BLOCKSIZE == 84) {
 			// den thread-spezifischen Hefty1 hash einsetzen
 			// aufwändig, weil das nicht mit uint64_t Wörtern aligned ist.
+<<<<<<< HEAD
 			buf[10] = REPLACE_HIDWORD(buf[10], hefty[0]);
 			buf[11] = REPLACE_LODWORD(buf[11], hefty[1]);
 			buf[11] = REPLACE_HIDWORD(buf[11], hefty[2]);
@@ -163,6 +172,16 @@ template <int BLOCKSIZE> __global__ void blake512_gpu_hash(uint32_t threads, uin
 			buf[13] = REPLACE_LODWORD(buf[13], hefty[5]);
 			buf[13] = REPLACE_HIDWORD(buf[13], hefty[6]);
 			buf[14] = REPLACE_LODWORD(buf[14], hefty[7]);
+=======
+			buf[10] = REPLACE_HIWORD(buf[10], hefty[0]);
+			buf[11] = REPLACE_LOWORD(buf[11], hefty[1]);
+			buf[11] = REPLACE_HIWORD(buf[11], hefty[2]);
+			buf[12] = REPLACE_LOWORD(buf[12], hefty[3]);
+			buf[12] = REPLACE_HIWORD(buf[12], hefty[4]);
+			buf[13] = REPLACE_LOWORD(buf[13], hefty[5]);
+			buf[13] = REPLACE_HIWORD(buf[13], hefty[6]);
+			buf[14] = REPLACE_LOWORD(buf[14], hefty[7]);
+>>>>>>> 8c320ca... added xevan
 		}
 		else if (BLOCKSIZE == 80) {
 			buf[10] = MAKE_ULONGLONG(hefty[0], hefty[1]);
@@ -191,9 +210,14 @@ template <int BLOCKSIZE> __global__ void blake512_gpu_hash(uint32_t threads, uin
 
 // ---------------------------- END CUDA blake512 functions ------------------------------------
 
+<<<<<<< HEAD
 // Setup Function
 __host__
 void blake512_cpu_init(int thr_id, uint32_t threads)
+=======
+// Setup-Funktionen
+__host__ void blake512_cpu_init(int thr_id, uint32_t threads)
+>>>>>>> 8c320ca... added xevan
 {
 	// Kopiere die Hash-Tabellen in den GPU-Speicher
 	cudaMemcpyToSymbol( c_sigma,
@@ -212,6 +236,7 @@ void blake512_cpu_init(int thr_id, uint32_t threads)
 						0, cudaMemcpyHostToDevice);
 
 	// Speicher für alle Ergebnisse belegen
+<<<<<<< HEAD
 	CUDA_SAFE_CALL(cudaMalloc(&d_hash5output[thr_id], (size_t) 64 * threads));
 }
 
@@ -219,12 +244,19 @@ __host__
 void blake512_cpu_free(int thr_id)
 {
 	cudaFree(d_hash5output[thr_id]);
+=======
+	CUDA_SAFE_CALL(cudaMalloc(&d_hash5output[thr_id], 16 * sizeof(uint32_t) * threads));
+>>>>>>> 8c320ca... added xevan
 }
 
 static int BLOCKSIZE = 84;
 
+<<<<<<< HEAD
 __host__
 void blake512_cpu_setBlock(void *pdata, int len)
+=======
+__host__ void blake512_cpu_setBlock(void *pdata, int len)
+>>>>>>> 8c320ca... added xevan
 	// data muss 84-Byte haben!
 	// heftyHash hat 32-Byte
 {
@@ -254,6 +286,7 @@ __host__ void blake512_cpu_hash(int thr_id, uint32_t threads, uint32_t startNoun
 	dim3 grid((threads + threadsperblock-1)/threadsperblock);
 	dim3 block(threadsperblock);
 
+<<<<<<< HEAD
 	// Größe des dynamischen Shared Memory Bereichs
 	size_t shared_size = 0;
 
@@ -261,4 +294,10 @@ __host__ void blake512_cpu_hash(int thr_id, uint32_t threads, uint32_t startNoun
 		blake512_gpu_hash<80><<<grid, block, shared_size>>>(threads, startNounce, d_hash5output[thr_id], heavy_heftyHashes[thr_id], heavy_nonceVector[thr_id]);
 	else if (BLOCKSIZE == 84)
 		blake512_gpu_hash<84><<<grid, block, shared_size>>>(threads, startNounce, d_hash5output[thr_id], heavy_heftyHashes[thr_id], heavy_nonceVector[thr_id]);
+=======
+	if (BLOCKSIZE == 80)
+		blake512_gpu_hash<80><<<grid, block>>>(threads, startNounce, d_hash5output[thr_id], heavy_heftyHashes[thr_id], heavy_nonceVector[thr_id]);
+	else if (BLOCKSIZE == 84)
+		blake512_gpu_hash<84><<<grid, block>>>(threads, startNounce, d_hash5output[thr_id], heavy_heftyHashes[thr_id], heavy_nonceVector[thr_id]);
+>>>>>>> 8c320ca... added xevan
 }

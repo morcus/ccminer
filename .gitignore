@@ -15,7 +15,11 @@ depcomp
 missing
 install-sh
 stamp-h1
+<<<<<<< HEAD
 ccminer-config.h*
+=======
+cpuminer-config.h*
+>>>>>>> 8c320ca... added xevan
 compile
 config.log
 config.status
@@ -25,7 +29,11 @@ config.sub
 
 mingw32-config.cache
 
+<<<<<<< HEAD
 .dirstamp
+=======
+*/.dirstamp
+>>>>>>> 8c320ca... added xevan
 .DS_Store
 Desktop.ini
 Thumbs.db
@@ -41,8 +49,11 @@ x64/Release/
 *.opensdf
 *.sdf
 *.pdb
+<<<<<<< HEAD
 *.VC.opendb
 *.VC.db
+=======
+>>>>>>> 8c320ca... added xevan
 
 .settings/
 .project
@@ -54,6 +65,7 @@ x64/Release/
 
 compat/curl-for-windows/
 
+<<<<<<< HEAD
 *.ptx
 *.i
 *.ii
@@ -68,3 +80,5 @@ compat/curl-for-windows/
 *.cudafe1.c
 *.cudafe2.c
 
+=======
+>>>>>>> 8c320ca... added xevan

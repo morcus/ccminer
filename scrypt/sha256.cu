@@ -6,7 +6,11 @@
 
 #include <map>
 
+<<<<<<< HEAD
 #include <cuda_runtime.h>
+=======
+#include "cuda_runtime.h"
+>>>>>>> 8c320ca... added xevan
 #include "miner.h"
 
 #include "salsa_kernel.h"
@@ -14,16 +18,33 @@
 #include "sha256.h"
 
 // define some error checking macros
+<<<<<<< HEAD
 #define DELIMITER '/'
 #define __FILENAME__ ( strrchr(__FILE__, DELIMITER) != NULL ? strrchr(__FILE__, DELIMITER)+1 : __FILE__ )
 
 #undef checkCudaErrors
+=======
+#undef checkCudaErrors
+
+#if WIN32
+#define DELIMITER '/'
+#else
+#define DELIMITER '/'
+#endif
+#define __FILENAME__ ( strrchr(__FILE__, DELIMITER) != NULL ? strrchr(__FILE__, DELIMITER)+1 : __FILE__ )
+
+>>>>>>> 8c320ca... added xevan
 #define checkCudaErrors(x) { \
 	cudaGetLastError(); \
 	x; \
 	cudaError_t err = cudaGetLastError(); \
+<<<<<<< HEAD
 	if (err != cudaSuccess && !abort_flag) \
 		applog(LOG_ERR, "GPU #%d: cudaError %d (%s) (%s line %d)\n", (int) device_map[thr_id], err, cudaGetErrorString(err), __FILENAME__, __LINE__); \
+=======
+	if (err != cudaSuccess) \
+		applog(LOG_ERR, "GPU #%d: cudaError %d (%s) calling '%s' (%s line %d)\n", (int) device_map[thr_id], err, cudaGetErrorString(err), #x, __FILENAME__, __LINE__); \
+>>>>>>> 8c320ca... added xevan
 }
 
 // from salsa_kernel.cu
@@ -404,8 +425,12 @@ __global__ void cuda_post_sha256(uint32_t g_output[8], uint32_t g_tstate_ext[8],
 
 void prepare_sha256(int thr_id, uint32_t host_pdata[20], uint32_t host_midstate[8])
 {
+<<<<<<< HEAD
 	static bool init[MAX_GPUS] = { 0 };
 
+=======
+	static bool init[8] = {false, false, false, false, false, false, false, false};
+>>>>>>> 8c320ca... added xevan
 	if (!init[thr_id])
 	{
 		checkCudaErrors(cudaMemcpyToSymbol(sha256_h, host_sha256_h, sizeof(host_sha256_h), 0, cudaMemcpyHostToDevice));

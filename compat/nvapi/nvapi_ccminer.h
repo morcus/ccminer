@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #pragma once
 
 #define NVAPI_INTERNAL
@@ -369,3 +370,7 @@ $+30  00 00 00 00  01 00 00 00  01 00 00 00  00 00 00 00
 
 NvAPI_Status NvAPI_DLL_I2CReadEx(NvPhysicalGpuHandle, NV_I2C_INFO_EX*, NvU32*);
 NvAPI_Status NvAPI_DLL_I2CWriteEx(NvPhysicalGpuHandle, NV_I2C_INFO_EX*, NvU32*);
+=======
+/* todo: stripped version... or not */
+#include "nvapi.h"
+>>>>>>> 8c320ca... added xevan

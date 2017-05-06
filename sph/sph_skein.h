@@ -41,10 +41,13 @@
 #ifndef SPH_SKEIN_H__
 #define SPH_SKEIN_H__
 
+<<<<<<< HEAD
 #ifdef __cplusplus
 extern "C"{
 #endif
 
+=======
+>>>>>>> 8c320ca... added xevan
 #include <stddef.h>
 #include "sph_types.h"
 
@@ -291,8 +294,11 @@ void sph_skein512_addbits_and_close(
 
 #endif
 
+<<<<<<< HEAD
 #ifdef __cplusplus
 }
 #endif
 
+=======
+>>>>>>> 8c320ca... added xevan
 #endif

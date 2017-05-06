@@ -9,7 +9,10 @@
 // globaler Speicher für alle HeftyHashes aller Threads
 extern uint32_t *heavy_heftyHashes[MAX_GPUS];
 extern uint32_t *heavy_nonceVector[MAX_GPUS];
+<<<<<<< HEAD
 static unsigned int *d_textures[MAX_GPUS][8];
+=======
+>>>>>>> 8c320ca... added xevan
 
 // globaler Speicher für unsere Ergebnisse
 uint32_t *d_hash4output[MAX_GPUS];
@@ -20,7 +23,11 @@ __constant__ uint32_t groestl_gpu_msg[32];
 #define PC32up(j, r)   ((uint32_t)((j) + (r)))
 #define PC32dn(j, r)   0
 #define QC32up(j, r)   0xFFFFFFFF
+<<<<<<< HEAD
 #define QC32dn(j, r)   (((uint32_t)(r) << 24) ^ SPH_T32(~((uint32_t)(j) << 24)))
+=======
+#define QC32dn(j, r)   (((uint32_t)(r) << 24) ^ (~((uint32_t)(j) << 24)))
+>>>>>>> 8c320ca... added xevan
 
 #define B32_0(x)    ((x) & 0xFF)
 #define B32_1(x)    (((x) >> 8) & 0xFF)
@@ -41,6 +48,7 @@ __constant__ uint32_t groestl_gpu_msg[32];
 #define T3up(x) tex1Dfetch(t3up, x)
 #define T3dn(x) tex1Dfetch(t3dn, x)
 
+<<<<<<< HEAD
 texture<unsigned int, 1, cudaReadModeElementType> t0up;
 texture<unsigned int, 1, cudaReadModeElementType> t0dn;
 texture<unsigned int, 1, cudaReadModeElementType> t1up;
@@ -49,6 +57,16 @@ texture<unsigned int, 1, cudaReadModeElementType> t2up;
 texture<unsigned int, 1, cudaReadModeElementType> t2dn;
 texture<unsigned int, 1, cudaReadModeElementType> t3up;
 texture<unsigned int, 1, cudaReadModeElementType> t3dn;
+=======
+texture<uint32_t, 1, cudaReadModeElementType> t0up;
+texture<uint32_t, 1, cudaReadModeElementType> t0dn;
+texture<uint32_t, 1, cudaReadModeElementType> t1up;
+texture<uint32_t, 1, cudaReadModeElementType> t1dn;
+texture<uint32_t, 1, cudaReadModeElementType> t2up;
+texture<uint32_t, 1, cudaReadModeElementType> t2dn;
+texture<uint32_t, 1, cudaReadModeElementType> t3up;
+texture<uint32_t, 1, cudaReadModeElementType> t3dn;
+>>>>>>> 8c320ca... added xevan
 
 uint32_t T0up_cpu[] = {
 	C32e(0xc632f4a5), C32e(0xf86f9784), C32e(0xee5eb099), C32e(0xf67a8c8d),
@@ -731,14 +749,21 @@ template <int BLOCKSIZE> __global__ void groestl512_gpu_hash(uint32_t threads, u
 	}
 }
 
+<<<<<<< HEAD
 #define texDef(id, texname, texmem, texsource, texsize) { \
 	unsigned int *texmem; \
 	cudaMalloc(&texmem, texsize); \
 	d_textures[thr_id][id] = texmem; \
+=======
+#define texDef(texname, texmem, texsource, texsize) \
+	uint32_t *texmem; \
+	cudaMalloc(&texmem, texsize); \
+>>>>>>> 8c320ca... added xevan
 	cudaMemcpy(texmem, texsource, texsize, cudaMemcpyHostToDevice); \
 	texname.normalized = 0; \
 	texname.filterMode = cudaFilterModePoint; \
 	texname.addressMode[0] = cudaAddressModeClamp; \
+<<<<<<< HEAD
 	{ cudaChannelFormatDesc channelDesc = cudaCreateChannelDesc<unsigned int>(); \
 	  cudaBindTexture(NULL, &texname, texmem, &channelDesc, texsize ); \
 	} \
@@ -769,12 +794,36 @@ void groestl512_cpu_free(int thr_id)
 		cudaFree(d_textures[thr_id][i]);
 
 	cudaFree(d_hash4output[thr_id]);
+=======
+	{ cudaChannelFormatDesc channelDesc = cudaCreateChannelDesc<uint32_t>(); \
+	  cudaBindTexture(NULL, &texname, texmem, &channelDesc, texsize ); } \
+
+// Setup-Funktionen
+__host__ void groestl512_cpu_init(int thr_id, uint32_t threads)
+{
+	// Texturen mit obigem Makro initialisieren
+	texDef(t0up, d_T0up, T0up_cpu, sizeof(uint32_t)*256);
+	texDef(t0dn, d_T0dn, T0dn_cpu, sizeof(uint32_t)*256);
+	texDef(t1up, d_T1up, T1up_cpu, sizeof(uint32_t)*256);
+	texDef(t1dn, d_T1dn, T1dn_cpu, sizeof(uint32_t)*256);
+	texDef(t2up, d_T2up, T2up_cpu, sizeof(uint32_t)*256);
+	texDef(t2dn, d_T2dn, T2dn_cpu, sizeof(uint32_t)*256);
+	texDef(t3up, d_T3up, T3up_cpu, sizeof(uint32_t)*256);
+	texDef(t3dn, d_T3dn, T3dn_cpu, sizeof(uint32_t)*256);
+
+	// Speicher für alle Ergebnisse belegen
+	cudaMalloc(&d_hash4output[thr_id], 16 * sizeof(uint32_t) * threads);
+>>>>>>> 8c320ca... added xevan
 }
 
 static int BLOCKSIZE = 84;
 
+<<<<<<< HEAD
 __host__
 void groestl512_cpu_setBlock(void *data, int len)
+=======
+__host__ void groestl512_cpu_setBlock(void *data, int len)
+>>>>>>> 8c320ca... added xevan
 	// data muss 80/84-Byte haben!
 	// heftyHash hat 32-Byte
 {
@@ -824,6 +873,7 @@ __host__ void groestl512_cpu_hash(int thr_id, uint32_t threads, uint32_t startNo
 	dim3 grid((threads + threadsperblock-1)/threadsperblock);
 	dim3 block(threadsperblock);
 
+<<<<<<< HEAD
 	// Größe des dynamischen Shared Memory Bereichs
 	size_t shared_size = 0;
 
@@ -831,4 +881,10 @@ __host__ void groestl512_cpu_hash(int thr_id, uint32_t threads, uint32_t startNo
 		groestl512_gpu_hash<84><<<grid, block, shared_size>>>(threads, startNounce, d_hash4output[thr_id], heavy_heftyHashes[thr_id], heavy_nonceVector[thr_id]);
 	else if (BLOCKSIZE == 80)
 		groestl512_gpu_hash<80><<<grid, block, shared_size>>>(threads, startNounce, d_hash4output[thr_id], heavy_heftyHashes[thr_id], heavy_nonceVector[thr_id]);
+=======
+	if (BLOCKSIZE == 84)
+		groestl512_gpu_hash<84><<<grid, block>>>(threads, startNounce, d_hash4output[thr_id], heavy_heftyHashes[thr_id], heavy_nonceVector[thr_id]);
+	else if (BLOCKSIZE == 80)
+		groestl512_gpu_hash<80><<<grid, block>>>(threads, startNounce, d_hash4output[thr_id], heavy_heftyHashes[thr_id], heavy_nonceVector[thr_id]);
+>>>>>>> 8c320ca... added xevan
 }

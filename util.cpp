@@ -10,7 +10,11 @@
  */
 
 //#define _GNU_SOURCE
+<<<<<<< HEAD
 #include <ccminer-config.h>
+=======
+#include "cpuminer-config.h"
+>>>>>>> 8c320ca... added xevan
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -21,7 +25,10 @@
 #include <unistd.h>
 #include <jansson.h>
 #include <curl/curl.h>
+<<<<<<< HEAD
 #include <sys/stat.h>
+=======
+>>>>>>> 8c320ca... added xevan
 #include <time.h>
 #ifdef WIN32
 #include "compat/winansi.h"
@@ -36,12 +43,15 @@
 #include "miner.h"
 #include "elist.h"
 
+<<<<<<< HEAD
 #include "crypto/xmr-rpc.h"
 
 extern pthread_mutex_t stratum_sock_lock;
 extern pthread_mutex_t stratum_work_lock;
 extern bool opt_debug_diff;
 
+=======
+>>>>>>> 8c320ca... added xevan
 bool opt_tracegpu = false;
 
 struct data_buffer {
@@ -75,6 +85,7 @@ struct thread_q {
 	pthread_cond_t		cond;
 };
 
+<<<<<<< HEAD
 void applog(int prio, const char *fmt, ...)
 {
 	va_list ap;
@@ -214,11 +225,17 @@ void get_defconfig_path(char *out, size_t bufsize, char *argv0)
 void format_hashrate_unit(double hashrate, char *output, const char *unit)
 {
 	char prefix[2] = { 0, 0 };
+=======
+void format_hashrate(double hashrate, char *output)
+{
+	char prefix = '\0';
+>>>>>>> 8c320ca... added xevan
 
 	if (hashrate < 10000) {
 		// nop
 	}
 	else if (hashrate < 1e7) {
+<<<<<<< HEAD
 		prefix[0] = 'k';
 		hashrate *= 1e-3;
 	}
@@ -238,6 +255,32 @@ void format_hashrate_unit(double hashrate, char *output, const char *unit)
 	sprintf(output, "%.2f %s%s", hashrate, prefix, unit);
 }
 
+=======
+		prefix = 'k';
+		hashrate *= 1e-3;
+	}
+	else if (hashrate < 1e10) {
+		prefix = 'M';
+		hashrate *= 1e-6;
+	}
+	else if (hashrate < 1e13) {
+		prefix = 'G';
+		hashrate *= 1e-9;
+	}
+	else {
+		prefix = 'T';
+		hashrate *= 1e-12;
+	}
+
+	sprintf(
+		output,
+		prefix ? "%.2f %cH/s" : "%.2f H/s%c",
+		hashrate, prefix
+	);
+}
+
+
+>>>>>>> 8c320ca... added xevan
 static void databuf_free(struct data_buffer *db)
 {
 	if (!db)
@@ -276,10 +319,17 @@ static size_t upload_data_cb(void *ptr, size_t size, size_t nmemb,
 			     void *user_data)
 {
 	struct upload_buffer *ub = (struct upload_buffer *)user_data;
+<<<<<<< HEAD
 	unsigned int len = (unsigned int)(size * nmemb);
 
 	if (len > ub->len - ub->pos)
 		len = (unsigned int)(ub->len - ub->pos);
+=======
+	uint32_t len = (uint32_t)(size * nmemb);
+
+	if (len > ub->len - ub->pos)
+		len = (uint32_t)(ub->len - ub->pos);
+>>>>>>> 8c320ca... added xevan
 
 	if (len) {
 		memcpy(ptr, (char*)ub->buf + ub->pos, len);
@@ -419,12 +469,18 @@ static int sockopt_keepalive_cb(void *userdata, curl_socket_t fd,
 }
 #endif
 
+<<<<<<< HEAD
 /* For getwork (longpoll or wallet) - not stratum pools!
  * DO NOT USE DIRECTLY
  */
 static json_t *json_rpc_call(CURL *curl, const char *url,
 		      const char *userpass, const char *rpc_req,
 		      bool longpoll_scan, bool longpoll, bool keepalive, int *curl_err)
+=======
+json_t *json_rpc_call(CURL *curl, const char *url,
+		      const char *userpass, const char *rpc_req,
+		      bool longpoll_scan, bool longpoll, int *curl_err)
+>>>>>>> 8c320ca... added xevan
 {
 	json_t *val, *err_val, *res_val;
 	int rc;
@@ -432,10 +488,17 @@ static json_t *json_rpc_call(CURL *curl, const char *url,
 	struct upload_buffer upload_data;
 	json_error_t err;
 	struct curl_slist *headers = NULL;
+<<<<<<< HEAD
 	char *httpdata;
 	char len_hdr[64], hashrate_hdr[64];
 	char curl_err_str[CURL_ERROR_SIZE] = { 0 };
 	long timeout = longpoll ? opt_timeout : opt_timeout/2;
+=======
+	char* httpdata;
+	char len_hdr[64], hashrate_hdr[64];
+	char curl_err_str[CURL_ERROR_SIZE] = { 0 };
+	long timeout = longpoll ? opt_timeout : 30;
+>>>>>>> 8c320ca... added xevan
 	struct header_info hi = { 0 };
 	bool lp_scanning = longpoll_scan && !have_longpoll;
 
@@ -444,11 +507,16 @@ static json_t *json_rpc_call(CURL *curl, const char *url,
 	if (opt_protocol)
 		curl_easy_setopt(curl, CURLOPT_VERBOSE, 1);
 	curl_easy_setopt(curl, CURLOPT_URL, url);
+<<<<<<< HEAD
 	if (opt_cert) {
 		curl_easy_setopt(curl, CURLOPT_CAINFO, opt_cert);
 		// ignore CN domain name, allow to move cert files
 		curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0);
 	}
+=======
+	if (opt_cert)
+		curl_easy_setopt(curl, CURLOPT_CAINFO, opt_cert);
+>>>>>>> 8c320ca... added xevan
 	curl_easy_setopt(curl, CURLOPT_ENCODING, "");
 	curl_easy_setopt(curl, CURLOPT_FAILONERROR, 0);
 	curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1);
@@ -466,7 +534,11 @@ static json_t *json_rpc_call(CURL *curl, const char *url,
 	curl_easy_setopt(curl, CURLOPT_TIMEOUT, timeout);
 	curl_easy_setopt(curl, CURLOPT_HEADERFUNCTION, resp_hdr_cb);
 	curl_easy_setopt(curl, CURLOPT_HEADERDATA, &hi);
+<<<<<<< HEAD
 	if (opt_proxy) {
+=======
+	if (opt_proxy && opt_proxy_type != -1) {
+>>>>>>> 8c320ca... added xevan
 		curl_easy_setopt(curl, CURLOPT_PROXY, opt_proxy);
 		curl_easy_setopt(curl, CURLOPT_PROXYTYPE, opt_proxy_type);
 	}
@@ -475,7 +547,11 @@ static json_t *json_rpc_call(CURL *curl, const char *url,
 		curl_easy_setopt(curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
 	}
 #if LIBCURL_VERSION_NUM >= 0x070f06
+<<<<<<< HEAD
 	if (keepalive)
+=======
+	if (longpoll)
+>>>>>>> 8c320ca... added xevan
 		curl_easy_setopt(curl, CURLOPT_SOCKOPTFUNCTION, sockopt_keepalive_cb);
 #endif
 	curl_easy_setopt(curl, CURLOPT_POST, 1);
@@ -526,8 +602,12 @@ static json_t *json_rpc_call(CURL *curl, const char *url,
 	}
 
 	if (!all_data.buf || !all_data.len) {
+<<<<<<< HEAD
 		if (!have_longpoll) // seems normal on longpoll timeout
 			applog(LOG_ERR, "Empty data received in json_rpc_call.");
+=======
+		applog(LOG_ERR, "Empty data received in json_rpc_call.");
+>>>>>>> 8c320ca... added xevan
 		goto err_out;
 	}
 
@@ -563,6 +643,7 @@ static json_t *json_rpc_call(CURL *curl, const char *url,
 
 	if (!res_val || json_is_null(res_val) ||
 	    (err_val && !json_is_null(err_val))) {
+<<<<<<< HEAD
 		char *s = NULL;
 
 		if (err_val) {
@@ -582,12 +663,27 @@ static json_t *json_rpc_call(CURL *curl, const char *url,
 				}
 			}
 			json_decref(err_val);
+=======
+		char *s;
+
+		if (err_val) {
+			json_t *msg = json_object_get(err_val, "message");
+			s = json_dumps(err_val, JSON_INDENT(3));
+			if (json_is_string(msg)) {
+				free(s);
+				s = strdup(json_string_value(msg));
+			}
+>>>>>>> 8c320ca... added xevan
 		}
 		else
 			s = strdup("(unknown reason)");
 
+<<<<<<< HEAD
 		if (!curl_err || opt_debug)
 			applog(LOG_ERR, "JSON-RPC call failed: %s", s);
+=======
+		applog(LOG_ERR, "JSON-RPC call failed: %s", s);
+>>>>>>> 8c320ca... added xevan
 
 		free(s);
 
@@ -612,6 +708,7 @@ err_out:
 	return NULL;
 }
 
+<<<<<<< HEAD
 /* getwork calls with pool pointer (wallet/longpoll pools) */
 json_t *json_rpc_call_pool(CURL *curl, struct pool_infos *pool, const char *req,
 	bool longpoll_scan, bool longpoll, int *curl_err)
@@ -682,6 +779,8 @@ err_out:
 	return cfg;
 }
 
+=======
+>>>>>>> 8c320ca... added xevan
 /**
  * Unlike malloc, calloc set the memory to zero
  */
@@ -712,7 +811,11 @@ void aligned_free(void *ptr)
 void cbin2hex(char *out, const char *in, size_t len)
 {
 	if (out) {
+<<<<<<< HEAD
 		unsigned int i;
+=======
+		uint32_t i;
+>>>>>>> 8c320ca... added xevan
 		for (i = 0; i < len; i++)
 			sprintf(out + (i * 2), "%02x", (uint8_t)in[i]);
 	}
@@ -729,10 +832,16 @@ char *bin2hex(const uchar *in, size_t len)
 	return s;
 }
 
+<<<<<<< HEAD
 bool hex2bin(void *output, const char *hexstr, size_t len)
 {
 	uchar *p = (uchar *) output;
 	char hex_byte[4];
+=======
+bool hex2bin(uchar *p, const char *hexstr, size_t len)
+{
+	char hex_byte[3];
+>>>>>>> 8c320ca... added xevan
 	char *ep;
 
 	hex_byte[2] = '\0';
@@ -763,6 +872,7 @@ bool hex2bin(void *output, const char *hexstr, size_t len)
 int timeval_subtract(struct timeval *result, struct timeval *x,
 	struct timeval *y)
 {
+<<<<<<< HEAD
 	/* Perform the carry for the later subtraction by updating Y. */
 	if (x->tv_usec < y->tv_usec) {
 		int nsec = (y->tv_usec - x->tv_usec) / 1000000 + 1;
@@ -782,6 +892,26 @@ int timeval_subtract(struct timeval *result, struct timeval *x,
 
 	/* Return 1 if result is negative. */
 	return x->tv_sec < y->tv_sec;
+=======
+	uint64_t start, end;
+
+	end = x->tv_usec + 1000000 * x->tv_sec;
+	start   = y->tv_usec + 1000000 * y->tv_sec;
+	if (start <= end)
+	{
+		uint64_t diff = end - start;
+		result->tv_sec = diff / 1000000;
+		result->tv_usec = diff % 1000000;
+	}
+	else
+	{
+		result->tv_sec = 0;
+		result->tv_usec = 0;
+	}
+
+	/* Return 1 if result is negative. */
+	return (start > end);
+>>>>>>> 8c320ca... added xevan
 }
 
 bool fulltest(const uint32_t *hash, const uint32_t *target)
@@ -803,7 +933,11 @@ bool fulltest(const uint32_t *hash, const uint32_t *target)
 		}
 	}
 
+<<<<<<< HEAD
 	if ((!rc && opt_debug) || opt_debug_diff) {
+=======
+	if (!rc && opt_debug) {
+>>>>>>> 8c320ca... added xevan
 		uint32_t hash_be[8], target_be[8];
 		char *hash_str, *target_str;
 		
@@ -827,12 +961,19 @@ bool fulltest(const uint32_t *hash, const uint32_t *target)
 	return rc;
 }
 
+<<<<<<< HEAD
 // Only used by stratum pools
+=======
+>>>>>>> 8c320ca... added xevan
 void diff_to_target(uint32_t *target, double diff)
 {
 	uint64_t m;
 	int k;
+<<<<<<< HEAD
 
+=======
+	
+>>>>>>> 8c320ca... added xevan
 	for (k = 6; k > 0 && diff > 1.0; k--)
 		diff /= 4294967296.0;
 	m = (uint64_t)(4294901760.0 / diff);
@@ -845,6 +986,7 @@ void diff_to_target(uint32_t *target, double diff)
 	}
 }
 
+<<<<<<< HEAD
 // Only used by stratum pools
 void work_set_target(struct work* work, double diff)
 {
@@ -873,6 +1015,8 @@ double target_to_diff(uint32_t* target)
 		return (double)0x0000ffff00000000/m;
 }
 
+=======
+>>>>>>> 8c320ca... added xevan
 #ifdef WIN32
 #define socket_blocks() (WSAGetLastError() == WSAEWOULDBLOCK)
 #else
@@ -915,9 +1059,15 @@ bool stratum_send_line(struct stratum_ctx *sctx, char *s)
 	if (opt_protocol)
 		applog(LOG_DEBUG, "> %s", s);
 
+<<<<<<< HEAD
 	pthread_mutex_lock(&stratum_sock_lock);
 	ret = send_line(sctx->sock, s);
 	pthread_mutex_unlock(&stratum_sock_lock);
+=======
+	pthread_mutex_lock(&sctx->sock_lock);
+	ret = send_line(sctx->sock, s);
+	pthread_mutex_unlock(&sctx->sock_lock);
+>>>>>>> 8c320ca... added xevan
 
 	return ret;
 }
@@ -938,7 +1088,10 @@ static bool socket_full(curl_socket_t sock, int timeout)
 
 bool stratum_socket_full(struct stratum_ctx *sctx, int timeout)
 {
+<<<<<<< HEAD
 	if (!sctx->sockbuf) return false;
+=======
+>>>>>>> 8c320ca... added xevan
 	return strlen(sctx->sockbuf) || socket_full(sctx->sock, timeout);
 }
 
@@ -962,15 +1115,22 @@ char *stratum_recv_line(struct stratum_ctx *sctx)
 {
 	ssize_t len, buflen;
 	char *tok, *sret = NULL;
+<<<<<<< HEAD
 	int timeout = opt_timeout;
 
 	if (!sctx->sockbuf)
 		return NULL;
+=======
+>>>>>>> 8c320ca... added xevan
 
 	if (!strstr(sctx->sockbuf, "\n")) {
 		bool ret = true;
 		time_t rstart = time(NULL);
+<<<<<<< HEAD
 		if (!socket_full(sctx->sock, timeout)) {
+=======
+		if (!socket_full(sctx->sock, 60)) {
+>>>>>>> 8c320ca... added xevan
 			applog(LOG_ERR, "stratum_recv_line timed out");
 			goto out;
 		}
@@ -991,10 +1151,17 @@ char *stratum_recv_line(struct stratum_ctx *sctx)
 				}
 			} else
 				stratum_buffer_append(sctx, s);
+<<<<<<< HEAD
 		} while (time(NULL) - rstart < timeout && !strstr(sctx->sockbuf, "\n"));
 
 		if (!ret) {
 			if (opt_debug) applog(LOG_ERR, "stratum_recv_line failed");
+=======
+		} while (time(NULL) - rstart < 60 && !strstr(sctx->sockbuf, "\n"));
+
+		if (!ret) {
+			applog(LOG_ERR, "stratum_recv_line failed");
+>>>>>>> 8c320ca... added xevan
 			goto out;
 		}
 	}
@@ -1034,13 +1201,21 @@ bool stratum_connect(struct stratum_ctx *sctx, const char *url)
 	CURL *curl;
 	int rc;
 
+<<<<<<< HEAD
 	pthread_mutex_lock(&stratum_sock_lock);
+=======
+	pthread_mutex_lock(&sctx->sock_lock);
+>>>>>>> 8c320ca... added xevan
 	if (sctx->curl)
 		curl_easy_cleanup(sctx->curl);
 	sctx->curl = curl_easy_init();
 	if (!sctx->curl) {
 		applog(LOG_ERR, "CURL initialization failed");
+<<<<<<< HEAD
 		pthread_mutex_unlock(&stratum_sock_lock);
+=======
+		pthread_mutex_unlock(&sctx->sock_lock);
+>>>>>>> 8c320ca... added xevan
 		return false;
 	}
 	curl = sctx->curl;
@@ -1049,25 +1224,41 @@ bool stratum_connect(struct stratum_ctx *sctx, const char *url)
 		sctx->sockbuf_size = RBUFSIZE;
 	}
 	sctx->sockbuf[0] = '\0';
+<<<<<<< HEAD
 	pthread_mutex_unlock(&stratum_sock_lock);
+=======
+	pthread_mutex_unlock(&sctx->sock_lock);
+>>>>>>> 8c320ca... added xevan
 
 	if (url != sctx->url) {
 		free(sctx->url);
 		sctx->url = strdup(url);
 	}
 	free(sctx->curl_url);
+<<<<<<< HEAD
 	sctx->curl_url = (char*)malloc(strlen(url)+1);
+=======
+	sctx->curl_url = (char*)malloc(strlen(url));
+>>>>>>> 8c320ca... added xevan
 	sprintf(sctx->curl_url, "http%s", strstr(url, "://"));
 
 	if (opt_protocol)
 		curl_easy_setopt(curl, CURLOPT_VERBOSE, 1);
 	curl_easy_setopt(curl, CURLOPT_URL, sctx->curl_url);
 	curl_easy_setopt(curl, CURLOPT_FRESH_CONNECT, 1);
+<<<<<<< HEAD
 	curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT, opt_timeout);
 	curl_easy_setopt(curl, CURLOPT_ERRORBUFFER, sctx->curl_err_str);
 	curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1);
 	curl_easy_setopt(curl, CURLOPT_TCP_NODELAY, 1);
 	if (opt_proxy && opt_proxy_type != CURLPROXY_HTTP) {
+=======
+	curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT, 30);
+	curl_easy_setopt(curl, CURLOPT_ERRORBUFFER, sctx->curl_err_str);
+	curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1);
+	curl_easy_setopt(curl, CURLOPT_TCP_NODELAY, 1);
+	if (opt_proxy && opt_proxy_type != -1 && opt_proxy_type != CURLPROXY_HTTP) {
+>>>>>>> 8c320ca... added xevan
 		curl_easy_setopt(curl, CURLOPT_PROXY, opt_proxy);
 		curl_easy_setopt(curl, CURLOPT_PROXYTYPE, opt_proxy_type);
 	} else if (getenv("http_proxy")) {
@@ -1103,6 +1294,7 @@ bool stratum_connect(struct stratum_ctx *sctx, const char *url)
 	return true;
 }
 
+<<<<<<< HEAD
 void stratum_free_job(struct stratum_ctx *sctx)
 {
 	pthread_mutex_lock(&stratum_work_lock);
@@ -1138,6 +1330,18 @@ void stratum_disconnect(struct stratum_ctx *sctx)
 		stratum_free_job(sctx);
 	}
 	pthread_mutex_unlock(&stratum_sock_lock);
+=======
+void stratum_disconnect(struct stratum_ctx *sctx)
+{
+	pthread_mutex_lock(&sctx->sock_lock);
+	if (sctx->curl) {
+		sctx->disconnects++;
+		curl_easy_cleanup(sctx->curl);
+		sctx->curl = NULL;
+		sctx->sockbuf[0] = '\0';
+	}
+	pthread_mutex_unlock(&sctx->sock_lock);
+>>>>>>> 8c320ca... added xevan
 }
 
 static const char *get_stratum_session_id(json_t *val)
@@ -1148,7 +1352,11 @@ static const char *get_stratum_session_id(json_t *val)
 	arr_val = json_array_get(val, 0);
 	if (!arr_val || !json_is_array(arr_val))
 		return NULL;
+<<<<<<< HEAD
 	n = (int) json_array_size(arr_val);
+=======
+	n = json_array_size(arr_val);
+>>>>>>> 8c320ca... added xevan
 	for (i = 0; i < n; i++) {
 		const char *notify;
 		json_t *arr = json_array_get(arr_val, i);
@@ -1175,6 +1383,7 @@ static bool stratum_parse_extranonce(struct stratum_ctx *sctx, json_t *params, i
 	}
 	xn2_size = (int) json_integer_value(json_array_get(params, pndx+1));
 	if (!xn2_size) {
+<<<<<<< HEAD
 		char algo[64] = { 0 };
 		get_currentalgo(algo, sizeof(algo));
 		if (strcmp(algo, "equihash") == 0) {
@@ -1197,21 +1406,43 @@ static bool stratum_parse_extranonce(struct stratum_ctx *sctx, json_t *params, i
 	}
 skip_n2:
 	pthread_mutex_lock(&stratum_work_lock);
+=======
+		applog(LOG_ERR, "Failed to get extranonce2_size");
+		goto out;
+	}
+	if (xn2_size < 2 || xn2_size > 16) {
+		applog(LOG_INFO, "Failed to get valid n2size in parse_extranonce");
+		goto out;
+	}
+
+	pthread_mutex_lock(&sctx->work_lock);
+>>>>>>> 8c320ca... added xevan
 	if (sctx->xnonce1)
 		free(sctx->xnonce1);
 	sctx->xnonce1_size = strlen(xnonce1) / 2;
 	sctx->xnonce1 = (uchar*) calloc(1, sctx->xnonce1_size);
 	if (unlikely(!sctx->xnonce1)) {
 		applog(LOG_ERR, "Failed to alloc xnonce1");
+<<<<<<< HEAD
 		pthread_mutex_unlock(&stratum_work_lock);
+=======
+		pthread_mutex_unlock(&sctx->work_lock);
+>>>>>>> 8c320ca... added xevan
 		goto out;
 	}
 	hex2bin(sctx->xnonce1, xnonce1, sctx->xnonce1_size);
 	sctx->xnonce2_size = xn2_size;
+<<<<<<< HEAD
 	pthread_mutex_unlock(&stratum_work_lock);
 
 	if (pndx == 0 && opt_debug) /* pool dynamic change */
 		applog(LOG_DEBUG, "Stratum set nonce %s with extranonce2 size=%d",
+=======
+	pthread_mutex_unlock(&sctx->work_lock);
+
+	if (pndx == 0) /* pool dynamic change */
+		applog(LOG_INFO, "Stratum set nonce %s with extranonce2 size=%d",
+>>>>>>> 8c320ca... added xevan
 			xnonce1, xn2_size);
 
 	return true;
@@ -1227,8 +1458,11 @@ bool stratum_subscribe(struct stratum_ctx *sctx)
 	json_error_t err;
 	bool ret = false, retry = false;
 
+<<<<<<< HEAD
 	if (sctx->rpc2) return true;
 
+=======
+>>>>>>> 8c320ca... added xevan
 start:
 	s = (char*)malloc(128 + (sctx->session_id ? strlen(sctx->session_id) : 0));
 	if (retry)
@@ -1289,12 +1523,20 @@ start:
 	if (opt_debug && sid)
 		applog(LOG_DEBUG, "Stratum session id: %s", sid);
 
+<<<<<<< HEAD
 	pthread_mutex_lock(&stratum_work_lock);
+=======
+	pthread_mutex_lock(&sctx->work_lock);
+>>>>>>> 8c320ca... added xevan
 	if (sctx->session_id)
 		free(sctx->session_id);
 	sctx->session_id = sid ? strdup(sid) : NULL;
 	sctx->next_diff = 1.0;
+<<<<<<< HEAD
 	pthread_mutex_unlock(&stratum_work_lock);
+=======
+	pthread_mutex_unlock(&sctx->work_lock);
+>>>>>>> 8c320ca... added xevan
 
 out:
 	free(s);
@@ -1311,18 +1553,25 @@ out:
 	return ret;
 }
 
+<<<<<<< HEAD
 extern bool opt_extranonce;
 
 bool stratum_authorize(struct stratum_ctx *sctx, const char *user, const char *pass)
+=======
+bool stratum_authorize(struct stratum_ctx *sctx, const char *user, const char *pass,bool extranonce)
+>>>>>>> 8c320ca... added xevan
 {
 	json_t *val = NULL, *res_val, *err_val;
 	char *s, *sret;
 	json_error_t err;
 	bool ret = false;
 
+<<<<<<< HEAD
 	if (sctx->rpc2)
 		return rpc2_stratum_authorize(sctx, user, pass);
 
+=======
+>>>>>>> 8c320ca... added xevan
 	s = (char*)malloc(80 + strlen(user) + strlen(pass));
 	sprintf(s, "{\"id\": 2, \"method\": \"mining.authorize\", \"params\": [\"%s\", \"%s\"]}",
 	        user, pass);
@@ -1360,6 +1609,7 @@ bool stratum_authorize(struct stratum_ctx *sctx, const char *user, const char *p
 
 	sctx->tm_connected = time(NULL);
 	ret = true;
+<<<<<<< HEAD
 
 	if (!opt_extranonce)
 		goto out;
@@ -1376,6 +1626,20 @@ bool stratum_authorize(struct stratum_ctx *sctx, const char *user, const char *p
 			applog(LOG_DEBUG, "stratum extranonce subscribe timed out");
 		goto out;
 	}
+=======
+	if (extranonce)
+	{
+		// subscribe to extranonce (optional)
+		sprintf(s, "{\"id\": 3, \"method\": \"mining.extranonce.subscribe\", \"params\": []}");
+		if (!stratum_send_line(sctx, s))
+		goto out;
+		// reduced timeout to handle pools ignoring this method without answer (like xpool.ca)
+		if (!socket_full(sctx->sock, 1)) {
+		if (opt_debug)
+			applog(LOG_DEBUG, "stratum extranonce subscribe timed out");
+		goto out;
+		}
+>>>>>>> 8c320ca... added xevan
 
 	sret = stratum_recv_line(sctx);
 	if (sret) {
@@ -1396,6 +1660,10 @@ bool stratum_authorize(struct stratum_ctx *sctx, const char *user, const char *p
 		}
 		free(sret);
 	}
+<<<<<<< HEAD
+=======
+	}
+>>>>>>> 8c320ca... added xevan
 
 out:
 	free(s);
@@ -1437,6 +1705,7 @@ static uint32_t getblocheight(struct stratum_ctx *sctx)
 
 static bool stratum_notify(struct stratum_ctx *sctx, json_t *params)
 {
+<<<<<<< HEAD
 	const char *job_id, *prevhash, *coinb1, *coinb2, *version, *nbits, *stime;
 	const char *claim = NULL, *nreward = NULL;
 	size_t coinb1_size, coinb2_size;
@@ -1474,6 +1743,29 @@ static bool stratum_notify(struct stratum_ctx *sctx, json_t *params)
 	stime = json_string_value(json_array_get(params, p++));
 	clean = json_is_true(json_array_get(params, p)); p++;
 	nreward = json_string_value(json_array_get(params, p++));
+=======
+	const char *job_id, *prevhash, *coinb1, *coinb2, *version, *nbits, *stime, *nreward;
+	size_t coinb1_size, coinb2_size;
+	bool clean, ret = false;
+	int merkle_count, i;
+	json_t *merkle_arr;
+	uchar **merkle;
+	int ntime;
+
+	job_id = json_string_value(json_array_get(params, 0));
+	prevhash = json_string_value(json_array_get(params, 1));
+	coinb1 = json_string_value(json_array_get(params, 2));
+	coinb2 = json_string_value(json_array_get(params, 3));
+	merkle_arr = json_array_get(params, 4);
+	if (!merkle_arr || !json_is_array(merkle_arr))
+		goto out;
+	merkle_count = json_array_size(merkle_arr);
+	version = json_string_value(json_array_get(params, 5));
+	nbits = json_string_value(json_array_get(params, 6));
+	stime = json_string_value(json_array_get(params, 7));
+	clean = json_is_true(json_array_get(params, 8));
+	nreward = json_string_value(json_array_get(params, 9));
+>>>>>>> 8c320ca... added xevan
 
 	if (!job_id || !prevhash || !coinb1 || !coinb2 || !version || !nbits || !stime ||
 	    strlen(prevhash) != 64 || strlen(version) != 8 ||
@@ -1487,12 +1779,20 @@ static bool stratum_notify(struct stratum_ctx *sctx, json_t *params)
 	ntime = swab32(ntime) - (uint32_t) time(0);
 	if (ntime > sctx->srvtime_diff) {
 		sctx->srvtime_diff = ntime;
+<<<<<<< HEAD
 		if (opt_protocol && ntime > 20)
 			applog(LOG_DEBUG, "stratum time is at least %ds in the future", ntime);
 	}
 
 	if (merkle_count)
 		merkle = (uchar**) malloc(merkle_count * sizeof(char *));
+=======
+		if (!opt_quiet && ntime > 20)
+			applog(LOG_DEBUG, "stratum time is at least %ds in the future", ntime);
+	}
+
+	merkle = (uchar**) malloc(merkle_count * sizeof(char *));
+>>>>>>> 8c320ca... added xevan
 	for (i = 0; i < merkle_count; i++) {
 		const char *s = json_string_value(json_array_get(merkle_arr, i));
 		if (!s || strlen(s) != 64) {
@@ -1506,7 +1806,11 @@ static bool stratum_notify(struct stratum_ctx *sctx, json_t *params)
 		hex2bin(merkle[i], s, 32);
 	}
 
+<<<<<<< HEAD
 	pthread_mutex_lock(&stratum_work_lock);
+=======
+	pthread_mutex_lock(&sctx->work_lock);
+>>>>>>> 8c320ca... added xevan
 
 	coinb1_size = strlen(coinb1) / 2;
 	coinb2_size = strlen(coinb2) / 2;
@@ -1525,7 +1829,10 @@ static bool stratum_notify(struct stratum_ctx *sctx, json_t *params)
 	free(sctx->job.job_id);
 	sctx->job.job_id = strdup(job_id);
 	hex2bin(sctx->job.prevhash, prevhash, 32);
+<<<<<<< HEAD
 	if (has_claim) hex2bin(sctx->job.claim, claim, 32);
+=======
+>>>>>>> 8c320ca... added xevan
 
 	sctx->job.height = getblocheight(sctx);
 
@@ -1547,7 +1854,11 @@ static bool stratum_notify(struct stratum_ctx *sctx, json_t *params)
 
 	sctx->job.diff = sctx->next_diff;
 
+<<<<<<< HEAD
 	pthread_mutex_unlock(&stratum_work_lock);
+=======
+	pthread_mutex_unlock(&sctx->work_lock);
+>>>>>>> 8c320ca... added xevan
 
 	ret = true;
 
@@ -1555,7 +1866,10 @@ out:
 	return ret;
 }
 
+<<<<<<< HEAD
 extern volatile time_t g_work_time;
+=======
+>>>>>>> 8c320ca... added xevan
 static bool stratum_set_difficulty(struct stratum_ctx *sctx, json_t *params)
 {
 	double diff;
@@ -1564,9 +1878,22 @@ static bool stratum_set_difficulty(struct stratum_ctx *sctx, json_t *params)
 	if (diff <= 0.0)
 		return false;
 
+<<<<<<< HEAD
 	pthread_mutex_lock(&stratum_work_lock);
 	sctx->next_diff = diff;
 	pthread_mutex_unlock(&stratum_work_lock);
+=======
+	pthread_mutex_lock(&sctx->work_lock);
+	sctx->next_diff = diff;
+	pthread_mutex_unlock(&sctx->work_lock);
+
+	/* store for api stats */
+	if (diff != global_diff) 
+	{
+		global_diff = diff;
+		applog(LOG_WARNING, "Stratum difficulty set to %g", diff);
+	}
+>>>>>>> 8c320ca... added xevan
 
 	return true;
 }
@@ -1597,6 +1924,7 @@ static bool stratum_reconnect(struct stratum_ctx *sctx, json_t *params)
 	return true;
 }
 
+<<<<<<< HEAD
 static bool stratum_pong(struct stratum_ctx *sctx, json_t *id)
 {
 	char buf[64];
@@ -1726,10 +2054,14 @@ static bool stratum_benchdata(json_t *result, json_t *params, int thr_id)
 }
 
 static bool stratum_get_stats(struct stratum_ctx *sctx, json_t *id, json_t *params)
+=======
+static bool stratum_get_version(struct stratum_ctx *sctx, json_t *id)
+>>>>>>> 8c320ca... added xevan
 {
 	char *s;
 	json_t *val;
 	bool ret;
+<<<<<<< HEAD
 
 	if (!id || json_is_null(id))
 		return false;
@@ -1759,17 +2091,27 @@ static bool stratum_get_version(struct stratum_ctx *sctx, json_t *id, json_t *pa
 	json_t *val;
 	bool ret = true;
 
+=======
+	
+>>>>>>> 8c320ca... added xevan
 	if (!id || json_is_null(id))
 		return false;
 
 	val = json_object();
 	json_object_set(val, "id", id);
+<<<<<<< HEAD
 	json_object_set_new(val, "result", json_string(USER_AGENT));
 	if (ret) json_object_set_new(val, "error", json_null());
 
 	s = json_dumps(val, 0);
 	ret = stratum_send_line(sctx, s);
 
+=======
+	json_object_set_new(val, "error", json_null());
+	json_object_set_new(val, "result", json_string(USER_AGENT));
+	s = json_dumps(val, 0);
+	ret = stratum_send_line(sctx, s);
+>>>>>>> 8c320ca... added xevan
 	json_decref(val);
 	free(s);
 
@@ -1782,9 +2124,12 @@ static bool stratum_show_message(struct stratum_ctx *sctx, json_t *id, json_t *p
 	json_t *val;
 	bool ret;
 
+<<<<<<< HEAD
 	if (sctx->is_equihash)
 		return equi_stratum_show_message(sctx, id, params);
 
+=======
+>>>>>>> 8c320ca... added xevan
 	val = json_array_get(params, 0);
 	if (val)
 		applog(LOG_NOTICE, "MESSAGE FROM SERVER: %s", json_string_value(val));
@@ -1804,6 +2149,7 @@ static bool stratum_show_message(struct stratum_ctx *sctx, json_t *id, json_t *p
 	return ret;
 }
 
+<<<<<<< HEAD
 static bool stratum_unknown_method(struct stratum_ctx *sctx, json_t *id)
 {
 	char *s;
@@ -1826,6 +2172,8 @@ static bool stratum_unknown_method(struct stratum_ctx *sctx, json_t *id)
 	return ret;
 }
 
+=======
+>>>>>>> 8c320ca... added xevan
 bool stratum_handle_method(struct stratum_ctx *sctx, const char *s)
 {
 	json_t *val, *id, *params;
@@ -1849,20 +2197,26 @@ bool stratum_handle_method(struct stratum_ctx *sctx, const char *s)
 		ret = stratum_notify(sctx, params);
 		goto out;
 	}
+<<<<<<< HEAD
 	if (!strcasecmp(method, "mining.ping")) { // cgminer 4.7.1+
 		if (opt_debug) applog(LOG_DEBUG, "Pool ping");
 		ret = stratum_pong(sctx, id);
 		goto out;
 	}
+=======
+>>>>>>> 8c320ca... added xevan
 	if (!strcasecmp(method, "mining.set_difficulty")) {
 		ret = stratum_set_difficulty(sctx, params);
 		goto out;
 	}
+<<<<<<< HEAD
 	if (!strcasecmp(method, "mining.set_target")) {
 		sctx->is_equihash = true;
 		ret = equi_stratum_set_target(sctx, params);
 		goto out;
 	}
+=======
+>>>>>>> 8c320ca... added xevan
 	if (!strcasecmp(method, "mining.set_extranonce")) {
 		ret = stratum_parse_extranonce(sctx, params, 0);
 		goto out;
@@ -1871,6 +2225,7 @@ bool stratum_handle_method(struct stratum_ctx *sctx, const char *s)
 		ret = stratum_reconnect(sctx, params);
 		goto out;
 	}
+<<<<<<< HEAD
 	if (!strcasecmp(method, "client.get_algo")) { // ccminer only yet!
 		// will prevent wrong algo parameters on a pool, will be used as test on rejects
 		if (!opt_quiet) applog(LOG_NOTICE, "Pool asked your algo parameter");
@@ -1900,6 +2255,16 @@ bool stratum_handle_method(struct stratum_ctx *sctx, const char *s)
 		if (opt_debug) applog(LOG_WARNING, "unknown stratum method %s!", method);
 		ret = stratum_unknown_method(sctx, id);
 	}
+=======
+	if (!strcasecmp(method, "client.get_version")) {
+		ret = stratum_get_version(sctx, id);
+		goto out;
+	}
+	if (!strcasecmp(method, "client.show_message")) {
+		ret = stratum_show_message(sctx, id, params);
+		goto out;
+	}
+>>>>>>> 8c320ca... added xevan
 
 out:
 	if (val)
@@ -2045,9 +2410,14 @@ char* atime2str(time_t timer)
 }
 
 /* sprintf can be used in applog */
+<<<<<<< HEAD
 static char* format_hash(char* buf, uint8_t* h)
 {
 	uchar *hash = (uchar*) h;
+=======
+extern "C" char* format_hash(char* buf, uchar *hash)
+{
+>>>>>>> 8c320ca... added xevan
 	int len = 0;
 	for (int i=0; i < 32; i += 4) {
 		len += sprintf(buf+len, "%02x%02x%02x%02x ",
@@ -2056,6 +2426,7 @@ static char* format_hash(char* buf, uint8_t* h)
 	return buf;
 }
 
+<<<<<<< HEAD
 /* to debug diff in data */
 void applog_compare_hash(void *hash, void *hash_ref)
 {
@@ -2117,18 +2488,28 @@ static uint32_t zrtest[20] = {
 	swab32(0xffff0f1e),
 	swab32(0x2a9e2300),
 };
+=======
+#define printpfx(n,h) \
+	printf("%s%12s%s: %s\n", CL_BLU, n, CL_N, format_hash(s, h))
+>>>>>>> 8c320ca... added xevan
 
 void do_gpu_tests(void)
 {
 #ifdef _DEBUG
 	unsigned long done;
 	char s[128] = { '\0' };
+<<<<<<< HEAD
 	struct work work;
 	memset(&work, 0, sizeof(work));
+=======
+	uchar buf[128];
+	uint32_t tgt[8] = { 0 };
+>>>>>>> 8c320ca... added xevan
 
 	opt_tracegpu = true;
 	work_restart = (struct work_restart*) malloc(sizeof(struct work_restart));
 	work_restart[0].restart = 1;
+<<<<<<< HEAD
 	work.target[7] = 0xffff;
 
 	//struct timeval tv;
@@ -2138,6 +2519,16 @@ void do_gpu_tests(void)
 	memset(work.data, 0, sizeof(work.data));
 	work.data[0] = 0;
 	scanhash_hmq17(0, &work, 1, &done);
+=======
+	tgt[7] = 0xffff;
+
+	memset(buf, 0, sizeof buf);
+	// buf[0] = 1; buf[64] = 2; // for endian tests
+	scanhash_blake256(0, (uint32_t*)buf, tgt, 1, &done, 14);
+
+	memset(buf, 0, sizeof buf);
+	scanhash_heavy(0, (uint32_t*)buf, tgt, 1, &done, 1, 84); // HEAVYCOIN_BLKHDR_SZ=84
+>>>>>>> 8c320ca... added xevan
 
 	free(work_restart);
 	work_restart = NULL;
@@ -2147,6 +2538,7 @@ void do_gpu_tests(void)
 
 void print_hash_tests(void)
 {
+<<<<<<< HEAD
 	uchar *scratchbuf = NULL;
 	char s[128] = {'\0'};
 	uchar hash[128];
@@ -2156,10 +2548,16 @@ void print_hash_tests(void)
 	scratchbuf = (uchar*)calloc(128, 1024);
 	memset(buf, 0, sizeof buf);
 
+=======
+	char s[128] = {'\0'};
+	uchar buf[128], hash[128];
+	memset(buf, 0, sizeof buf);
+>>>>>>> 8c320ca... added xevan
 	// buf[0] = 1; buf[64] = 2; // for endian tests
 
 	printf(CL_WHT "CPU HASH ON EMPTY BUFFER RESULTS:" CL_N "\n");
 
+<<<<<<< HEAD
 	bastionhash(&hash[0], &buf[0]);
 	printpfx("bastion", hash);
 
@@ -2197,11 +2595,35 @@ void print_hash_tests(void)
 	fugue256_hash(&hash[0], &buf[0], 32);
 	printpfx("fugue256", hash);
 
+=======
+	memset(hash, 0, sizeof hash);
+	blake256hash(&hash[0], &buf[0], 8);
+	printpfx("blakecoin", hash);
+
+	memset(hash, 0, sizeof hash);
+	blake256hash(&hash[0], &buf[0], 14);
+	printpfx("blake", hash);
+
+	memset(hash, 0, sizeof hash);
+	deephash(&hash[0], &buf[0]);
+	printpfx("deep", hash);
+
+	memset(hash, 0, sizeof hash);
+	fresh_hash(&hash[0], &buf[0]);
+	printpfx("fresh", hash);
+
+	memset(hash, 0, sizeof hash);
+	fugue256_hash(&hash[0], &buf[0], 32);
+	printpfx("fugue256", hash);
+
+	memset(hash, 0, sizeof hash);
+>>>>>>> 8c320ca... added xevan
 	groestlhash(&hash[0], &buf[0]);
 	printpfx("groestl", hash);
 
 	heavycoin_hash(&hash[0], &buf[0], 32);
 	printpfx("heavy", hash);
+<<<<<<< HEAD
 
 	hmq17hash(&hash[0], &buf[0]);
 	printpfx("hmq1725", hash);
@@ -2325,4 +2747,83 @@ void print_hash_tests(void)
 	do_gpu_tests();
 
 	free(scratchbuf);
+=======
+	memset(hash, 0, sizeof hash);
+
+	memset(hash, 0, sizeof hash);
+	jackpothash(&hash[0], &buf[0]);
+	printpfx("jackpot", hash);
+
+	memset(hash, 0, sizeof hash);
+	keccak256_hash(&hash[0], &buf[0]);
+	printpfx("keccak", hash);
+
+	memset(hash, 0, sizeof hash);
+	doomhash(&hash[0], &buf[0]);
+	printpfx("luffa", hash);
+
+	memset(hash, 0, sizeof hash);
+	lyra2_hash(&hash[0], &buf[0]);
+	printpfx("lyra2", hash);
+
+	memset(hash, 0, sizeof hash);
+	myriadhash(&hash[0], &buf[0]);
+	printpfx("myriad", hash);
+
+	memset(hash, 0, sizeof hash);
+	nist5hash(&hash[0], &buf[0]);
+	printpfx("nist5", hash);
+
+	memset(hash, 0, sizeof hash);
+	pentablakehash(&hash[0], &buf[0]);
+	printpfx("pentablake", hash);
+
+	memset(hash, 0, sizeof hash);
+	quarkhash(&hash[0], &buf[0]);
+	printpfx("quark", hash);
+
+	memset(hash, 0, sizeof hash);
+	qubithash(&hash[0], &buf[0]);
+	printpfx("qubit", hash);
+
+	skeincoinhash(&hash[0], &buf[0]);
+	printpfx("skein", hash);
+	
+//	scrypthash(&hash[0], &buf[0]);
+//	printpfx("scrypt", hash);
+
+	memset(hash, 0, sizeof hash);
+	s3hash(&hash[0], &buf[0]);
+	printpfx("S3", hash);
+
+	memset(hash, 0, sizeof hash);
+	wcoinhash(&hash[0], &buf[0]);
+	printpfx("whirl", hash);
+
+	memset(hash, 0, sizeof hash);
+	x11hash(&hash[0], &buf[0]);
+	printpfx("X11", hash);
+
+	memset(hash, 0, sizeof hash);
+	x13hash(&hash[0], &buf[0]);
+	printpfx("X13", hash);
+
+	memset(hash, 0, sizeof hash);
+	x14hash(&hash[0], &buf[0]);
+	printpfx("X14", hash);
+
+	memset(hash, 0, sizeof hash);
+	x15hash(&hash[0], &buf[0]);
+	printpfx("X15", hash);
+
+	memset(hash, 0, sizeof hash);
+	x17hash(&hash[0], &buf[0]);
+	printpfx("X17", hash);
+	
+	memset(hash, 0, sizeof hash);
+	xevan_hash(&hash[0], &buf[0]);
+	printpfx("XEVAN", hash);
+
+	do_gpu_tests();
+>>>>>>> 8c320ca... added xevan
 }

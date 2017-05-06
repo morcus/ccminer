@@ -1,3 +1,4 @@
+<<<<<<< HEAD
  /************************************************************************************************************************************\
 |*                                                                                                                                    *|
 |*     Copyright © 2012 NVIDIA Corporation.  All rights reserved.                                                                     *|
@@ -31,6 +32,8 @@
 |*  the above Disclaimer (as applicable) and U.S. Government End Users Notice.                                                        *|
 |*                                                                                                                                    *|
  \************************************************************************************************************************************/
+=======
+>>>>>>> 8c320ca... added xevan
 #ifndef __NVAPI_EMPTY_SAL
 #ifdef __nvapi_undef__ecount
     #undef __ecount

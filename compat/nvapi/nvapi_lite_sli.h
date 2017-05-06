@@ -1,3 +1,4 @@
+<<<<<<< HEAD
  /************************************************************************************************************************************\
 |*                                                                                                                                    *|
 |*     Copyright © 2012 NVIDIA Corporation.  All rights reserved.                                                                     *|
@@ -32,6 +33,8 @@
 |*                                                                                                                                    *|
  \************************************************************************************************************************************/
 
+=======
+>>>>>>> 8c320ca... added xevan
 #pragma once
 #include"nvapi_lite_salstart.h"
 #include"nvapi_lite_common.h"
@@ -127,7 +130,10 @@ typedef enum _NVAPI_D3D_SETRESOURCEHINT_CATEGORY
 
 //
 //  NVAPI_D3D_SRH_SLI_APP_CONTROLLED_INTERFRAME_CONTENT_SYNC:
+<<<<<<< HEAD
 //  NVAPI_D3D_SRH_SLI_ASK_FOR_BROADCAST_USING:
+=======
+>>>>>>> 8c320ca... added xevan
 
 
 //! \ingroup dx
@@ -136,6 +142,7 @@ typedef enum _NVAPI_D3D_SETRESOURCEHINT_CATEGORY
 //!  Default value: 0 \n
 //!  Explanation: If the value is 1, the driver will not track any rendering operations that would mark this resource as dirty,
 //!  avoiding any form of synchronization across frames rendered in parallel in multiple GPUs in AFR mode.
+<<<<<<< HEAD
 //!
 //!  NVAPI_D3D_SRH_SLI_ASK_FOR_BROADCAST_USAGE: Valid values : 0 or 1 \n
 //!  Default value: 0 \n
@@ -145,6 +152,11 @@ typedef enum _NVAPI_D3D_SETRESOURCEHINT_SLI
 {
     NVAPI_D3D_SRH_SLI_APP_CONTROLLED_INTERFRAME_CONTENT_SYNC = 1,
     NVAPI_D3D_SRH_SLI_ASK_FOR_BROADCAST_USAGE = 2
+=======
+typedef enum _NVAPI_D3D_SETRESOURCEHINT_SLI
+{
+    NVAPI_D3D_SRH_SLI_APP_CONTROLLED_INTERFRAME_CONTENT_SYNC = 1
+>>>>>>> 8c320ca... added xevan
 }  NVAPI_D3D_SETRESOURCEHINT_SLI;
 
 //! \ingroup dx

@@ -8,11 +8,19 @@
  * Software Foundation; either version 2 of the License, or (at your option)
  * any later version.  See COPYING for more details.
  */
+<<<<<<< HEAD
 #define APIVERSION "1.9"
 
 #ifdef WIN32
 # define  _WINSOCK_DEPRECATED_NO_WARNINGS
 # include <winsock2.h>
+=======
+#define APIVERSION "1.3"
+
+#ifdef WIN32
+# define  _WINSOCK_DEPRECATED_NO_WARNINGS
+//# include <winsock2.h>
+>>>>>>> 8c320ca... added xevan
 #endif
 
 #include <stdio.h>
@@ -33,7 +41,10 @@
 
 #include "miner.h"
 #include "nvml.h"
+<<<<<<< HEAD
 #include "algos.h"
+=======
+>>>>>>> 8c320ca... added xevan
 
 #ifndef WIN32
 # include <errno.h>
@@ -86,11 +97,15 @@ static struct IP4ACCESS *ipaccess = NULL;
 #define ALLIP4         "0.0.0.0"
 static const char *localaddr = "127.0.0.1";
 static const char *UNAVAILABLE = " - API will not be available";
+<<<<<<< HEAD
 static const char *MUNAVAILABLE = " - API multicast listener will not be available";
+=======
+>>>>>>> 8c320ca... added xevan
 static char *buffer = NULL;
 static time_t startup = 0;
 static int bye = 0;
 
+<<<<<<< HEAD
 extern char *opt_api_bind;
 extern int opt_api_port;
 extern char *opt_api_allow;
@@ -108,6 +123,22 @@ extern struct stratum_ctx stratum;
 extern int num_cpus;
 extern float cpu_temp(int);
 extern uint32_t cpu_clock(int);
+=======
+extern char *opt_api_allow;
+extern int opt_api_listen; /* port */
+extern uint32_t accepted_count;
+extern uint32_t rejected_count;
+extern int num_cpus;
+extern struct stratum_ctx stratum;
+extern char* rpc_user;
+
+// sysinfos.cpp
+extern float cpu_temp(int);
+extern uint32_t cpu_clock(int);
+// cuda.cpp
+int cuda_num_devices();
+int cuda_gpu_clocks(struct cgpu_info *gpu);
+>>>>>>> 8c320ca... added xevan
 
 char driver_version[32] = { 0 };
 
@@ -115,24 +146,33 @@ char driver_version[32] = { 0 };
 
 static void gpustatus(int thr_id)
 {
+<<<<<<< HEAD
 	struct pool_infos *p = &pools[cur_pooln];
 
 	if (thr_id >= 0 && thr_id < opt_n_threads) {
 		struct cgpu_info *cgpu = &thr_info[thr_id].gpu;
 		double khashes_per_watt = 0;
+=======
+	if (thr_id >= 0 && thr_id < opt_n_threads) {
+		struct cgpu_info *cgpu = &thr_info[thr_id].gpu;
+>>>>>>> 8c320ca... added xevan
 		int gpuid = cgpu->gpu_id;
 		char buf[512]; *buf = '\0';
 		char* card;
 
+<<<<<<< HEAD
 		cuda_gpu_info(cgpu);
 		cgpu->gpu_plimit = device_plimit[cgpu->gpu_id];
 
+=======
+>>>>>>> 8c320ca... added xevan
 #ifdef USE_WRAPNVML
 		cgpu->has_monitoring = true;
 		cgpu->gpu_bus = gpu_busid(cgpu);
 		cgpu->gpu_temp = gpu_temp(cgpu);
 		cgpu->gpu_fan = (uint16_t) gpu_fanpercent(cgpu);
 		cgpu->gpu_fan_rpm = (uint16_t) gpu_fanrpm(cgpu);
+<<<<<<< HEAD
 		cgpu->gpu_power = gpu_power(cgpu); // mWatts
 		cgpu->gpu_plimit = gpu_plimit(cgpu); // mW or %
 #endif
@@ -158,6 +198,24 @@ static void gpustatus(int thr_id)
 			cgpu->khashes, khashes_per_watt, cgpu->gpu_plimit,
 			cgpu->accepted, (unsigned) cgpu->rejected, (unsigned) cgpu->hw_errors,
 			cgpu->intensity, cgpu->throughput);
+=======
+#endif
+		cuda_gpu_clocks(cgpu);
+
+		// todo: per gpu
+		cgpu->accepted = accepted_count;
+		cgpu->rejected = rejected_count;
+
+		cgpu->khashes = stats_get_speed(cgpu->gpu_id, 0.0) / 1000.0;
+
+		card = device_name[gpuid];
+
+		snprintf(buf, sizeof(buf), "GPU=%d;BUS=%hd;CARD=%s;"
+			"TEMP=%.1f;FAN=%hu;RPM=%hu;FREQ=%d;KHS=%.2f;HWF=%d;I=%.1f;THR=%u|",
+			gpuid, cgpu->gpu_bus, card, cgpu->gpu_temp, cgpu->gpu_fan,
+			cgpu->gpu_fan_rpm, cgpu->gpu_clock, cgpu->khashes,
+			cgpu->hw_errors, cgpu->intensity, cgpu->throughput);
+>>>>>>> 8c320ca... added xevan
 
 		// append to buffer for multi gpus
 		strcat(buffer, buf);
@@ -182,6 +240,7 @@ static char *getthreads(char *params)
 */
 static char *getsummary(char *params)
 {
+<<<<<<< HEAD
 	char algo[64] = { 0 };
 	time_t ts = time(NULL);
 	double accps, uptime = difftime(ts, startup);
@@ -194,11 +253,18 @@ static char *getsummary(char *params)
 		solved_count += pools[p].solved_count;
 	}
 	accps = (60.0 * accepted_count) / (uptime ? uptime : 1.0);
+=======
+	char algo[64]; *algo = '\0';
+	time_t ts = time(NULL);
+	double uptime = difftime(ts, startup);
+	double accps = (60.0 * accepted_count) / (uptime ? uptime : 1.0);
+>>>>>>> 8c320ca... added xevan
 
 	get_currentalgo(algo, sizeof(algo));
 
 	*buffer = '\0';
 	sprintf(buffer, "NAME=%s;VER=%s;API=%s;"
+<<<<<<< HEAD
 		"ALGO=%s;GPUS=%d;KHS=%.2f;SOLV=%d;ACC=%d;REJ=%d;"
 		"ACCMN=%.3f;DIFF=%.6f;NETKHS=%.0f;"
 		"POOLS=%u;WAIT=%u;UPTIME=%.0f;TS=%u|",
@@ -207,6 +273,14 @@ static char *getsummary(char *params)
 		solved_count, accepted_count, rejected_count,
 		accps, net_diff > 1e-6 ? net_diff : stratum_diff, (double)net_hashrate / 1000.,
 		num_pools, wait_time, uptime, (uint32_t) ts);
+=======
+		"ALGO=%s;GPUS=%d;KHS=%.2f;ACC=%d;REJ=%d;"
+		"ACCMN=%.3f;DIFF=%.6f;UPTIME=%.0f;TS=%u|",
+		PACKAGE_NAME, PACKAGE_VERSION, APIVERSION,
+		algo, active_gpus, (double)global_hashrate / 1000.0,
+		accepted_count, rejected_count,
+		accps, global_diff, uptime, (uint32_t) ts);
+>>>>>>> 8c320ca... added xevan
 	return buffer;
 }
 
@@ -215,6 +289,7 @@ static char *getsummary(char *params)
  */
 static char *getpoolnfo(char *params)
 {
+<<<<<<< HEAD
 	char *s = buffer;
 	char jobid[128] = { 0 };
 	char extra[96] = { 0 };
@@ -251,6 +326,33 @@ static char *getpoolnfo(char *params)
 		p->disconnects, p->wait_time, p->work_time, last_share);
 
 	return s;
+=======
+	char *p = buffer;
+	char jobid[128] = { 0 };
+	char nonce[128] = { 0 };
+	*p = '\0';
+
+	if (!stratum.url) {
+		sprintf(p, "|");
+		return p;
+	}
+
+	if (stratum.job.job_id)
+		strncpy(jobid, stratum.job.job_id, sizeof(stratum.job.job_id));
+
+	if (stratum.job.xnonce2) {
+		/* used temporary to be sure all is ok */
+		cbin2hex(nonce, (const char*) stratum.job.xnonce2, stratum.xnonce2_size);
+	}
+
+	snprintf(p, MYBUFSIZ, "URL=%s;USER=%s;H=%u;JOB=%s;DIFF=%.6f;N2SZ=%d;N2=0x%s;PING=%u;DISCO=%u;UPTIME=%u|",
+		stratum.url, rpc_user ? rpc_user : "",
+		stratum.job.height, jobid, stratum.job.diff,
+		(int) stratum.xnonce2_size, nonce, stratum.answer_msec,
+		stratum.disconnects, (uint32_t) (time(NULL) - stratum.tm_connected));
+
+	return p;
+>>>>>>> 8c320ca... added xevan
 }
 
 /*****************************************************************************/
@@ -272,15 +374,19 @@ static void gpuhwinfos(int gpu_id)
 	if (cgpu == NULL)
 		return;
 
+<<<<<<< HEAD
 	cuda_gpu_info(cgpu);
 	cgpu->gpu_plimit = device_plimit[cgpu->gpu_id];
 
+=======
+>>>>>>> 8c320ca... added xevan
 #ifdef USE_WRAPNVML
 	cgpu->has_monitoring = true;
 	cgpu->gpu_bus = gpu_busid(cgpu);
 	cgpu->gpu_temp = gpu_temp(cgpu);
 	cgpu->gpu_fan = (uint16_t) gpu_fanpercent(cgpu);
 	cgpu->gpu_fan_rpm = (uint16_t) gpu_fanrpm(cgpu);
+<<<<<<< HEAD
 	cgpu->gpu_pstate = (int16_t) gpu_pstate(cgpu);
 	cgpu->gpu_power = gpu_power(cgpu);
 	cgpu->gpu_plimit = gpu_plimit(cgpu);
@@ -306,6 +412,27 @@ static void gpuhwinfos(int gpu_id)
 		cgpu->monitor.gpu_clock, cgpu->monitor.gpu_memclock, // current
 		pstate, cgpu->gpu_power, cgpu->gpu_plimit,
 		cgpu->gpu_vid, cgpu->gpu_pid, cgpu->nvml_id, cgpu->nvapi_id,
+=======
+	cgpu->gpu_pstate = gpu_pstate(cgpu);
+	gpu_info(cgpu);
+#endif
+
+	cuda_gpu_clocks(cgpu);
+
+	memset(pstate, 0, sizeof(pstate));
+	if (cgpu->gpu_pstate != -1)
+		snprintf(pstate, sizeof(pstate), "P%hu", cgpu->gpu_pstate);
+
+	card = device_name[gpu_id];
+
+	snprintf(buf, sizeof(buf), "GPU=%d;BUS=%hd;CARD=%s;SM=%u;MEM=%lu;"
+		"TEMP=%.1f;FAN=%hu;RPM=%hu;FREQ=%d;MEMFREQ=%d;PST=%s;"
+		"VID=%hx;PID=%hx;NVML=%d;NVAPI=%d;SN=%s;BIOS=%s|",
+		gpu_id, cgpu->gpu_bus, card, cgpu->gpu_arch, cgpu->gpu_mem,
+		cgpu->gpu_temp, cgpu->gpu_fan, cgpu->gpu_fan_rpm,
+		cgpu->gpu_clock, cgpu->gpu_memclock,
+		pstate, cgpu->gpu_vid, cgpu->gpu_pid, cgpu->nvml_id, cgpu->nvapi_id,
+>>>>>>> 8c320ca... added xevan
 		cgpu->gpu_sn, cgpu->gpu_desc);
 
 	strcat(buffer, buf);
@@ -321,12 +448,17 @@ static const char* os_name()
 	return "windows";
 #else
 	FILE *fd = fopen("/proc/version", "r");
+<<<<<<< HEAD
 	if (!fd)
 		return "linux";
 	if (!fscanf(fd, "Linux version %48s", &os_version[6])) {
 		fclose(fd);
 		return "linux";
 	}
+=======
+	if (!fd || !fscanf(fd, "Linux version %48s", &os_version[6]))
+		return "linux";
+>>>>>>> 8c320ca... added xevan
 	fclose(fd);
 	os_version[48] = '\0';
 	return (const char*) os_version;
@@ -345,7 +477,11 @@ static void syshwinfos()
 
 	memset(buf, 0, sizeof(buf));
 	snprintf(buf, sizeof(buf), "OS=%s;NVDRIVER=%s;CPUS=%d;CPUTEMP=%d;CPUFREQ=%d|",
+<<<<<<< HEAD
 		os_name(), driver_version, num_cpus, cputc, cpuclk/1000);
+=======
+		os_name(), driver_version, num_cpus, cputc, cpuclk);
+>>>>>>> 8c320ca... added xevan
 	strcat(buffer, buf);
 }
 
@@ -376,7 +512,11 @@ static char *gethistory(char *params)
 	*buffer = '\0';
 	for (int i = 0; i < records; i++) {
 		time_t ts = data[i].tm_stat;
+<<<<<<< HEAD
 		p += sprintf(p, "GPU=%d;H=%u;KHS=%.2f;DIFF=%g;"
+=======
+		p += sprintf(p, "GPU=%d;H=%u;KHS=%.2f;DIFF=%.6f;"
+>>>>>>> 8c320ca... added xevan
 				"COUNT=%u;FOUND=%u;ID=%u;TS=%u|",
 			data[i].gpu_id, data[i].height, data[i].hashrate, data[i].difficulty,
 			data[i].hashcount, data[i].hashfound, data[i].uid, (uint32_t)ts);
@@ -385,7 +525,11 @@ static char *gethistory(char *params)
 }
 
 /**
+<<<<<<< HEAD
  * Returns the job scans ranges (debug purpose, only with -D)
+=======
+ * Returns the job scans ranges (debug purpose)
+>>>>>>> 8c320ca... added xevan
  */
 static char *getscanlog(char *params)
 {
@@ -395,11 +539,17 @@ static char *getscanlog(char *params)
 	*buffer = '\0';
 	for (int i = 0; i < records; i++) {
 		time_t ts = data[i].tm_upd;
+<<<<<<< HEAD
 		p += sprintf(p, "H=%u;P=%u;JOB=%u;ID=%d;DIFF=%g;"
 				"N=0x%x;FROM=0x%x;SCANTO=0x%x;"
 				"COUNT=0x%x;FOUND=%u;TS=%u|",
 			data[i].height, data[i].npool, data[i].njobid, (int)data[i].job_nonce_id, data[i].sharediff,
 			data[i].nonce, data[i].scanned_from, data[i].scanned_to,
+=======
+		p += sprintf(p, "H=%u;JOB=%u;N=%u;FROM=0x%x;SCANTO=0x%x;"
+				"COUNT=0x%x;FOUND=%u;TS=%u|",
+			data[i].height, data[i].njobid, data[i].nonce, data[i].scanned_from, data[i].scanned_to,
+>>>>>>> 8c320ca... added xevan
 			(data[i].scanned_to - data[i].scanned_from), data[i].tm_sent ? 1 : 0, (uint32_t)ts);
 	}
 	return buffer;
@@ -426,6 +576,7 @@ static char *getmeminfo(char *params)
 
 /*****************************************************************************/
 
+<<<<<<< HEAD
 /**
  * Set pool by index (pools array in json config)
  * switchpool|1|
@@ -479,10 +630,13 @@ static char *remote_quit(char *params)
 
 /*****************************************************************************/
 
+=======
+>>>>>>> 8c320ca... added xevan
 static char *gethelp(char *params);
 struct CMDS {
 	const char *name;
 	char *(*func)(char *);
+<<<<<<< HEAD
 	bool iswritemode;
 } cmds[] = {
 	{ "summary", getsummary, false },
@@ -500,6 +654,18 @@ struct CMDS {
 
 	/* keep it the last */
 	{ "help",    gethelp, false },
+=======
+} cmds[] = {
+	{ "summary", getsummary },
+	{ "threads", getthreads },
+	{ "pool",    getpoolnfo },
+	{ "histo",   gethistory },
+	{ "hwinfo",  gethwinfos },
+	{ "meminfo", getmeminfo },
+	{ "scanlog", getscanlog },
+	/* keep it the last */
+	{ "help",    gethelp },
+>>>>>>> 8c320ca... added xevan
 };
 #define CMDMAX ARRAY_SIZE(cmds)
 
@@ -507,10 +673,15 @@ static char *gethelp(char *params)
 {
 	*buffer = '\0';
 	char * p = buffer;
+<<<<<<< HEAD
 	for (int i = 0; i < CMDMAX-1; i++) {
 		bool displayed = !cmds[i].iswritemode || opt_api_allow;
 		if (displayed) p += sprintf(p, "%s\n", cmds[i].name);
 	}
+=======
+	for (int i = 0; i < CMDMAX-1; i++)
+		p += sprintf(p, "%s\n", cmds[i].name);
+>>>>>>> 8c320ca... added xevan
 	sprintf(p, "|");
 	return buffer;
 }
@@ -524,7 +695,11 @@ static int send_result(SOCKETTYPE c, char *result)
 		n = send(c, "", 1, 0);
 	} else {
 		// ignore failure - it's closed immediately anyway
+<<<<<<< HEAD
 		n = send(c, result, (int) strlen(result) + 1, 0);
+=======
+		n = send(c, result, strlen(result) + 1, 0);
+>>>>>>> 8c320ca... added xevan
 	}
 	return n;
 }
@@ -667,13 +842,18 @@ static int websocket_handshake(SOCKETTYPE c, char *result, char *clientkey)
 		// WebSocket Frame - Header + Data
 		memcpy(p, hd, frames);
 		memcpy(p + frames, result, (size_t)datalen);
+<<<<<<< HEAD
 		send(c, (const char*)data, (int) (strlen(answer) + frames + datalen + 1), 0);
+=======
+		send(c, (const char*)data, strlen(answer) + frames + (size_t)datalen + 1, 0);
+>>>>>>> 8c320ca... added xevan
 		free(data);
 	}
 	return 0;
 }
 
 /*
+<<<<<<< HEAD
  * Interpret --api-groups G:cmd1:cmd2:cmd3,P:cmd4,*,...
  */
 static void setup_groups()
@@ -814,6 +994,8 @@ static void setup_groups()
  */
 #define ALLIPS "0/0"
 /*
+=======
+>>>>>>> 8c320ca... added xevan
  * N.B. IP4 addresses are by Definition 32bit big endian on all platforms
  */
 static void setup_ipaccess()
@@ -862,7 +1044,11 @@ static void setup_ipaccess()
 
 		ipaccess[ips].group = group;
 
+<<<<<<< HEAD
 		if (strcmp(ptr, ALLIPS) == 0 || strcmp(ptr, ALLIP4) == 0)
+=======
+		if (strcmp(ptr, ALLIP4) == 0)
+>>>>>>> 8c320ca... added xevan
 			ipaccess[ips].ip = ipaccess[ips].mask = 0;
 		else
 		{
@@ -877,7 +1063,11 @@ static void setup_ipaccess()
 
 				ipaccess[ips].mask = 0;
 				while (mask-- >= 0) {
+<<<<<<< HEAD
 					octet = 1 << (mask % 8);
+=======
+					octet = 1 << (mask & 7);
+>>>>>>> 8c320ca... added xevan
 					ipaccess[ips].mask |= (octet << (24 - (8 * (mask >> 3))));
 				}
 			}
@@ -925,14 +1115,18 @@ static bool check_connect(struct sockaddr_in *cli, char **connectaddr, char *gro
 			}
 		}
 	}
+<<<<<<< HEAD
 	else if (strcmp(opt_api_bind, ALLIP4) == 0)
 		addrok = true;
+=======
+>>>>>>> 8c320ca... added xevan
 	else
 		addrok = (strcmp(*connectaddr, localaddr) == 0);
 
 	return addrok;
 }
 
+<<<<<<< HEAD
 static void mcast()
 {
 	struct sockaddr_in listen;
@@ -1105,6 +1299,14 @@ static void api()
 	unsigned short port = (unsigned short) opt_api_port; // 4068
 	char buf[MYBUFSIZ];
 	int n, bound;
+=======
+static void api()
+{
+	const char *addr = opt_api_allow;
+	short int port = opt_api_listen; // 4068
+	char buf[MYBUFSIZ];
+	int c, n, bound;
+>>>>>>> 8c320ca... added xevan
 	char *connectaddr;
 	char *binderror;
 	char group;
@@ -1118,15 +1320,23 @@ static void api()
 	char *params;
 	int i;
 
+<<<<<<< HEAD
 	SOCKETTYPE c;
 	SOCKETTYPE *apisock;
 	if (!opt_api_port && opt_debug) {
+=======
+	SOCKETTYPE *apisock;
+	if (!opt_api_listen && opt_debug) {
+>>>>>>> 8c320ca... added xevan
 		applog(LOG_DEBUG, "API disabled");
 		return;
 	}
 
+<<<<<<< HEAD
 	setup_groups();
 
+=======
+>>>>>>> 8c320ca... added xevan
 	if (opt_api_allow) {
 		setup_ipaccess();
 		if (ips == 0) {
@@ -1147,10 +1357,16 @@ static void api()
 
 	memset(&serv, 0, sizeof(serv));
 	serv.sin_family = AF_INET;
+<<<<<<< HEAD
 	serv.sin_addr.s_addr = inet_addr(addr); // TODO: allow bind to ip/interface
 	if (serv.sin_addr.s_addr == (in_addr_t)INVINETADDR) {
 		applog(LOG_ERR, "API initialisation 2 failed (%s)%s", strerror(errno), UNAVAILABLE);
 		// free(apisock); FIXME!!
+=======
+	serv.sin_addr.s_addr = inet_addr(addr);
+	if (serv.sin_addr.s_addr == (in_addr_t)INVINETADDR) {
+		applog(LOG_ERR, "API initialisation 2 failed (%s)%s", strerror(errno), UNAVAILABLE);
+>>>>>>> 8c320ca... added xevan
 		return;
 	}
 
@@ -1178,6 +1394,7 @@ static void api()
 			binderror = strerror(errno);
 			if ((time(NULL) - bindstart) > 61)
 				break;
+<<<<<<< HEAD
 			else if (opt_api_port == 4068) {
 				/* when port is default one, use first available */
 				if (opt_debug)
@@ -1201,6 +1418,16 @@ static void api()
 				opt_api_port = port;
 			}
 		}
+=======
+			else {
+				if (!opt_quiet || opt_debug)
+					applog(LOG_WARNING, "API bind to port %d failed - trying again in 20sec", port);
+				sleep(20);
+			}
+		}
+		else
+			bound = 1;
+>>>>>>> 8c320ca... added xevan
 	}
 
 	if (bound == 0) {
@@ -1216,6 +1443,7 @@ static void api()
 		return;
 	}
 
+<<<<<<< HEAD
 	if (opt_api_allow && strcmp(opt_api_bind, "127.0.0.1") == 0)
 		applog(LOG_WARNING, "API open locally in full access mode on port %d", opt_api_port);
 	else if (opt_api_allow)
@@ -1235,6 +1463,16 @@ static void api()
 		clisiz = sizeof(cli);
 		c = accept(*apisock, (struct sockaddr*) (&cli), &clisiz);
 		if (SOCKETFAIL(c)) {
+=======
+	buffer = (char *) calloc(1, MYBUFSIZ + 1);
+
+	counter = 0;
+	while (bye == 0) {
+		counter++;
+
+		clisiz = sizeof(cli);
+		if (SOCKETFAIL(c = accept(*apisock, (struct sockaddr *)(&cli), &clisiz))) {
+>>>>>>> 8c320ca... added xevan
 			applog(LOG_ERR, "API failed (%s)%s", strerror(errno), UNAVAILABLE);
 			CLOSESOCKET(*apisock);
 			free(apisock);
@@ -1298,11 +1536,14 @@ static void api()
 
 				for (i = 0; i < CMDMAX; i++) {
 					if (strcmp(buf, cmds[i].name) == 0 && strlen(buf)) {
+<<<<<<< HEAD
 						if (params && strlen(params)) {
 							// remove possible trailing |
 							if (params[strlen(params)-1] == '|')
 								params[strlen(params)-1] = '\0';
 						}
+=======
+>>>>>>> 8c320ca... added xevan
 						result = (cmds[i].func)(params);
 						if (wskey) {
 							websocket_handshake(c, result, wskey);
@@ -1312,8 +1553,13 @@ static void api()
 						break;
 					}
 				}
+<<<<<<< HEAD
 			}
 			CLOSESOCKET(c);
+=======
+				CLOSESOCKET(c);
+			}
+>>>>>>> 8c320ca... added xevan
 		}
 	}
 
@@ -1329,12 +1575,17 @@ void *api_thread(void *userdata)
 
 	startup = time(NULL);
 	api();
+<<<<<<< HEAD
 	tq_freeze(mythr->q);
 
 	if (bye) {
 		// quit command
 		proper_exit(1);
 	}
+=======
+
+	tq_freeze(mythr->q);
+>>>>>>> 8c320ca... added xevan
 
 	return NULL;
 }
@@ -1342,6 +1593,7 @@ void *api_thread(void *userdata)
 /* to be able to report the default value set in each algo */
 void api_set_throughput(int thr_id, uint32_t throughput)
 {
+<<<<<<< HEAD
 	if (thr_id < MAX_GPUS && thr_info) {
 		struct cgpu_info *cgpu = &thr_info[thr_id].gpu;
 		cgpu->intensity = throughput2intensity(throughput);
@@ -1350,4 +1602,19 @@ void api_set_throughput(int thr_id, uint32_t throughput)
 	// to display in bench results
 	if (opt_benchmark)
 		bench_set_throughput(thr_id, throughput);
+=======
+	struct cgpu_info *cgpu = &thr_info[thr_id].gpu;
+	if (cgpu) {
+		uint32_t ws = throughput;
+		uint8_t i = 0;
+		cgpu->throughput = throughput;
+		while (ws > 1 && i++ < 32)
+			ws = ws >> 1;
+		cgpu->intensity_int = i;
+		cgpu->intensity = (float) i;
+		if (i && (1U << i) < throughput) {
+			cgpu->intensity += ((float) (throughput-(1U << i)) / (1U << i));
+		}
+	}
+>>>>>>> 8c320ca... added xevan
 }

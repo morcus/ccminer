@@ -31,8 +31,12 @@ uint32_t hefty_cpu_hashTable[] = {
     0x510e527fUL,
     0x9b05688cUL,
     0x1f83d9abUL,
+<<<<<<< HEAD
     0x5be0cd19UL
 };
+=======
+    0x5be0cd19UL };
+>>>>>>> 8c320ca... added xevan
 
 uint32_t hefty_cpu_constantTable[] = {
     0x428a2f98UL, 0x71374491UL, 0xb5c0fbcfUL, 0xe9b5dba5UL,
@@ -269,6 +273,7 @@ void hefty_gpu_hash(uint32_t threads, uint32_t startNounce, uint32_t *outputHash
 
 // Progress W2 (Bytes 64...127) then W3 (Bytes 128...191) ...
 
+<<<<<<< HEAD
 
         for(int k=0;k<3;k++)
         {
@@ -280,27 +285,48 @@ void hefty_gpu_hash(uint32_t threads, uint32_t startNounce, uint32_t *outputHash
                 W2[j] = s1(W2[j-2]) + W1[9+j] + s0(W1[1+j]) + W1[j];
 
 
+=======
+        for(int k=0;k<3;k++)
+        {
+            for(int j=0;j<2;j++)
+                W2[j] = s1(W1[14+j]) + W1[9+j] + s0(W1[1+j]) + W1[j];
+            for(int j=2;j<7;j++)
+                W2[j] = s1(W2[j-2]) + W1[9+j] + s0(W1[1+j]) + W1[j];
+
+>>>>>>> 8c320ca... added xevan
             for(int j=7;j<15;j++)
                 W2[j] = s1(W2[j-2]) + W2[j-7] + s0(W1[1+j]) + W1[j];
 
             W2[15] = s1(W2[13]) + W2[8] + s0(W2[0]) + W1[15];
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 8c320ca... added xevan
             for(int j=0;j<16;j++)
             {
                 Absorb(sponge, regs[3] + regs[7]);
                 hefty_gpu_round(regs, W2[j], heftyLookUp(j + ((k+1)<<4)), sponge);
             }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 8c320ca... added xevan
             for(int j=0;j<16;j++)
                 W1[j] = W2[j];
         }
 
+<<<<<<< HEAD
 #pragma unroll 8
         for(int k=0;k<8;k++)
             hash[k] += regs[k];
 
 #pragma unroll 8
+=======
+        for(int k=0;k<8;k++)
+            hash[k] += regs[k];
+
+>>>>>>> 8c320ca... added xevan
         for(int k=0;k<8;k++)
             ((uint32_t*)outputHash)[(thread<<3)+k] = SWAB32(hash[k]);
     }
@@ -309,7 +335,11 @@ void hefty_gpu_hash(uint32_t threads, uint32_t startNounce, uint32_t *outputHash
 __host__
 void hefty_cpu_init(int thr_id, uint32_t threads)
 {
+<<<<<<< HEAD
     cudaSetDevice(device_map[thr_id]);
+=======
+    CUDA_SAFE_CALL(cudaSetDevice(device_map[thr_id]));
+>>>>>>> 8c320ca... added xevan
 
     // Kopiere die Hash-Tabellen in den GPU-Speicher
     cudaMemcpyToSymbol( hefty_gpu_constantTable,
@@ -317,6 +347,7 @@ void hefty_cpu_init(int thr_id, uint32_t threads)
                         sizeof(uint32_t) * 64 );
 
     // Speicher für alle Hefty1 hashes belegen
+<<<<<<< HEAD
     CUDA_SAFE_CALL(cudaMalloc(&heavy_heftyHashes[thr_id], (size_t) 32 * threads));
 }
 
@@ -324,6 +355,9 @@ __host__
 void hefty_cpu_free(int thr_id)
 {
     cudaFree(heavy_heftyHashes[thr_id]);
+=======
+    CUDA_SAFE_CALL(cudaMalloc(&heavy_heftyHashes[thr_id], 8 * sizeof(uint32_t) * threads));
+>>>>>>> 8c320ca... added xevan
 }
 
 __host__
@@ -414,6 +448,7 @@ void hefty_cpu_hash(int thr_id, uint32_t threads, int startNounce)
 
     hefty_gpu_hash <<< grid, block, shared_size >>> (threads, startNounce, heavy_heftyHashes[thr_id]);
 
+<<<<<<< HEAD
     // Strategisches Sleep Kommando zur Senkung der CPU Last
     MyStreamSynchronize(NULL, 0, thr_id);
 }
@@ -445,3 +480,6 @@ void hefty_copy_hashes(int thr_id, uint32_t threads, uint32_t* d_outputhash)
     cudaStreamSynchronize(NULL);
 }
 
+=======
+}
+>>>>>>> 8c320ca... added xevan

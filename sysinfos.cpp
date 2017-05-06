@@ -50,9 +50,14 @@ static uint32_t linux_cpufreq(int core)
 		return freq;
 
 	if (!fscanf(fd, "%d", &freq))
+<<<<<<< HEAD
 		;
 
 	fclose(fd);
+=======
+		return freq;
+
+>>>>>>> 8c320ca... added xevan
 	return freq;
 }
 

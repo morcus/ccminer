@@ -23,9 +23,12 @@
 
 #ifdef _MSC_VER
 #define inline __inline
+<<<<<<< HEAD
 #if !defined(HAVE_STRUCT_TIMESPEC) && _MSC_VER >= 1900
 #define HAVE_STRUCT_TIMESPEC
 #endif
+=======
+>>>>>>> 8c320ca... added xevan
 #endif
 
 #ifdef __cplusplus

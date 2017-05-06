@@ -14,7 +14,11 @@
 
 #include <map>
 
+<<<<<<< HEAD
 #include <cuda_runtime.h>
+=======
+#include "cuda_runtime.h"
+>>>>>>> 8c320ca... added xevan
 #include "miner.h"
 
 #include "salsa_kernel.h"

@@ -9,7 +9,11 @@
 
 #include <map>
 
+<<<<<<< HEAD
 #include <cuda_runtime.h>
+=======
+#include "cuda_runtime.h"
+>>>>>>> 8c320ca... added xevan
 #include "miner.h"
 
 #include "salsa_kernel.h"
@@ -661,16 +665,26 @@ KeplerKernel::KeplerKernel() : KernelInterface()
 
 bool KeplerKernel::bindtexture_1D(uint32_t *d_V, size_t size)
 {
+<<<<<<< HEAD
 	cudaChannelFormatDesc channelDesc4 = cudaCreateChannelDesc<uint4>();
 	texRef1D_4_V.normalized = 0;
 	texRef1D_4_V.filterMode = cudaFilterModePoint;
 	texRef1D_4_V.addressMode[0] = cudaAddressModeClamp;
 	checkCudaErrors(cudaBindTexture(NULL, &texRef1D_4_V, d_V, &channelDesc4, size));
 	return true;
+=======
+		cudaChannelFormatDesc channelDesc4 = cudaCreateChannelDesc<uint4>();
+		texRef1D_4_V.normalized = 0;
+		texRef1D_4_V.filterMode = cudaFilterModePoint;
+		texRef1D_4_V.addressMode[0] = cudaAddressModeClamp;
+		checkCudaErrors(cudaBindTexture(NULL, &texRef1D_4_V, d_V, &channelDesc4, size));
+		return true;
+>>>>>>> 8c320ca... added xevan
 }
 
 bool KeplerKernel::bindtexture_2D(uint32_t *d_V, int width, int height, size_t pitch)
 {
+<<<<<<< HEAD
 	cudaChannelFormatDesc channelDesc4 = cudaCreateChannelDesc<uint4>();
 	texRef2D_4_V.normalized = 0;
 	texRef2D_4_V.filterMode = cudaFilterModePoint;
@@ -681,23 +695,49 @@ bool KeplerKernel::bindtexture_2D(uint32_t *d_V, int width, int height, size_t p
 	while (width < TEXWIDTH) { width *= 2; height = (height+1)/2; pitch *= 2; }
 	checkCudaErrors(cudaBindTexture2D(NULL, &texRef2D_4_V, d_V, &channelDesc4, width, height, pitch));
 	return true;
+=======
+		cudaChannelFormatDesc channelDesc4 = cudaCreateChannelDesc<uint4>();
+		texRef2D_4_V.normalized = 0;
+		texRef2D_4_V.filterMode = cudaFilterModePoint;
+		texRef2D_4_V.addressMode[0] = cudaAddressModeClamp;
+		texRef2D_4_V.addressMode[1] = cudaAddressModeClamp;
+		// maintain texture width of TEXWIDTH (max. limit is 65000)
+		while (width > TEXWIDTH) { width /= 2; height *= 2; pitch /= 2; }
+		while (width < TEXWIDTH) { width *= 2; height = (height+1)/2; pitch *= 2; }
+		checkCudaErrors(cudaBindTexture2D(NULL, &texRef2D_4_V, d_V, &channelDesc4, width, height, pitch));
+		return true;
+>>>>>>> 8c320ca... added xevan
 }
 
 bool KeplerKernel::unbindtexture_1D()
 {
+<<<<<<< HEAD
 	checkCudaErrors(cudaUnbindTexture(texRef1D_4_V));
 	return true;
+=======
+		checkCudaErrors(cudaUnbindTexture(texRef1D_4_V));
+		return true;
+>>>>>>> 8c320ca... added xevan
 }
 
 bool KeplerKernel::unbindtexture_2D()
 {
+<<<<<<< HEAD
 	checkCudaErrors(cudaUnbindTexture(texRef2D_4_V));
 	return true;
+=======
+		checkCudaErrors(cudaUnbindTexture(texRef2D_4_V));
+		return true;
+>>>>>>> 8c320ca... added xevan
 }
 
 void KeplerKernel::set_scratchbuf_constants(int MAXWARPS, uint32_t** h_V)
 {
+<<<<<<< HEAD
 	checkCudaErrors(cudaMemcpyToSymbol(c_V, h_V, MAXWARPS*sizeof(uint32_t*), 0, cudaMemcpyHostToDevice));
+=======
+		checkCudaErrors(cudaMemcpyToSymbol(c_V, h_V, MAXWARPS*sizeof(uint32_t*), 0, cudaMemcpyHostToDevice));
+>>>>>>> 8c320ca... added xevan
 }
 
 bool KeplerKernel::run_kernel(dim3 grid, dim3 threads, int WARPS_PER_BLOCK, int thr_id, cudaStream_t stream,
@@ -706,6 +746,7 @@ bool KeplerKernel::run_kernel(dim3 grid, dim3 threads, int WARPS_PER_BLOCK, int 
 	bool success = true;
 
 	// make some constants available to kernel, update only initially and when changing
+<<<<<<< HEAD
 	static uint32_t prev_N[MAX_GPUS] = { 0 };
 
 	if (N != prev_N[thr_id]) {
@@ -722,6 +763,23 @@ bool KeplerKernel::run_kernel(dim3 grid, dim3 threads, int WARPS_PER_BLOCK, int 
 		cudaMemcpyToSymbolAsync(c_SCRATCH_WU_PER_WARP_1, &h_SCRATCH_WU_PER_WARP_1, sizeof(uint32_t), 0, cudaMemcpyHostToDevice, stream);
 
 		prev_N[thr_id] = N;
+=======
+	static int prev_N[MAX_DEVICES] = {0};
+	if (N != prev_N[thr_id]) {
+			uint32_t h_N = N;
+			uint32_t h_N_1 = N-1;
+			uint32_t h_SCRATCH = SCRATCH;
+			uint32_t h_SCRATCH_WU_PER_WARP = (SCRATCH * WU_PER_WARP);
+			uint32_t h_SCRATCH_WU_PER_WARP_1 = (SCRATCH * WU_PER_WARP) - 1;
+
+			cudaMemcpyToSymbolAsync(c_N, &h_N, sizeof(uint32_t), 0, cudaMemcpyHostToDevice, stream);
+			cudaMemcpyToSymbolAsync(c_N_1, &h_N_1, sizeof(uint32_t), 0, cudaMemcpyHostToDevice, stream);
+			cudaMemcpyToSymbolAsync(c_SCRATCH, &h_SCRATCH, sizeof(uint32_t), 0, cudaMemcpyHostToDevice, stream);
+			cudaMemcpyToSymbolAsync(c_SCRATCH_WU_PER_WARP, &h_SCRATCH_WU_PER_WARP, sizeof(uint32_t), 0, cudaMemcpyHostToDevice, stream);
+			cudaMemcpyToSymbolAsync(c_SCRATCH_WU_PER_WARP_1, &h_SCRATCH_WU_PER_WARP_1, sizeof(uint32_t), 0, cudaMemcpyHostToDevice, stream);
+
+			prev_N[thr_id] = N;
+>>>>>>> 8c320ca... added xevan
 	}
 
 	// First phase: Sequential writes to scratchpad.
@@ -733,6 +791,7 @@ bool KeplerKernel::run_kernel(dim3 grid, dim3 threads, int WARPS_PER_BLOCK, int 
 	unsigned int pos = 0;
 	do
 	{
+<<<<<<< HEAD
 		if (LOOKUP_GAP == 1) {
 			if (IS_SCRYPT())      kepler_scrypt_core_kernelA<A_SCRYPT,    ANDERSEN> <<< grid, threads, 0, stream >>>(d_idata, pos, min(pos+batch, N));
 			if (IS_SCRYPT_JANE()) kepler_scrypt_core_kernelA<A_SCRYPT_JANE, SIMPLE> <<< grid, threads, 0, stream >>>(d_idata, pos, min(pos+batch, N));
@@ -741,6 +800,16 @@ bool KeplerKernel::run_kernel(dim3 grid, dim3 threads, int WARPS_PER_BLOCK, int 
 			if (IS_SCRYPT_JANE()) kepler_scrypt_core_kernelA_LG<A_SCRYPT_JANE, SIMPLE> <<< grid, threads, 0, stream >>>(d_idata, pos, min(pos+batch, N), LOOKUP_GAP);
 		}
 		pos += batch;
+=======
+			if (LOOKUP_GAP == 1) {
+					if (IS_SCRYPT())      kepler_scrypt_core_kernelA<A_SCRYPT,    ANDERSEN> <<< grid, threads, 0, stream >>>(d_idata, pos, min(pos+batch, N));
+					if (IS_SCRYPT_JANE()) kepler_scrypt_core_kernelA<A_SCRYPT_JANE, SIMPLE> <<< grid, threads, 0, stream >>>(d_idata, pos, min(pos+batch, N));
+			} else {
+					if (IS_SCRYPT())      kepler_scrypt_core_kernelA_LG<A_SCRYPT,    ANDERSEN> <<< grid, threads, 0, stream >>>(d_idata, pos, min(pos+batch, N), LOOKUP_GAP);
+					if (IS_SCRYPT_JANE()) kepler_scrypt_core_kernelA_LG<A_SCRYPT_JANE, SIMPLE> <<< grid, threads, 0, stream >>>(d_idata, pos, min(pos+batch, N), LOOKUP_GAP);
+			}
+			pos += batch;
+>>>>>>> 8c320ca... added xevan
 	} while (pos < N);
 
 	// Second phase: Random read access from scratchpad.

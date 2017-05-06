@@ -4,9 +4,14 @@
 #ifdef WIN32
 
 #include <windows.h>
+<<<<<<< HEAD
 #include <time.h>
 
 #define localtime_r(src, dst) localtime_s(dst, src)
+=======
+
+extern int opt_priority;
+>>>>>>> 8c320ca... added xevan
 
 static __inline void sleep(int secs)
 {
@@ -17,8 +22,11 @@ enum {
 	PRIO_PROCESS = 0,
 };
 
+<<<<<<< HEAD
 extern int opt_priority;
 
+=======
+>>>>>>> 8c320ca... added xevan
 static __inline int setpriority(int which, int who, int prio)
 {
 	switch (opt_priority) {
@@ -45,6 +53,7 @@ static __inline int setpriority(int which, int who, int prio)
 }
 
 #ifdef _MSC_VER
+<<<<<<< HEAD
 #define snprintf(...) _snprintf(__VA_ARGS__)
 #define strdup(...) _strdup(__VA_ARGS__)
 #define strncasecmp(x,y,z) _strnicmp(x,y,z)
@@ -73,10 +82,14 @@ static __inline char * dirname(char *file) {
 	sprintf(buffer, "%s%s", drive, dir);
 	return strdup(buffer);
 }
+=======
+#define __func__ __FUNCTION__
+>>>>>>> 8c320ca... added xevan
 #endif
 
 #endif /* WIN32 */
 
+<<<<<<< HEAD
 #ifdef _MSC_VER
 # define __func__ __FUNCTION__
 # define __thread __declspec(thread)
@@ -91,4 +104,6 @@ static __inline char * dirname(char *file) {
 #define MAX_PATH PATH_MAX
 #endif
 
+=======
+>>>>>>> 8c320ca... added xevan
 #endif /* __COMPAT_H__ */

@@ -191,7 +191,11 @@
  * function can take a few extra <strong>bits</strong> to be added at
  * the end of the input message. This allows hashing messages with a
  * bit length which is not a multiple of 8. The extra bits are provided
+<<<<<<< HEAD
  * as an unsigned integer value, and a bit count. The bit count must be
+=======
+ * as an uint32_teger value, and a bit count. The bit count must be
+>>>>>>> 8c320ca... added xevan
  * between 0 and 7, inclusive. The extra bits are provided as bits 7 to
  * 0 (bits of numerical value 128, 64, 32... downto 0), in that order.
  * For instance, to add three bits of value 1, 1 and 0, the unsigned
@@ -372,7 +376,11 @@
  */
 
 /** @hideinitializer
+<<<<<<< HEAD
  * Unsigned integer type whose length is at least 32 bits; on most
+=======
+ * uint32_teger type whose length is at least 32 bits; on most
+>>>>>>> 8c320ca... added xevan
  * architectures, it will have a width of exactly 32 bits. Unsigned C
  * types implement arithmetics modulo a power of 2; use the
  * <code>SPH_T32()</code> macro to ensure that the value is truncated
@@ -390,7 +398,11 @@ typedef __arch_dependant__ sph_u32;
 typedef __arch_dependant__ sph_s32;
 
 /** @hideinitializer
+<<<<<<< HEAD
  * Unsigned integer type whose length is at least 64 bits; on most
+=======
+ * uint32_teger type whose length is at least 64 bits; on most
+>>>>>>> 8c320ca... added xevan
  * architectures which feature such a type, it will have a width of
  * exactly 64 bits. C99-compliant platform will have this type; it
  * is also defined when the GNU compiler (gcc) is used, and on
@@ -551,7 +563,11 @@ typedef __arch_dependant__ sph_s64;
 #define SPH_BIG_FAST
 
 /**
+<<<<<<< HEAD
  * On some platforms, this macro is defined to an unsigned integer type
+=======
+ * On some platforms, this macro is defined to an uint32_teger type
+>>>>>>> 8c320ca... added xevan
  * into which pointer values may be cast. The resulting value can then
  * be tested for being a multiple of 2, 4 or 8, indicating an aligned
  * pointer for, respectively, 16-bit, 32-bit or 64-bit memory accesses.
@@ -852,7 +868,11 @@ typedef int_fast64_t sph_s64;
 #else
 
 /*
+<<<<<<< HEAD
  * On non-C99 systems, we use "unsigned int" if it is wide enough,
+=======
+ * On non-C99 systems, we use "uint32_t" if it is wide enough,
+>>>>>>> 8c320ca... added xevan
  * "unsigned long" otherwise. This supports all "reasonable" architectures.
  * We have to be cautious: pre-C99 preprocessors handle constants
  * differently in '#if' expressions. Hence the shifts to test UINT_MAX.
@@ -862,8 +882,13 @@ typedef int_fast64_t sph_s64;
 
 typedef unsigned int sph_u32;
 typedef int sph_s32;
+<<<<<<< HEAD
 
 #define SPH_C32(x)    ((sph_u32)(x ## U))
+=======
+//(sph_u32)
+#define SPH_C32(x)    ((x ## U))
+>>>>>>> 8c320ca... added xevan
 
 #else
 
